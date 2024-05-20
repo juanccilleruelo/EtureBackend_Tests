@@ -4,7 +4,7 @@
         <ProjectVersion>20.1</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -104,10 +104,12 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="TestAcademicRecords.pas"/>
         <DCCReference Include="framework\senCille.Miscellaneous.pas"/>
         <DCCReference Include="framework\senCille.MVCRequests.pas"/>
         <DCCReference Include="framework\ConfigurationConsts.pas"/>
+        <DCCReference Include="TestBackendConnection.pas"/>
+        <DCCReference Include="TestAcademicRecords.pas"/>
+        <DCCReference Include="TestCampaigns.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -131,6 +133,12 @@
             </Delphi.Personality>
             <Deployment Version="4">
                 <DeployFile LocalName="Win32\Debug\EtureBackendTests.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>EtureBackendTests.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Release\EtureBackendTests.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>EtureBackendTests.exe</RemoteName>
                         <Overwrite>true</Overwrite>

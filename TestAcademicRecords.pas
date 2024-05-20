@@ -11,7 +11,7 @@ type
   // Mark it with [TestFixture] custom attribute and register with
   // TTMSWEBUnitTestingRunner as shown below.
   [TestFixture]
-  TMyTestClassUnit3 = class(TObject)
+  TTestAcademicRecords = class(TObject)
   published
     // Example method that contains a unit test. Annotate it with [Test]
     [Test]
@@ -24,9 +24,9 @@ implementation
 uses
   SysUtils;
 
-{ TMyTestClassUnit3 }
+{ TTestAcademicRecords }
 
-procedure TMyTestClassUnit3.TestIntToStr;
+procedure TTestAcademicRecords.TestIntToStr;
 begin
   // Use static methods of Assert to specify your test condition.
   Assert.AreEqual('42', IntToStr(42));
@@ -34,6 +34,6 @@ end;
 
 initialization
   //Registration of the test classes.
-  TTMSWEBUnitTestingRunner.RegisterClass(TMyTestClassUnit3);
+  TTMSWEBUnitTestingRunner.RegisterClass(TTestAcademicRecords);
 
 end.
