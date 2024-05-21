@@ -27,10 +27,10 @@ type
     [async] procedure LoadIntoDataSet(DataSet :TWebClientDataSet);
   published
     [Test] [async] procedure TestInsert;
-    [Test] [async] procedure Load;
-    [Test] [async] procedure Update;
-    [Test] [async] function DeleteRow:Boolean;
-    [Text] [async] function IsReferenced(var TextMessage :string):Boolean;
+    [Test] [async] procedure TestLoad;
+    [Test] [async] procedure TestUpdate;
+    [Test] [async] function TestDelete:Boolean;
+    [Text] [async] function TestIsReferenced(var TextMessage :string):Boolean;
   end;
 {$M-}
 
@@ -170,7 +170,7 @@ begin
    end;
 end;
 
-procedure TTestCampaigns.Update;
+procedure TTestCampaigns.TestUpdate;
 var Request :TWebHttpRequest;
     Data    :TJSXMLHttpRequest;
     DataSet :TWebClientDataSet;
@@ -198,7 +198,7 @@ begin
    Assert.IsTrue(DataSet.FieldByName('DS_CAMPAIGN').AsString.Trim = 'Modified Row. Can be deleted', DataSet.FieldByName('DS_CAMPAIGN').AsString.Trim);
 end;
 
-function TTestCampaigns.DeleteRow: Boolean;
+function TTestCampaigns.TestDelete: Boolean;
 var Request :TWebHttpRequest;
     Data    :TJSXMLHttpRequest;
     DataSet :TWebClientDataSet;
@@ -222,7 +222,7 @@ begin
    Assert.IsTrue(DataSet.IsEmpty, 'Has been deleted');
 end;
 
-procedure TTestCampaigns.Load;
+procedure TTestCampaigns.TestLoad;
 var Request    :TWebHttpRequest;
     Data       :TJSXMLHttpRequest;
     JSON       :TJSON;
@@ -245,46 +245,12 @@ begin
    DataSet := CreateDataSet;
    DataSet.Active := True;
 
-   {Create the data to be send to the server}
-   {that includes the PageNumber requested  }
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/load');
-   DataToSend := TJSONObject.Create;
-   DataToSend.AddPair('PageNumber', 0);
-   DataToSend.AddPair('SearchText', 'TEST_DATA');
-   DataToSend.AddPair('OrderField', 'CAMPAIGNS.CD_CAMPAIGN');
-   Request.PostData := DataToSend.ToString;
-
-   Data := await(TJSXMLHttpRequest, Request.Perform);
-   Assert.IsTrue(Data.Status = 200, 'Data.Status -> '+IntToStr(Data.Status));
-
-   JSON       := TJSON.Create;
-   JSONObject := TJSONObject(JSON.Parse(Data.ResponseText));
-   JSONArray  := TJSONArray(JSONObject.GetValue('ROW'));
-
-   DataSet.EmptyDataSet;
-   {Check if an error exists }
-   if JSONArray.Count = 1 then begin
-      jo := TJSONObject(JSONArray.Items[0]);
-      Assert.IsTrue(jo.GetValue('##ERROR##') <> nil, '##ERROR##');
-   end;
-   {-----------}
-
-   {The first row holds the NumberOfPages you can recover}
-   jo := TJSONObject(JSONArray.Items[0]);
-   //LastPage := StrToInt(jo.GetJSONValue('NUMBER_OF_PAGES'));
-
-   for i := 1 to JSONArray.Count - 1 do begin
-      jo := TJSONObject(JSONArray.Items[i]);
-      DataSet.Append;
-      DataSet.FieldByName('CD_CAMPAIGN').AsString := jo.GetJSONValue('CD_CAMPAIGN');
-      DataSet.FieldByName('DS_CAMPAIGN').AsString := jo.GetJSONValue('DS_CAMPAIGN');
-      DataSet.Post;
-   end;
+   await(LoadIntoDataSet(DataSet));
 
    Assert.IsTrue(DataSet.FieldByName('CD_CAMPAIGN').AsString = 'TEST_DATA', 'Load OK');
 end;
 
-function TTestCampaigns.IsReferenced(var TextMessage: string): Boolean;
+function TTestCampaigns.TestIsReferenced(var TextMessage: string): Boolean;
 begin
 
 end;
