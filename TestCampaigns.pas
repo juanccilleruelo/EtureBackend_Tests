@@ -25,6 +25,7 @@ type
     constructor Create; reintroduce; virtual;
     function CreateDataSet:TWebClientDataSet;
     [async] procedure LoadIntoDataSet(DataSet :TWebClientDataSet);
+    [async] procedure GetOne(DataSet :TWebClientDataSet);
   published
     [Test] [async] procedure TestInsert;
     [Test] [async] procedure TestLoad;
@@ -54,11 +55,12 @@ begin
    US.ShortDateFormat := 'MM/DD/YYYY';
 
    Result := TJSONObject.Create;
-   Result.AddPair('CD_CAMPAIGN', DataSet.FieldByName('CD_CAMPAIGN').AsString);
-   Result.AddPair('DS_CAMPAIGN', DataSet.FieldByName('DS_CAMPAIGN').AsString);
+   Result.AddPair('CD_CAMPAIGN', DataSet.FieldByName('CD_CAMPAIGN').AsString );
+   Result.AddPair('DS_CAMPAIGN', DataSet.FieldByName('DS_CAMPAIGN').AsString );
    Result.AddPair('COLOR'      , DataSet.FieldByName('COLOR'      ).AsInteger);
-   Result.AddPair('NOTES'      , DataSet.FieldByName('NOTES'      ).AsString);
-   Result.AddPair('IMG_LOGO'   , DataSet.FieldByName('IMG_LOGO'   ).AsString);
+   Result.AddPair('CATEGORY'   , DataSet.FieldByName('CATEGORY'   ).AsString );
+   Result.AddPair('NOTES'      , DataSet.FieldByName('NOTES'      ).AsString );
+   Result.AddPair('IMG_LOGO'   , DataSet.FieldByName('IMG_LOGO'   ).AsString );
 end;
 
 function TTestCampaigns.CreateDataSet:TWebClientDataSet;
@@ -82,6 +84,12 @@ begin
    NewField := TIntegerField.Create(Result);
    NewField.FieldName   := 'COLOR';
    NewField.Size        := 14; // Establecer el tamaño del campo
+   NewField.DataSet     := Result;
+   Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
+
+   NewField := TStringField.Create(Result);
+   NewField.FieldName   := 'CATEGORY';
+   NewField.Size        := 12; // GAP_YEAR, ETURE, SCHOLARSHIP
    NewField.DataSet     := Result;
    Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
 
@@ -110,6 +118,7 @@ begin
    DataSet.FieldByName('CD_CAMPAIGN').AsString  := 'TEST_DATA';
    DataSet.FieldByName('DS_CAMPAIGN').AsString  := 'TEST DATA, CAN BE DELETED';
    DataSet.FieldByName('COLOR'      ).AsInteger := 9999;
+   DataSet.FieldByName('CATEGORY'   ).AsString  := 'GAP_YEAR';
    DataSet.FieldByName('NOTES'      ).AsString  := 'Notes of test';
    DataSet.FieldByName('IMG_LOGO'   ).AsString  := 'Image loaded';
    DataSet.Post;
@@ -123,7 +132,6 @@ begin
    Assert.IsTrue(Data.ResponseText = 'OK', 'Data.Response -> '+Data.ResponseText);
 end;
 
-
 procedure TTestCampaigns.LoadIntoDataSet(DataSet :TWebClientDataSet);
 var Request    :TWebHttpRequest;
     Data       :TJSXMLHttpRequest;
@@ -134,8 +142,8 @@ var Request    :TWebHttpRequest;
     jo         :TJSONObject;
     i          :integer;
     US         :TFormatSettings;
-    Rows       :string;
-    Element    :TJSHTMLElement;
+
+    Color      :Integer;
 begin
    {Create the data to be send to the server}
    {that includes the PageNumber requested  }
@@ -164,8 +172,52 @@ begin
    for i := 1 to JSONArray.Count - 1 do begin
       jo := TJSONObject(JSONArray.Items[i]);
       DataSet.Append;
-      DataSet.FieldByName('CD_CAMPAIGN').AsString := jo.GetJSONValue('CD_CAMPAIGN');
-      DataSet.FieldByName('DS_CAMPAIGN').AsString := jo.GetJSONValue('DS_CAMPAIGN');
+      DataSet.FieldByName('CD_CAMPAIGN').AsString  := jo.GetJSONValue('CD_CAMPAIGN');
+      DataSet.FieldByName('DS_CAMPAIGN').AsString  := jo.GetJSONValue('DS_CAMPAIGN');
+      TryStrToInt(jo.GetJSONValue('COLOR'), Color);
+      DataSet.FieldByName('COLOR'      ).AsInteger := Color;
+      DataSet.FieldByName('CATEGORY'   ).AsString  := jo.GetJSONValue('CATEGORY'   );
+      DataSet.Post;
+   end;
+end;
+
+procedure TTestCampaigns.GetOne(DataSet :TWebClientDataSet);
+var Request    :TWebHttpRequest;
+    Data       :TJSXMLHttpRequest;
+    JSON       :TJSON;
+    JSONObject :TJSONObject;
+    DataToSend :TJSONObject;
+    JSONArray  :TJSONArray;
+    jo         :TJSONObject;
+    Rows       :string;
+    Element    :TJSHTMLElement;
+
+    Color      :Integer;
+begin
+   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getone');
+   DataToSend := TJSONObject.Create;
+   DataToSend.AddPair('CD_CAMPAIGN', 'TEST_DATA');
+   Request.PostData := DataToSend.ToString;
+
+   Data := await(TJSXMLHttpRequest, Request.Perform);
+   Assert.IsTrue(Data.Status = 200, 'Data.Status is different of 200');
+
+   JSON       := TJSON.Create;
+   JSONObject := TJSONObject(JSON.Parse(Data.ResponseText));
+   JSONArray  := TJSONArray(JSONObject.GetValue('ROW'));
+   jo := TJSONObject(JSONArray.Items[0]);
+
+   if JSONArray.Count > 0 then begin
+      DataSet.EmptyDataset;
+      DataSet.Append;
+      DataSet.FieldByName('CD_CAMPAIGN').AsString   := jo.GetJSONValue('CD_CAMPAIGN');
+      DataSet.FieldByName('DS_CAMPAIGN').AsString   := jo.GetJSONValue('DS_CAMPAIGN');
+      TryStrToInt(jo.GetJSONValue('COLOR'), Color);
+      DataSet.FieldByName('COLOR'      ).AsInteger  := Color;
+      DataSet.FieldByName('CATEGORY'   ).AsString   := jo.GetJSONValue('CATEGORY'   );
+      DataSet.FieldByName('NOTES'      ).Value      := jo.GetJSONValue('NOTES'      );
+      if jo.GetJSONValue('IMG_LOGO') = '' then DataSet.FieldByName('IMG_LOGO').Clear
+      else DataSet.FieldByName('IMG_LOGO').AsString := jo.GetJSONValue('IMG_LOGO'   );
       DataSet.Post;
    end;
 end;
@@ -208,7 +260,7 @@ begin
    DataSet := CreateDataSet;
    DataSet.Active := True;
 
-   await(LoadIntoDataSet(DataSet));
+   await(GetOne(DataSet));
 
    Request := TMVCReq.CreatePOSTRequest(TMVCReq.Host+LocalPath+'/delete');
    Request.PostData := GetCurrentJSON(DataSet).ToString;
@@ -217,8 +269,8 @@ begin
    Assert.IsTrue(Data.Status = 200       , 'Data.Status   -> '+IntToStr(Data.Status));
    Assert.IsTrue(Data.ResponseText = 'OK', 'Data.Response -> '+Data.ResponseText);
 
-   DataSet.EmptyDataSet;
-   await(LoadIntoDataSet(DataSet));
+   DataSet.EmptyDataset;
+   await(GetOne(DataSet));
    Assert.IsTrue(DataSet.IsEmpty, 'Has been deleted');
 end;
 
