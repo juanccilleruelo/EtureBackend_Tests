@@ -8,7 +8,8 @@ uses
   ConfigurationConsts in 'framework\ConfigurationConsts.pas',
   TestBackendConnection in 'TestBackendConnection.pas',
   TestAcademicRecords in 'TestAcademicRecords.pas',
-  TestCampaigns in 'TestCampaigns.pas';
+  TestCampaigns in 'TestCampaigns.pas',
+  TestPositions in 'TestPositions.pas';
 
 {$R *.res}
 

@@ -467,7 +467,7 @@ begin
 
    Assert.IsTrue(Players.RecordCount = 4, 'Four users recovered');
 
-   {--- Delete All users ---}
+   {--- Delete All players ---}
    Players.First;
    while not Players.EOF do begin
       Request := TMVCReq.CreatePOSTRequest(TMVCReq.Host+LocalPath+'/deleteplayer');
