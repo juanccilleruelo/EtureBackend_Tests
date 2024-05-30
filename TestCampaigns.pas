@@ -60,7 +60,7 @@ begin
    Result.AddPair('CD_CAMPAIGN', DataSet.FieldByName('CD_CAMPAIGN').AsString );
    Result.AddPair('DS_CAMPAIGN', DataSet.FieldByName('DS_CAMPAIGN').AsString );
    Result.AddPair('COLOR'      , DataSet.FieldByName('COLOR'      ).AsInteger);
-   Result.AddPair('CATEGORY'   , DataSet.FieldByName('CATEGORY'   ).AsString );
+   Result.AddPair('SECTION'    , DataSet.FieldByName('SECTION'    ).AsString );
    Result.AddPair('NOTES'      , DataSet.FieldByName('NOTES'      ).AsString );
    Result.AddPair('IMG_LOGO'   , DataSet.FieldByName('IMG_LOGO'   ).AsString );
 end;
@@ -97,7 +97,7 @@ begin
    Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
 
    NewField := TStringField.Create(Result);
-   NewField.FieldName   := 'CATEGORY';
+   NewField.FieldName   := 'SECTION';
    NewField.Size        := 12; // GAP_YEAR, ETURE, SCHOLARSHIP
    NewField.DataSet     := Result;
    Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
@@ -198,7 +198,7 @@ begin
    DataSet.FieldByName('CD_CAMPAIGN').AsString  := 'TEST_DATA';
    DataSet.FieldByName('DS_CAMPAIGN').AsString  := 'TEST DATA, CAN BE DELETED';
    DataSet.FieldByName('COLOR'      ).AsInteger := 9999;
-   DataSet.FieldByName('CATEGORY'   ).AsString  := 'GAP_YEAR';
+   DataSet.FieldByName('SECTION'    ).AsString  := 'GAP_YEAR';
    DataSet.FieldByName('NOTES'      ).AsString  := 'Notes of test';
    DataSet.FieldByName('IMG_LOGO'   ).AsString  := 'Image loaded';
    DataSet.Post;
@@ -255,7 +255,7 @@ begin
       DataSet.FieldByName('DS_CAMPAIGN').AsString  := jo.GetJSONValue('DS_CAMPAIGN');
       TryStrToInt(jo.GetJSONValue('COLOR'), Color);
       DataSet.FieldByName('COLOR'      ).AsInteger := Color;
-      DataSet.FieldByName('CATEGORY'   ).AsString  := jo.GetJSONValue('CATEGORY'   );
+      DataSet.FieldByName('SECTION'    ).AsString  := jo.GetJSONValue('SECTION'    );
       DataSet.Post;
    end;
 end;
@@ -291,7 +291,7 @@ begin
       DataSet.FieldByName('DS_CAMPAIGN').AsString   := jo.GetJSONValue('DS_CAMPAIGN');
       TryStrToInt(jo.GetJSONValue('COLOR'), Color);
       DataSet.FieldByName('COLOR'      ).AsInteger  := Color;
-      DataSet.FieldByName('CATEGORY'   ).AsString   := jo.GetJSONValue('CATEGORY'   );
+      DataSet.FieldByName('SECTION'    ).AsString   := jo.GetJSONValue('SECTION'    );
       DataSet.FieldByName('NOTES'      ).Value      := jo.GetJSONValue('NOTES'      );
       if jo.GetJSONValue('IMG_LOGO') = '' then DataSet.FieldByName('IMG_LOGO').Clear
       else DataSet.FieldByName('IMG_LOGO').AsString := jo.GetJSONValue('IMG_LOGO'   );
@@ -392,7 +392,7 @@ begin
    DataSet.FieldByName('CD_CAMPAIGN').AsString  := 'TEST_DATA';
    DataSet.FieldByName('DS_CAMPAIGN').AsString  := 'TEST DATA, CAN BE DELETED';
    DataSet.FieldByName('COLOR'      ).AsInteger := 9999;
-   DataSet.FieldByName('CATEGORY'   ).AsString  := 'GAP_YEAR';
+   DataSet.FieldByName('SECTION'    ).AsString  := 'GAP_YEAR';
    DataSet.FieldByName('NOTES'      ).AsString  := 'Notes of test';
    DataSet.FieldByName('IMG_LOGO'   ).AsString  := 'Image loaded';
    DataSet.Post;

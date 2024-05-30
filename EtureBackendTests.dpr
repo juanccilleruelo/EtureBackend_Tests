@@ -9,7 +9,8 @@ uses
   TestBackendConnection in 'TestBackendConnection.pas',
   TestAcademicRecords in 'TestAcademicRecords.pas',
   TestCampaigns in 'TestCampaigns.pas',
-  TestPositions in 'TestPositions.pas';
+  TestPositions in 'TestPositions.pas',
+  TestTutors in 'TestTutors.pas';
 
 {$R *.res}
 
