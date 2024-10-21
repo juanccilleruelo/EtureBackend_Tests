@@ -111,7 +111,8 @@
         <DCCReference Include="TestAcademicRecords.pas"/>
         <DCCReference Include="TestCampaigns.pas"/>
         <DCCReference Include="TestPositions.pas"/>
-        <DCCReference Include="TestTutors.pas"/>
+        <DCCReference Include="TestParents.pas"/>
+        <DCCReference Include="TestInjuryAuxModels.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -99,6 +99,7 @@ begin
    {that includes the PageNumber requested  }
    Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getall');
    DataToSend := TJSONObject.Create;
+   DataToSend.AddPair('Language', 'EN');
    Request.PostData := DataToSend.ToString;
 
    Data := await(TJSXMLHttpRequest, Request.Perform);
@@ -143,6 +144,7 @@ begin
 
    Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getone');
    DataToSend := TJSONObject.Create;
+   DataToSend.AddPair('Language', 'EN');
    DataToSend.AddPair('CD_POSITION', 'LWB');
    Request.PostData := DataToSend.ToString;
 

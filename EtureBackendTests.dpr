@@ -10,7 +10,8 @@ uses
   TestAcademicRecords in 'TestAcademicRecords.pas',
   TestCampaigns in 'TestCampaigns.pas',
   TestPositions in 'TestPositions.pas',
-  TestTutors in 'TestTutors.pas';
+  TestParents in 'TestParents.pas',
+  TestInjuryAuxModels in 'TestInjuryAuxModels.pas';
 
 {$R *.res}
 
