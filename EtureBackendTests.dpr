@@ -3,15 +3,20 @@ program EtureBackendTests;
 uses
   Vcl.Forms,
   WEBLib.Forms,
-  senCille.Miscellaneous in 'framework\senCille.Miscellaneous.pas',
-  senCille.MVCRequests in 'framework\senCille.MVCRequests.pas',
-  ConfigurationConsts in 'framework\ConfigurationConsts.pas',
   TestBackendConnection in 'TestBackendConnection.pas',
   TestAcademicRecords in 'TestAcademicRecords.pas',
   TestCampaigns in 'TestCampaigns.pas',
   TestPositions in 'TestPositions.pas',
   TestParents in 'TestParents.pas',
-  TestInjuryAuxModels in 'TestInjuryAuxModels.pas';
+  TestInjuryAuxModels in 'TestInjuryAuxModels.pas',
+  senCille.WebSetup in '..\EtureFrontend\framework\senCille.WebSetup.pas',
+  senCille.Bootstrap in '..\EtureFrontend\framework\senCille.Bootstrap.pas',
+  senCille.MVCRequests in '..\EtureFrontend\framework\senCille.MVCRequests.pas',
+  ConfigurationConsts in '..\EtureFrontend\framework\ConfigurationConsts.pas',
+  senCille.Miscellaneous in '..\EtureFrontend\framework\senCille.Miscellaneous.pas',
+  Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
+  senCille.CustomWebForm in '..\EtureFrontend\framework\senCille.CustomWebForm.pas' {scCustomWebForm: TWebForm} {*.html},
+  senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas';
 
 {$R *.res}
 

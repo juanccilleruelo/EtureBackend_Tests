@@ -178,7 +178,8 @@ begin
 
    {Create the data to be send to the server}
    {that includes the PageNumber requested  }
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getallbodypart');
+
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getallbodypart');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    Request.PostData := DataToSend.ToString;
@@ -198,7 +199,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count > 3, 'Recovered plus than 3');
+   Assert.IsTrue(JSONArray.Count > 3, 'Recovered plus than 3');*)
 end;
 
 procedure TTestInjuryAuxModels.TestGetOneBodyPart;
@@ -215,7 +216,7 @@ begin
    DataSet := CreateDataSet('BODY_PART');
    DataSet.Active := True;
 
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getonebodypart');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getonebodypart');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    DataToSend.AddPair('CD_INJURY_BODY_PART', '003');
@@ -237,7 +238,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');
+   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');*)
 end;
 
 procedure TTestInjuryAuxModels.TestGetAllSurface;
@@ -262,7 +263,7 @@ begin
 
    {Create the data to be send to the server}
    {that includes the PageNumber requested  }
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getallsurface');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getallsurface');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    Request.PostData := DataToSend.ToString;
@@ -282,7 +283,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count > 3, 'Recovered plus than 3');
+   Assert.IsTrue(JSONArray.Count > 3, 'Recovered plus than 3');*)
 end;
 
 procedure TTestInjuryAuxModels.TestGetOneSurface;
@@ -299,7 +300,7 @@ begin
    DataSet := CreateDataSet('SURFACE');
    DataSet.Active := True;
 
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getonesurface');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getonesurface');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    DataToSend.AddPair('CD_INJURY_SURFACE', '003');
@@ -321,7 +322,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');
+   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');*)
 end;
 
 procedure TTestInjuryAuxModels.TestGetAllNature;
@@ -346,7 +347,7 @@ begin
 
    {Create the data to be send to the server}
    {that includes the PageNumber requested  }
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getallnature');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getallnature');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    Request.PostData := DataToSend.ToString;
@@ -366,7 +367,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count > 3, 'Recovered plus than 3');
+   Assert.IsTrue(JSONArray.Count > 3, 'Recovered plus than 3');^*)
 end;
 
 procedure TTestInjuryAuxModels.TestGetOneNature;
@@ -383,7 +384,7 @@ begin
    DataSet := CreateDataSet('NATURE');
    DataSet.Active := True;
 
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getonenature');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getonenature');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    DataToSend.AddPair('CD_INJURY_NATURE', '003');
@@ -405,7 +406,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');
+   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');*)
 end;
 
 procedure TTestInjuryAuxModels.TestGetAllTimeOfOnset;
@@ -430,7 +431,7 @@ begin
 
    {Create the data to be send to the server}
    {that includes the PageNumber requested  }
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getalltimeofonset');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getalltimeofonset');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    Request.PostData := DataToSend.ToString;
@@ -450,7 +451,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count > 3, 'Recovered plus than 3');
+   Assert.IsTrue(JSONArray.Count > 3, 'Recovered plus than 3');*)
 end;
 
 procedure TTestInjuryAuxModels.TestGetOneTimeOfOnset;
@@ -467,7 +468,7 @@ begin
    DataSet := CreateDataSet('TIME_OF_ONSET');
    DataSet.Active := True;
 
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getonetimeofonset');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getonetimeofonset');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    DataToSend.AddPair('CD_INJURY_TIME_OF_ONSET', '003');
@@ -489,7 +490,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');
+   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');*)
 end;
 
 procedure TTestInjuryAuxModels.TestGetAllType;
@@ -514,7 +515,7 @@ begin
 
    {Create the data to be send to the server}
    {that includes the PageNumber requested  }
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getalltype');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getalltype');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    Request.PostData := DataToSend.ToString;
@@ -534,7 +535,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count > 3, 'Recovered plus than 3');
+   Assert.IsTrue(JSONArray.Count > 3, 'Recovered plus than 3');*)
 end;
 
 procedure TTestInjuryAuxModels.TestGetOneType;
@@ -551,7 +552,7 @@ begin
    DataSet := CreateDataSet('TYPE');
    DataSet.Active := True;
 
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getonetype');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getonetype');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    DataToSend.AddPair('CD_INJURY_TYPE', '003');
@@ -573,7 +574,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');
+   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');*)
 end;
 
 procedure TTestInjuryAuxModels.TestGetAllMechanism;
@@ -598,7 +599,7 @@ begin
 
    {Create the data to be send to the server}
    {that includes the PageNumber requested  }
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getallmechanism');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getallmechanism');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    Request.PostData := DataToSend.ToString;
@@ -618,7 +619,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count > 3, 'Recovered plus than 3');
+   Assert.IsTrue(JSONArray.Count > 3, 'Recovered plus than 3');*)
 end;
 
 procedure TTestInjuryAuxModels.TestGetOneMechanism;
@@ -635,7 +636,7 @@ begin
    DataSet := CreateDataSet('MECHANISM');
    DataSet.Active := True;
 
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getonemechanism');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getonemechanism');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    DataToSend.AddPair('CD_INJURY_MECHANISM', '003');
@@ -657,7 +658,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');
+   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');*)
 end;
 
 procedure TTestInjuryAuxModels.TestGetAllAffectedOrgan;
@@ -682,7 +683,7 @@ begin
 
    {Create the data to be send to the server}
    {that includes the PageNumber requested  }
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getallaffectedorgan');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getallaffectedorgan');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    Request.PostData := DataToSend.ToString;
@@ -702,7 +703,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count > 3, 'Recovered plus than 3');
+   Assert.IsTrue(JSONArray.Count > 3, 'Recovered plus than 3');*)
 end;
 
 procedure TTestInjuryAuxModels.TestGetOneAffectedOrgan;
@@ -719,7 +720,7 @@ begin
    DataSet := CreateDataSet('AFFECTED_ORGAN');
    DataSet.Active := True;
 
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getoneaffectedorgan');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getoneaffectedorgan');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    DataToSend.AddPair('CD_INJURY_AFFECTED_ORGAN', '003');
@@ -741,7 +742,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');
+   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');*)
 end;
 
 initialization

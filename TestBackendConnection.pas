@@ -21,72 +21,80 @@ type
   [TestFixture]
   TTestBackendConnection = class(TObject)
   published
-    [Test] [async] procedure CreateNewUser;
-    [Test] [async] procedure TestAuthenticateUser;
+    [Test] [async] procedure Login_As_Admin;
+    [Test] [async] procedure Login_As_Staff;
+    [Test] [async] procedure Login_As_Agent;
+    [Test] [async] procedure Login_As_Player_us;
+    [Test] [async] procedure Login_As_Player_es;
   end;
 {$M-}
 
 implementation
 
 uses
-  SysUtils;
+  SysUtils, senCille.WebSetup, senCille.DataManagement;
 
 { TTestBackendConnection }
 
-procedure TTestBackendConnection.CreateNewUser;
-var Request  :TWebHttpRequest;
-    Data     :TJSXMLHttpRequest;
-    SendData :TJSONObject;
+procedure TTestBackendConnection.Login_As_Admin;
+var Token :string;
 begin
-   { Create the Request object for communicate with the server }
-   (*Request := TMVCReq.CreatePOSTRequest(TMVCReq.Host+LocalPath+'/insert');
+   TWebSetup.Instance;
+   Token := await(string, TDB.AuthenticateUser('admin', 'lara'));
+   await(TWebSetup.Instance.SetAuthToken(Token));
 
-   SendData := TJSONObject.Create;
-   SendData.AddPair('CD_USER'  , 'Test_user'         );
-   SendData.AddPair('EMAIL'    , 'sencille@gmail.com');
-   SendData.AddPair('PASSWORD' , 'noseve'            );
-
-   Request.PostData := SendData.ToString;
-
-   Data := await(TJSXMLHttpRequest, Request.Perform);
-   if Data.Status <> 200 then TMVCReq.GetDataStatusMsg(Data.Status)
-   else if Data.ResponseText <> 'OK' then begin
-      ShowMessage(Data.ResponseText);
-   end;*)
-
-   Assert.IsTrue(True);
+   Assert.IsTrue (TWebSetup.Instance.AuthToken <> 'null' , 'AuthToken Assigned'     );
+   Assert.IsTrue (TWebSetup.Instance.UserId     = 'admin', Format('Must be admin but is : %s', [TWebSetup.Instance.UserId]));
+   Assert.IsTrue (TWebSetup.Instance.ContainsTheRole('ADMIN'), 'Is not ADMIN');
 end;
 
-procedure TTestBackendConnection.TestAuthenticateUser;
-var Request    :TWebHttpRequest;
-    Data       :TJSXMLHttpRequest;
-    JSONObject :TJSONObject;
-    Success    :Boolean;
-
-    AuthToken  :string;
+procedure TTestBackendConnection.Login_As_Staff;
+var Token :string;
 begin
-   (*Request := TMVCReq.CreatePOSTRequest(TMVCReq.Host+LocalPath);
+   TWebSetup.Instance;
+   Token := await(string, TDB.AuthenticateUser('staff', 'lara'));
+   await(TWebSetup.Instance.SetAuthToken(Token));
 
-   { Add Basic Authorization }
-   Request.Headers.Clear;
-   Request.Headers.AddPair('Authorization', 'Basic '+Window.btoa('admin' + ':' + 'lara'));
-
-   Data := await(TJSXMLHttpRequest, Request.Perform);
-   if Data.Status <> 200 then begin
-      TMVCReq.GetDataStatusMsg(Data.Status);
-      AuthToken := '';
-   end
-   else begin
-      JSONObject := TJSONObject(TJSONObject.ParseJSONValue(Data.ResponseText));
-      AuthToken := JSONObject.GetJSONValue('token');
-   end;
-
-   Assert.IsTrue(AuthToken <> '');*)
-
-   Assert.IsTrue(True);
+   Assert.IsTrue (TWebSetup.Instance.AuthToken <> 'null' , 'AuthToken Assigned'     );
+   Assert.IsTrue (TWebSetup.Instance.UserId     = 'staff', Format('Must be staff but is : %s', [TWebSetup.Instance.UserId]));
+   Assert.IsTrue (TWebSetup.Instance.ContainsTheRole('STAFF'), 'Is not STAFF');
 end;
 
+procedure TTestBackendConnection.Login_As_Agent;
+var Token :string;
+begin
+   TWebSetup.Instance;
+   Token := await(string, TDB.AuthenticateUser('agent', 'lara'));
+   await(TWebSetup.Instance.SetAuthToken(Token));
 
+   Assert.IsTrue (TWebSetup.Instance.AuthToken <> 'null' , 'AuthToken Assigned'     );
+   Assert.IsTrue (TWebSetup.Instance.UserId     = 'agent', Format('Must be staff but is : %s', [TWebSetup.Instance.UserId]));
+   Assert.IsTrue (TWebSetup.Instance.ContainsTheRole('AGENT'), 'Is not AGENT');
+end;
+
+procedure TTestBackendConnection.Login_As_Player_us;
+var Token :string;
+begin
+   TWebSetup.Instance;
+   Token := await(string, TDB.AuthenticateUser('playerus', 'lara'));
+   await(TWebSetup.Instance.SetAuthToken(Token));
+
+   Assert.IsTrue (TWebSetup.Instance.AuthToken <> 'null' , 'AuthToken Assigned'     );
+   Assert.IsTrue (TWebSetup.Instance.UserId     = 'playerus', Format('Must be staff but is : %s', [TWebSetup.Instance.UserId]));
+   Assert.IsTrue (TWebSetup.Instance.ContainsTheRole('PLAYER_US'), 'Is not PLAYER_US');
+end;
+
+procedure TTestBackendConnection.Login_As_Player_es;
+var Token :string;
+begin
+   TWebSetup.Instance;
+   Token := await(string, TDB.AuthenticateUser('playeres', 'lara'));
+   await(TWebSetup.Instance.SetAuthToken(Token));
+
+   Assert.IsTrue (TWebSetup.Instance.AuthToken <> 'null' , 'AuthToken Assigned'     );
+   Assert.IsTrue (TWebSetup.Instance.UserId     = 'playeres', Format('Must be staff but is : %s', [TWebSetup.Instance.UserId]));
+   Assert.IsTrue (TWebSetup.Instance.ContainsTheRole('PLAYER_ES'), 'Is not PLAYER_ES');
+end;
 
 initialization
    TTMSWEBUnitTestingRunner.RegisterClass(TTestBackendConnection);

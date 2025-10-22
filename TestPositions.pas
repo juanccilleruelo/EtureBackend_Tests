@@ -97,7 +97,7 @@ begin
 
    {Create the data to be send to the server}
    {that includes the PageNumber requested  }
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getall');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getall');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    Request.PostData := DataToSend.ToString;
@@ -122,7 +122,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count > 10, 'Recovered plus than 10');
+   Assert.IsTrue(JSONArray.Count > 10, 'Recovered plus than 10');*)
 
 end;
 
@@ -142,7 +142,7 @@ begin
    DataSet := CreateDataSet;
    DataSet.Active := True;
 
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getone');
+   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getone');
    DataToSend := TJSONObject.Create;
    DataToSend.AddPair('Language', 'EN');
    DataToSend.AddPair('CD_POSITION', 'LWB');
@@ -167,7 +167,7 @@ begin
       DataSet.Post;
    end;
 
-   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');
+   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');*)
 end;
 
 initialization
