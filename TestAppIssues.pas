@@ -228,39 +228,15 @@ begin
 end;
 
 [Test] [async] procedure TTestAppIssues.TestGetNextIssueId;
-var Request    :TMVCReq;
-    Data       :TJSXMLHttpRequest;
-    JSON       :TJSON;
-    JSONObject :TJSONObject;
-    DataToSend :TJSONObject;
-    NextId     :string;
+var NextId    :string;
+    jo        :TJSONObject;
+    JSONArray :TJSONArray;
 begin
-   Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LOCAL_PATH+'/getissueid');
-   try
-      DataToSend := TJSONObject.Create;
-      try
-         Request.PostData := DataToSend.ToString;
-      finally
-         DataToSend.Free;
-      end;
+   JSONArray := await(TJSONArray, TDB.GetJSONArray('/appissues', [], '/getissueid'));
+   jo := TJSONObject(JSONArray.Items[0]);
+   NextId :=  jo.GetJSONValue('ID_ISSUE');
 
-      Data := await(TJSXMLHttpRequest, Request.Perform);
-      Assert.IsTrue(Data.Status = 200, 'HTTP Status -> '+IntToStr(Data.Status));
-
-      JSON := TJSON.Create;
-      try
-         JSONObject := TJSONObject(JSON.Parse(Data.ResponseText));
-         if Assigned(JSONObject) then begin
-            NextId := JSONObject.GetJSONValue('ID_ISSUE');
-         end;
-      finally
-         JSON.Free;
-      end;
-
-      Assert.IsTrue(NextId <> '', 'Next issue id received');
-   finally
-      Request.Free;
-   end;
+   Assert.IsTrue(NextId <> '', 'Next issue id received');
 end;
 
 [Test] [async] procedure TTestAppIssues.TestInsert;
@@ -442,19 +418,13 @@ begin
 
    DataSet := CreateDataSet;
    try
-      try
-         await(TDB.GetRow(LOCAL_PATH,
-                          [['ID_ISSUE', TEST_ISSUE_ID]],
-                          DataSet));
-      except
-         on E:Exception do if DataSet.Active then DataSet.EmptyDataSet;
-      end;
+      await(TDB.GetRow(LOCAL_PATH,
+                       [['ID_ISSUE', TEST_ISSUE_ID]],
+                       DataSet));
       Assert.IsTrue(DataSet.IsEmpty, 'Issue successfully removed');
    finally
       DataSet.Free;
    end;
-
-   await(EnsureTestIssueExists());
 end;
 
 [Test] [async] procedure TTestAppIssues.TestGetOrderByFields;
