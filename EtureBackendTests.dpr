@@ -6,6 +6,7 @@ uses
    TestBackendConnection in 'TestBackendConnection.pas',
    TestAppIssues in 'TestAppIssues.pas',
    TestAssays in 'TestAssays.pas',
+   TestCalendarEvents in 'TestCalendarEvents.pas',
    TestPublicResources in 'TestPublicResources.pas',
    TestAuxData in 'TestAuxData.pas',
    TestCampaigns in 'TestCampaigns.pas',
