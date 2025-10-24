@@ -108,8 +108,8 @@
         <DCCReference Include="TestBackendConnection.pas"/>
         <DCCReference Include="TestAppIssues.pas"/>
         <DCCReference Include="TestAssays.pas"/>
-        <DCCReference Include="TestAuxData.pas"/>
         <DCCReference Include="TestPublicResources.pas"/>
+        <DCCReference Include="TestAuxData.pas"/>
         <DCCReference Include="TestCampaigns.pas"/>
         <DCCReference Include="TestPositions.pas"/>
         <DCCReference Include="TestParents.pas"/>

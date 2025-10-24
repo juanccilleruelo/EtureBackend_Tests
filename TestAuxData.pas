@@ -35,8 +35,7 @@ type
 
 implementation
 
-uses
-   senCille.WebSetup;
+uses senCille.WebSetup, senCille.DataManagement;
 
 { TTestAuxDataController }
 
@@ -46,146 +45,162 @@ begin
 end;
 
 procedure TTestAuxDataController.TestSatActExam;
-var Request  :TWebHttpRequest;
-    Response :TJSXMLHttpRequest;
+var Items     :TStrings;
+    ExceptMsg :string;
 begin
-   TWebSetup.Instance;
-
-   Request := TWebHttpRequest.Create(nil);
+   Items := TStringList.Create;
    try
-      Request.URL := BuildURL('/satactexam');
-      Response := await(TJSXMLHttpRequest, Request.Perform);
+      try
+         await(TDB.FillComboBox(Items, LOCAL_PATH+'/satactexam', 'FIELD_NAME', 'SHOW_NAME', []));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
 
-      Assert.IsTrue(Response.Status = 200, 'SAT/ACT exam data must answer with HTTP 200.');
-      Assert.IsTrue(Trim(Response.ResponseText) <> '', 'SAT/ACT exam data must return content.');
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in TestSatActExam -> '+ExceptMsg);
+      Assert.IsTrue(Items.Count > 0, 'satactexam by fields available');
    finally
-      Request.Free;
+      Items.Free;
    end;
 end;
 
 procedure TTestAuxDataController.TestSections;
-var Request  :TWebHttpRequest;
-    Response :TJSXMLHttpRequest;
+var Items     :TStrings;
+    ExceptMsg :string;
 begin
-   TWebSetup.Instance;
-
-   Request := TWebHttpRequest.Create(nil);
+   Items := TStringList.Create;
    try
-      Request.URL := BuildURL('/sections');
-      Response := await(TJSXMLHttpRequest, Request.Perform);
+      try
+         await(TDB.FillComboBox(Items, LOCAL_PATH+'/sections', 'FIELD_NAME', 'SHOW_NAME', []));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
 
-      Assert.IsTrue(Response.Status = 200, 'Sections must answer with HTTP 200.');
-      Assert.IsTrue(Trim(Response.ResponseText) <> '', 'Sections must return content.');
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in sections -> '+ExceptMsg);
+      Assert.IsTrue(Items.Count > 0, 'sections by fields available');
    finally
-      Request.Free;
+      Items.Free;
    end;
 end;
 
 procedure TTestAuxDataController.TestDivisions;
-var Request  :TWebHttpRequest;
-    Response :TJSXMLHttpRequest;
+var Items     :TStrings;
+    ExceptMsg :string;
 begin
-   TWebSetup.Instance;
-
-   Request := TWebHttpRequest.Create(nil);
+   Items := TStringList.Create;
    try
-      Request.URL := BuildURL('/divisions');
-      Response := await(TJSXMLHttpRequest, Request.Perform);
+      try
+         await(TDB.FillComboBox(Items, LOCAL_PATH+'/divisions', 'FIELD_NAME', 'SHOW_NAME', []));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
 
-      Assert.IsTrue(Response.Status = 200, 'Divisions must answer with HTTP 200.');
-      Assert.IsTrue(Trim(Response.ResponseText) <> '', 'Divisions must return content.');
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in divisions -> '+ExceptMsg);
+      Assert.IsTrue(Items.Count > 0, 'divisions by fields available');
    finally
-      Request.Free;
+      Items.Free;
    end;
 end;
 
 procedure TTestAuxDataController.TestEnglishLevels;
-var Request  :TWebHttpRequest;
-    Response :TJSXMLHttpRequest;
+var Items     :TStrings;
+    ExceptMsg :string;
 begin
-   TWebSetup.Instance;
-
-   Request := TWebHttpRequest.Create(nil);
+   Items := TStringList.Create;
    try
-      Request.URL := BuildURL('/englishlevels');
-      Response := await(TJSXMLHttpRequest, Request.Perform);
+      try
+         await(TDB.FillComboBox(Items, LOCAL_PATH+'/englishlevels', 'FIELD_NAME', 'SHOW_NAME', []));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
 
-      Assert.IsTrue(Response.Status = 200, 'English levels must answer with HTTP 200.');
-      Assert.IsTrue(Trim(Response.ResponseText) <> '', 'English levels must return content.');
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in englishlevels -> '+ExceptMsg);
+      Assert.IsTrue(Items.Count > 0, 'englishlevels by fields available');
    finally
-      Request.Free;
+      Items.Free;
    end;
 end;
 
 procedure TTestAuxDataController.TestCurrentlyStudying;
-var Request  :TWebHttpRequest;
-    Response :TJSXMLHttpRequest;
+var Items     :TStrings;
+    ExceptMsg :string;
 begin
-   TWebSetup.Instance;
-
-   Request := TWebHttpRequest.Create(nil);
+   Items := TStringList.Create;
    try
-      Request.URL := BuildURL('/currentlystudying');
-      Response := await(TJSXMLHttpRequest, Request.Perform);
+      try
+         await(TDB.FillComboBox(Items, LOCAL_PATH+'/currentlystudying', 'FIELD_NAME', 'SHOW_NAME', []));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
 
-      Assert.IsTrue(Response.Status = 200, 'Currently studying data must answer with HTTP 200.');
-      Assert.IsTrue(Trim(Response.ResponseText) <> '', 'Currently studying data must return content.');
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in currentlystudying -> '+ExceptMsg);
+      Assert.IsTrue(Items.Count > 0, 'currentlystudying by fields available');
    finally
-      Request.Free;
+      Items.Free;
    end;
 end;
 
 procedure TTestAuxDataController.TestSpanishLevels;
-var Request  :TWebHttpRequest;
-    Response :TJSXMLHttpRequest;
+var Items     :TStrings;
+    ExceptMsg :string;
 begin
-   TWebSetup.Instance;
-
-   Request := TWebHttpRequest.Create(nil);
+   Items := TStringList.Create;
    try
-      Request.URL := BuildURL('/spanishlevels');
-      Response := await(TJSXMLHttpRequest, Request.Perform);
+      try
+         await(TDB.FillComboBox(Items, LOCAL_PATH+'/spanishlevels', 'FIELD_NAME', 'SHOW_NAME', []));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
 
-      Assert.IsTrue(Response.Status = 200, 'Spanish levels must answer with HTTP 200.');
-      Assert.IsTrue(Trim(Response.ResponseText) <> '', 'Spanish levels must return content.');
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in spanishlevels -> '+ExceptMsg);
+      Assert.IsTrue(Items.Count > 0, 'spanishlevels by fields available');
    finally
-      Request.Free;
+      Items.Free;
    end;
 end;
 
 procedure TTestAuxDataController.TestMetrics;
-var Request  :TWebHttpRequest;
-    Response :TJSXMLHttpRequest;
+var Items     :TStrings;
+    ExceptMsg :string;
 begin
-   TWebSetup.Instance;
-
-   Request := TWebHttpRequest.Create(nil);
+   Items := TStringList.Create;
    try
-      Request.URL := BuildURL('/metrics');
-      Response := await(TJSXMLHttpRequest, Request.Perform);
+      try
+         await(TDB.FillComboBox(Items, LOCAL_PATH+'/metrics', 'FIELD_NAME', 'SHOW_NAME', []));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
 
-      Assert.IsTrue(Response.Status = 200, 'Metrics must answer with HTTP 200.');
-      Assert.IsTrue(Trim(Response.ResponseText) <> '', 'Metrics must return content.');
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in metrics -> '+ExceptMsg);
+      Assert.IsTrue(Items.Count > 0, 'metrics by fields available');
    finally
-      Request.Free;
+      Items.Free;
    end;
 end;
 
 procedure TTestAuxDataController.TestGrades;
-var Request  :TWebHttpRequest;
-    Response :TJSXMLHttpRequest;
+var Items     :TStrings;
+    ExceptMsg :string;
 begin
-   TWebSetup.Instance;
-
-   Request := TWebHttpRequest.Create(nil);
+   Items := TStringList.Create;
    try
-      Request.URL := BuildURL('/grades');
-      Response := await(TJSXMLHttpRequest, Request.Perform);
+      try
+         await(TDB.FillComboBox(Items, LOCAL_PATH+'/grades', 'FIELD_NAME', 'SHOW_NAME', []));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
 
-      Assert.IsTrue(Response.Status = 200, 'Grades must answer with HTTP 200.');
-      Assert.IsTrue(Trim(Response.ResponseText) <> '', 'Grades must return content.');
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in grades -> '+ExceptMsg);
+      Assert.IsTrue(Items.Count > 0, 'grades by fields available');
    finally
-      Request.Free;
+      Items.Free;
    end;
 end;
 
