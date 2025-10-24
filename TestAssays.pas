@@ -50,8 +50,6 @@ begin
    Request := TWebHttpRequest.Create(nil);
    try
       Request.URL := BuildURL('/');
-      Request.Method := 'GET';
-
       Response := await(TJSXMLHttpRequest, Request.Perform);
 
       Assert.IsTrue(Response.Status = 200, 'Index must answer with HTTP 200.');
@@ -72,11 +70,10 @@ begin
    Request := TWebHttpRequest.Create(nil);
    try
       Request.URL := BuildURL('/reversedstrings/' + INPUT_VALUE);
-      Request.Method := 'GET';
       Response := await(TJSXMLHttpRequest, Request.Perform);
 
       Assert.IsTrue(Response.Status = 200, 'Reversed string must answer with HTTP 200.');
-      Assert.AreEqual(OUTPUT_VALUE, string(Response.ResponseText), 'Reversed string value.');
+      Assert.IsTrue(SameText(OUTPUT_VALUE, Response.ResponseText), 'Reversed string value.');
    finally
       Request.Free;
    end;
@@ -95,11 +92,10 @@ begin
    try
       EncodedValue := StringReplace(INPUT_VALUE, ' ', '%20', [rfReplaceAll]);
       Request.URL := BuildURL('/reversedstrings/' + EncodedValue);
-      Request.Method := 'GET';
       Response := await(TJSXMLHttpRequest, Request.Perform);
 
       Assert.IsTrue(Response.Status = 200, 'Reversed string with spaces must answer with HTTP 200.');
-      Assert.AreEqual(OUTPUT_VALUE, string(Response.ResponseText), 'Reversed string with spaces value.');
+      Assert.IsTrue(SameText(OUTPUT_VALUE, Response.ResponseText), 'Reversed string with spaces value.');
    finally
       Request.Free;
    end;
@@ -114,8 +110,6 @@ begin
    Request := TWebHttpRequest.Create(nil);
    try
       Request.URL := BuildURL('/public');
-      Request.Method := 'GET';
-
       Response := await(TJSXMLHttpRequest, Request.Perform);
 
       Assert.IsTrue(Response.Status = 200, 'Public section must be accessible without authentication.');
