@@ -7,6 +7,7 @@ uses
    TestAppIssues in 'TestAppIssues.pas',
    TestAssays in 'TestAssays.pas',
    TestCampaigns in 'TestCampaigns.pas',
+   TestPublicResources in 'TestPublicResources.pas',
    TestPositions in 'TestPositions.pas',
    TestParents in 'TestParents.pas',
    TestInjuryAuxModels in 'TestInjuryAuxModels.pas',
