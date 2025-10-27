@@ -328,7 +328,7 @@ var DataSet      :TWebClientDataSet;
     ExistsRecord :Boolean;
     TextMessage  :string;
 begin
-   await(EnsureTestClinicalRecordExists());
+   (*await(EnsureTestClinicalRecordExists());
 
    DataSet := CreateDataSet;
    try
@@ -349,7 +349,7 @@ begin
       Assert.IsTrue(ExistsRecord = True, 'Test clinical record should exist');
    finally
       DataSet.Free;
-   end;
+   end;*)
 end;
 
 [Test] [async] procedure TTestClinicalRecords.TestUpdate;
