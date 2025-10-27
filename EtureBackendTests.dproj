@@ -109,6 +109,8 @@
         <DCCReference Include="TestAppIssues.pas"/>
         <DCCReference Include="TestAssays.pas"/>
         <DCCReference Include="TestPublicResources.pas"/>
+        <DCCReference Include="TestAuxData.pas"/>
+        <DCCReference Include="TestCalendarEvents.pas"/>
         <DCCReference Include="TestCampaigns.pas"/>
         <DCCReference Include="TestCallUps.pas"/>
         <DCCReference Include="TestPositions.pas"/>
@@ -131,6 +133,7 @@
             <DesignClass>TWebForm</DesignClass>
         </DCCReference>
         <DCCReference Include="..\EtureFrontend\framework\senCille.DataManagement.pas"/>
+        <DCCReference Include="..\EtureFrontend\framework\senCille.TypeConverter.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
