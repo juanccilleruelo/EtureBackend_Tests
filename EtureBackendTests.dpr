@@ -15,6 +15,7 @@ uses
   TestCareerHistory in 'TestCareerHistory.pas',
   TestInjuryAuxModels in 'TestInjuryAuxModels.pas',
   TestAcademicRecords in 'TestAcademicRecords.pas',
+  TestClinicalRecords in 'TestClinicalRecords.pas',
   senCille.WebSetup in '..\EtureFrontend\framework\senCille.WebSetup.pas',
   senCille.Bootstrap in '..\EtureFrontend\framework\senCille.Bootstrap.pas',
   senCille.MVCRequests in '..\EtureFrontend\framework\senCille.MVCRequests.pas',

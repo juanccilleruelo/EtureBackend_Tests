@@ -134,6 +134,7 @@
         </DCCReference>
         <DCCReference Include="..\EtureFrontend\framework\senCille.DataManagement.pas"/>
         <DCCReference Include="TestAuxData.pas"/>
+        <DCCReference Include="TestClinicalRecords.pas"/>
         <DCCReference Include="TestCalendarEvents.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
