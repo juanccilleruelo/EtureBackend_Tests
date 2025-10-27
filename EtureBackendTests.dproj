@@ -137,6 +137,7 @@
         <DCCReference Include="TestAuxData.pas"/>
         <DCCReference Include="TestClinicalRecords.pas"/>
         <DCCReference Include="TestCalendarEvents.pas"/>
+   <DCCReference Include="TestConferences.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
