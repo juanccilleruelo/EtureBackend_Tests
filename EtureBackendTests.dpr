@@ -13,10 +13,11 @@ uses
   senCille.CustomWebForm in '..\EtureFrontend\framework\senCille.CustomWebForm.pas' {scCustomWebForm: TWebForm} {*.html},
   senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas',
 
-   {... Tests ...}
+  {... Tests ...}
    TestCalendarEvents in 'TestCalendarEvents.pas',
    TestMyVisaExamples in 'TestMyVisaExamples.pas',
-   TestAppIssues in 'TestAppIssues.pas';
+   TestAppIssues in 'TestAppIssues.pas',
+   TestMyVisaOverview in 'TestMyVisaOverview.pas';
    TestMailTemplates in 'TestMailTemplates.pas';
   (*TestBackendConnection in 'TestBackendConnection.pas',
   TestAppIssues in 'TestAppIssues.pas',
