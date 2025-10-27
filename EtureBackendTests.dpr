@@ -8,6 +8,7 @@ uses
    TestAssays in 'TestAssays.pas',
    TestPublicResources in 'TestPublicResources.pas',
    TestCampaigns in 'TestCampaigns.pas',
+   TestCallUps in 'TestCallUps.pas',
    TestPositions in 'TestPositions.pas',
    TestParents in 'TestParents.pas',
    TestInjuryAuxModels in 'TestInjuryAuxModels.pas',
