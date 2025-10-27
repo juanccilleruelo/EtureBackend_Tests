@@ -5,6 +5,7 @@ uses
    WEBLib.Forms,
    TestBackendConnection in 'TestBackendConnection.pas',
    TestAppIssues in 'TestAppIssues.pas',
+   TestCategories in 'TestCategories.pas',
    TestAssays in 'TestAssays.pas',
    TestPublicResources in 'TestPublicResources.pas',
    TestCampaigns in 'TestCampaigns.pas',
