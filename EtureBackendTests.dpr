@@ -14,6 +14,7 @@ uses
    senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas',
 
   {... Tests ...}
+   TestUniversities in 'TestUniversities.pas', 
    TestCalendarEvents in 'TestCalendarEvents.pas',
    TestTeams in 'TestTeams.pas',
    TestProperties in 'TestProperties.pas',
