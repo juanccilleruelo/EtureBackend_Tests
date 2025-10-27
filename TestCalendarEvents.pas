@@ -21,7 +21,7 @@ type
    private
       const LOCAL_PATH            = '/calendarevents';
       const TEST_EVENT_ID         = 'UT_CALENDAR_EVENT_0001';
-      const TEST_USER_CODE        = 'PLAYER_US';
+      const TEST_USER_CODE        = 'PLAYERUS';
       const TEST_EVENT_TITLE      = 'Unit Test Calendar Event';
       const UPDATED_EVENT_TITLE   = 'Unit Test Calendar Event - Updated';
       var Created_EVENT_ID :string;
@@ -320,7 +320,7 @@ begin
          //                ['OrderField', 'DT_START'     ]],
          //               DataSet));
          Count := await(TDB.Select(LOCAL_PATH,
-                        [['CD_USER'  , 'PLAYER_US'                    ],
+                        [['CD_USER'  , TEST_USER_CODE                 ],
                          ['ViewMode' , 'vmMonth'                      ],
                          ['StartDate', TTypeConv.DateToJSON(StartDate)],
                          ['EndDate'  , TTypeConv.DateToJSON(EndDate  )]],
