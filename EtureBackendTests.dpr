@@ -19,6 +19,8 @@ uses
    TestTeams in 'TestTeams.pas',
    TestProperties in 'TestProperties.pas',
    TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
+   TestSocialMedia in 'TestSocialMedia.pas',
+   TestStates in 'TestStates.pas',
    TestMyVisaExamples in 'TestMyVisaExamples.pas',
    TestAppIssues in 'TestAppIssues.pas',
    TestMyVisaOverview in 'TestMyVisaOverview.pas',

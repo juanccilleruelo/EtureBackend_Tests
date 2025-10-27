@@ -461,7 +461,7 @@ begin
    Request := TWebHttpRequest.Create(nil);
    try
       Request.URL := BuildURL('/replaceplaceholders');
-      Request.Method := 'POST';
+      //Request.Method := 'POST';
       Request.Headers.Values['Content-Type'] := 'application/json';
 
       Payload := TJSONObject.Create;
@@ -502,7 +502,7 @@ begin
    Request := TWebHttpRequest.Create(nil);
    try
       Request.URL := BuildURL('/sendemail');
-      Request.Method := 'POST';
+      //Request.Method := 'POST';
       Request.Headers.Values['Content-Type'] := 'application/json';
 
       Payload := TJSONObject.Create;
@@ -516,7 +516,7 @@ begin
             DataPayload.Free;
          end;
          Recipients := TJSONArray.Create;
-         Recipients.Add(TJSONString.Create(TARGET_EMAIL));
+         //Recipients.Add(TJSONString.Create(TARGET_EMAIL));
          Payload.AddPair('Recipients', Recipients);
          Request.PostData := Payload.ToString;
       finally

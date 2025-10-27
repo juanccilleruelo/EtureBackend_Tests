@@ -142,7 +142,7 @@ begin
    try
       JSONObject.AddPair('DOC_TYPE', DocType);
       Request.URL := TMVCReq.Host + LOCAL_PATH + '/existstemplate';
-      Request.Method := 'POST';
+      //Request.Method := 'POST';
       Request.Headers.Add('Content-Type=application/json');
       Request.PostData := JSONObject.ToJSON;
 
