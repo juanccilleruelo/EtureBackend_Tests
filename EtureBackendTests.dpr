@@ -24,7 +24,8 @@ uses
   senCille.CustomWebForm in '..\EtureFrontend\framework\senCille.CustomWebForm.pas' {scCustomWebForm: TWebForm} {*.html},
   senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas',
   TestAuxData in 'TestAuxData.pas',
-  TestCalendarEvents in 'TestCalendarEvents.pas';
+   TestCalendarEvents in 'TestCalendarEvents.pas',
+   TestConferences in 'TestConferences.pas';
 
 {$R *.res}
 
