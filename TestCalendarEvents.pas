@@ -21,9 +21,10 @@ type
    private
       const LOCAL_PATH            = '/calendarevents';
       const TEST_EVENT_ID         = 'UT_CALENDAR_EVENT_0001';
-      const TEST_USER_CODE        = 'UNIT_TEST_USER';
+      const TEST_USER_CODE        = 'PLAYER_US';
       const TEST_EVENT_TITLE      = 'Unit Test Calendar Event';
       const UPDATED_EVENT_TITLE   = 'Unit Test Calendar Event - Updated';
+      var Created_EVENT_ID :string;
    private
       function CreateEventsDataSet:TWebClientDataSet;
       procedure FillEventData(ADataSet :TWebClientDataSet;
@@ -32,6 +33,7 @@ type
       [async] function HasTestEvent:Boolean;
       [async] procedure EnsureTestEventExists;
       [async] procedure DeleteTestEventIfExists;
+      [async] function  GetTheLastOne:string;
    published
       [Test] [async] procedure TestInsert;
       [Test] [async] procedure TestLoad;
@@ -52,8 +54,7 @@ type
 
 implementation
 
-uses
-   senCille.DataManagement;
+uses senCille.DataManagement, senCille.TypeConverter;
 
 { TTestCalendarEvents }
 
@@ -223,7 +224,7 @@ begin
 
    DataSet := CreateEventsDataSet;
    try
-      StartDate := EncodeDateTime(2024, 1, 1, 9, 0, 0, 0);
+      StartDate := EncodeDate(2024, 1, 1) + EncodeTime(9, 0, 0, 0);
       FillEventData(DataSet, TEST_EVENT_TITLE, StartDate, StartDate + EncodeTime(1, 0, 0, 0));
       try
          await(TDB.Insert(LOCAL_PATH, DataSet));
@@ -242,11 +243,33 @@ end;
 [async] procedure TTestCalendarEvents.DeleteTestEventIfExists;
 begin
    try
-      await(TDB.Delete(LOCAL_PATH, [['ID_EVENT', TEST_EVENT_ID]]));
+      await(TDB.Delete(LOCAL_PATH, [['ID_EVENT', Created_EVENT_ID]]));
    except
       on E:Exception do begin
          ;
       end;
+   end;
+end;
+
+[async] function TTestCalendarEvents.GetTheLastOne:string;
+var DataSet :TWebClientDataSet;
+begin
+   DataSet := CreateEventsDataSet;
+   try
+      try
+         await(TDB.GetRow(LOCAL_PATH,
+                          [['ID_EVENT', TEST_EVENT_ID]],
+                          DataSet, '/getthelastone'));
+      except
+         on E:Exception do begin
+            if DataSet.Active then begin
+               DataSet.EmptyDataSet;
+            end;
+         end;
+      end;
+      Result := DataSet.FieldByName('ID_EVENT').AsString;
+   finally
+      DataSet.Free;
    end;
 end;
 
@@ -260,7 +283,7 @@ begin
    DataSet := CreateEventsDataSet;
    try
       StartDate := Now;
-      FillEventData(DataSet, TEST_EVENT_TITLE, StartDate, StartDate + EncodeTime(1, 0, 0, 0));
+      FillEventData(DataSet, TEST_EVENT_TITLE, StartDate, StartDate + EncodeTime(2, 0, 0, 0));
       try
          await(TDB.Insert(LOCAL_PATH, DataSet));
          ExceptMsg := 'ok';
@@ -270,6 +293,7 @@ begin
          end;
       end;
       Assert.IsTrue(ExceptMsg = 'ok', 'Exception in Insert -> '+ExceptMsg);
+      Created_EVENT_ID := await(string, GetTheLastOne);
    finally
       DataSet.Free;
    end;
@@ -278,18 +302,31 @@ end;
 [Test] [async] procedure TTestCalendarEvents.TestLoad;
 var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
+    StartDate :TDate; {The Date in witch starts the representation}
+    EndDate   :TDate; {The Date in witch starts the representation}
     Count     :Integer;
 begin
    await(EnsureTestEventExists());
 
+   StartDate := EncodeDate(2020, 1     , 1 );  {First Day of the year  }
+   EndDate   := EncodeDate(2040, 12    , 31);  {Last  Day of the year  }
+
    DataSet := CreateEventsDataSet;
    try
       try
+         //Count := await(TDB.Select(LOCAL_PATH,
+         //               [['PageNumber', '1'           ],
+         //                ['SearchText', 'Unit Test'    ],
+         //                ['OrderField', 'DT_START'     ]],
+         //               DataSet));
          Count := await(TDB.Select(LOCAL_PATH,
-                        [['PageNumber', '1'           ],
-                         ['SearchText', 'Unit Test'    ],
-                         ['OrderField', 'DT_START'     ]],
-                        DataSet));
+                        [['CD_USER'  , 'PLAYER_US'                    ],
+                         ['ViewMode' , 'vmMonth'                      ],
+                         ['StartDate', TTypeConv.DateToJSON(StartDate)],
+                         ['EndDate'  , TTypeConv.DateToJSON(EndDate  )]],
+                         DataSet)
+                        );
+
          ExceptMsg := 'ok';
       except
          on E:Exception do begin
@@ -298,7 +335,7 @@ begin
       end;
       Assert.IsTrue(ExceptMsg = 'ok', 'Exception in Load -> '+ExceptMsg);
       Assert.IsTrue(Count > 0, 'Load must return rows');
-      Assert.IsTrue(DataSet.Locate('ID_EVENT', TEST_EVENT_ID, []), 'Test event located in dataset');
+      Assert.IsTrue(DataSet.Locate('ID_EVENT', Created_EVENT_ID, []), 'Test event located in dataset');
    finally
       DataSet.Free;
    end;
@@ -314,7 +351,7 @@ begin
    try
       try
          await(TDB.GetRow(LOCAL_PATH,
-                          [['ID_EVENT', TEST_EVENT_ID]],
+                          [['ID_EVENT', Created_EVENT_ID]],
                           DataSet));
          ExceptMsg := 'ok';
       except
@@ -359,13 +396,13 @@ begin
    DataSet := CreateEventsDataSet;
    try
       await(TDB.GetRow(LOCAL_PATH,
-                       [['ID_EVENT', TEST_EVENT_ID]],
+                       [['ID_EVENT', Created_EVENT_ID]],
                        DataSet));
       DataSet.Edit;
       DataSet.FieldByName('DS_EVENT').AsString := UPDATED_EVENT_TITLE;
       DataSet.Post;
       try
-         await(TDB.Update(LOCAL_PATH, [['ID_EVENT', TEST_EVENT_ID], ['OLD_ID_EVENT', TEST_EVENT_ID]], DataSet));
+         await(TDB.Update(LOCAL_PATH, [['ID_EVENT', Created_EVENT_ID], ['OLD_ID_EVENT', Created_EVENT_ID]], DataSet));
          ExceptMsg := 'ok';
       except
          on E:Exception do begin
@@ -374,13 +411,13 @@ begin
       end;
       Assert.IsTrue(ExceptMsg = 'ok', 'Exception in Update -> '+ExceptMsg);
       await(TDB.GetRow(LOCAL_PATH,
-                       [['ID_EVENT', TEST_EVENT_ID]],
+                       [['ID_EVENT', Created_EVENT_ID]],
                        DataSet));
       Assert.IsTrue(DataSet.FieldByName('DS_EVENT').AsString = UPDATED_EVENT_TITLE, 'Updated event title stored correctly');
       DataSet.Edit;
       DataSet.FieldByName('DS_EVENT').AsString := TEST_EVENT_TITLE;
       DataSet.Post;
-      await(TDB.Update(LOCAL_PATH, [['ID_EVENT', TEST_EVENT_ID], ['OLD_ID_EVENT', TEST_EVENT_ID]], DataSet));
+      await(TDB.Update(LOCAL_PATH, [['ID_EVENT', Created_EVENT_ID], ['OLD_ID_EVENT', Created_EVENT_ID]], DataSet));
    finally
       DataSet.Free;
    end;
@@ -397,7 +434,7 @@ begin
    DataSet := CreateEventsDataSet;
    try
       await(TDB.GetRow(LOCAL_PATH,
-                       [['ID_EVENT', TEST_EVENT_ID]],
+                       [['ID_EVENT', Created_EVENT_ID]],
                        DataSet));
       try
          IsReferenced := await(Boolean, TDB.IsReferenced(LOCAL_PATH, DataSet, TextMessage));
@@ -422,7 +459,7 @@ begin
    await(EnsureTestEventExists());
 
    try
-      await(TDB.Delete(LOCAL_PATH, [['ID_EVENT', TEST_EVENT_ID]]));
+      await(TDB.Delete(LOCAL_PATH, [['ID_EVENT', Created_EVENT_ID]]));
       ExceptMsg := 'ok';
    except
       on E:Exception do begin
@@ -434,7 +471,7 @@ begin
    DataSet := CreateEventsDataSet;
    try
       await(TDB.GetRow(LOCAL_PATH,
-                       [['ID_EVENT', TEST_EVENT_ID]],
+                       [['ID_EVENT', Created_EVENT_ID]],
                        DataSet));
       Assert.IsTrue(DataSet.IsEmpty, 'Event should have been removed');
    finally
