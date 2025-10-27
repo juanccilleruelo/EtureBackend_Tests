@@ -14,8 +14,9 @@ uses
   senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas',
 
   {... Tests ...}
-  TestCalendarEvents in 'TestCalendarEvents.pas',
-  TestAppIssues in 'TestAppIssues.pas';
+   TestCalendarEvents in 'TestCalendarEvents.pas',
+   TestAppIssues in 'TestAppIssues.pas',
+   TestMailTemplates in 'TestMailTemplates.pas';
   (*TestBackendConnection in 'TestBackendConnection.pas',
   TestAppIssues in 'TestAppIssues.pas',
   TestCategories in 'TestCategories.pas',
