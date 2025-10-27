@@ -15,8 +15,12 @@ uses
 
   {... Tests ...}
    TestCalendarEvents in 'TestCalendarEvents.pas',
+   TestProperties in 'TestProperties.pas',
+   TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
+   TestMyVisaExamples in 'TestMyVisaExamples.pas',
    TestAppIssues in 'TestAppIssues.pas',
-   TestProperties in 'TestProperties.pas';
+   TestMyVisaOverview in 'TestMyVisaOverview.pas',
+   TestMailTemplates in 'TestMailTemplates.pas';
   (*TestBackendConnection in 'TestBackendConnection.pas',
   TestAppIssues in 'TestAppIssues.pas',
   TestCategories in 'TestCategories.pas',
