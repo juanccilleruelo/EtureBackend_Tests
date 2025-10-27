@@ -11,6 +11,7 @@ uses
    TestCallUps in 'TestCallUps.pas',
    TestPositions in 'TestPositions.pas',
    TestParents in 'TestParents.pas',
+   TestCareerHistory in 'TestCareerHistory.pas',
    TestInjuryAuxModels in 'TestInjuryAuxModels.pas',
    TestAcademicRecords in 'TestAcademicRecords.pas',
    senCille.WebSetup in '..\EtureFrontend\framework\senCille.WebSetup.pas',

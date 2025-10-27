@@ -113,6 +113,7 @@
         <DCCReference Include="TestCallUps.pas"/>
         <DCCReference Include="TestPositions.pas"/>
         <DCCReference Include="TestParents.pas"/>
+        <DCCReference Include="TestCareerHistory.pas"/>
         <DCCReference Include="TestInjuryAuxModels.pas"/>
         <DCCReference Include="TestAcademicRecords.pas"/>
         <DCCReference Include="..\EtureFrontend\framework\senCille.WebSetup.pas"/>
