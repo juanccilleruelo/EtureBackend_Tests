@@ -110,6 +110,7 @@
         <DCCReference Include="TestCategories.pas"/>
         <DCCReference Include="TestAssays.pas"/>
         <DCCReference Include="TestPublicResources.pas"/>
+        <DCCReference Include="TestCountries.pas"/>
         <DCCReference Include="TestCampaigns.pas"/>
         <DCCReference Include="TestCallUps.pas"/>
         <DCCReference Include="TestPositions.pas"/>

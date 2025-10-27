@@ -8,6 +8,7 @@ uses
   TestCategories in 'TestCategories.pas',
   TestAssays in 'TestAssays.pas',
   TestPublicResources in 'TestPublicResources.pas',
+  TestCountries in 'TestCountries.pas',
   TestCampaigns in 'TestCampaigns.pas',
   TestCallUps in 'TestCallUps.pas',
   TestPositions in 'TestPositions.pas',
