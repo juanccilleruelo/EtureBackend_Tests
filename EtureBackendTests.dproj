@@ -107,6 +107,7 @@
         </DelphiCompile>
         <DCCReference Include="TestBackendConnection.pas"/>
         <DCCReference Include="TestAppIssues.pas"/>
+        <DCCReference Include="TestCategories.pas"/>
         <DCCReference Include="TestAssays.pas"/>
         <DCCReference Include="TestPublicResources.pas"/>
         <DCCReference Include="TestCampaigns.pas"/>
