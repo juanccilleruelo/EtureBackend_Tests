@@ -112,6 +112,7 @@
         <DCCReference Include="TestAuxData.pas"/>
         <DCCReference Include="TestCalendarEvents.pas"/>
         <DCCReference Include="TestCampaigns.pas"/>
+        <DCCReference Include="TestCallUps.pas"/>
         <DCCReference Include="TestPositions.pas"/>
         <DCCReference Include="TestParents.pas"/>
         <DCCReference Include="TestInjuryAuxModels.pas"/>
