@@ -3,19 +3,22 @@ program EtureBackendTests;
 uses
   Vcl.Forms,
   WEBLib.Forms,
+  ConfigurationConsts in '..\EtureFrontend\framework\ConfigurationConsts.pas',
   senCille.WebSetup in '..\EtureFrontend\framework\senCille.WebSetup.pas',
   senCille.Bootstrap in '..\EtureFrontend\framework\senCille.Bootstrap.pas',
   senCille.MVCRequests in '..\EtureFrontend\framework\senCille.MVCRequests.pas',
-  ConfigurationConsts in '..\EtureFrontend\framework\ConfigurationConsts.pas',
   senCille.Miscellaneous in '..\EtureFrontend\framework\senCille.Miscellaneous.pas',
-  Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
   senCille.CustomWebForm in '..\EtureFrontend\framework\senCille.CustomWebForm.pas' {scCustomWebForm: TWebForm} {*.html},
   senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas' {$R *.res},
+  senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
+  Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
+  {... ...}
+  TestAppIssues in 'TestAppIssues.pas',
   TestCallUps in 'TestCallUps.pas',
-  senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas';
+  TestProperties in 'TestProperties.pas';
 
 (*
-   TestProperties in 'TestProperties.pas',
+
    TestCalendarEvents in 'TestCalendarEvents.pas',
    TestUniversities in 'TestUniversities.pas',
    TestTeams in 'TestTeams.pas',
@@ -26,7 +29,6 @@ uses
    TestMyVisaOverview in 'TestMyVisaOverview.pas',
    TestMailTemplates in 'TestMailTemplates.pas',
    TestBackendConnection in 'TestBackendConnection.pas',
-   TestAppIssues in 'TestAppIssues.pas',
    TestCategories in 'TestCategories.pas',
    TestClubs in 'TestClubs.pas',
    TestAssays in 'TestAssays.pas',

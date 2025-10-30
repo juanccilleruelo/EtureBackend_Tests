@@ -298,7 +298,7 @@ begin
          on E:Exception do ExceptMsg := E.Message;
       end;
       Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetAll -> '+ExceptMsg);
-      Assert.IsTrue(Items.IndexOfName(TEST_PROPERTY_CODE) >= 0, 'Test property present in GetAll list');
+      Assert.IsTrue(TMisc.ListContains(Items, TEST_PROPERTY_CODE), 'Test property present in GetAll list');
    finally
       Items.Free;
    end;

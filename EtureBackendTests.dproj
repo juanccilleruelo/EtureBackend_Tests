@@ -105,15 +105,11 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="..\EtureFrontend\framework\ConfigurationConsts.pas"/>
         <DCCReference Include="..\EtureFrontend\framework\senCille.WebSetup.pas"/>
         <DCCReference Include="..\EtureFrontend\framework\senCille.Bootstrap.pas"/>
         <DCCReference Include="..\EtureFrontend\framework\senCille.MVCRequests.pas"/>
-        <DCCReference Include="..\EtureFrontend\framework\ConfigurationConsts.pas"/>
         <DCCReference Include="..\EtureFrontend\framework\senCille.Miscellaneous.pas"/>
-        <DCCReference Include="..\EtureFrontend\Dummy\Dummy.pas">
-            <Form>DummyForm</Form>
-            <DesignClass>TWebForm</DesignClass>
-        </DCCReference>
         <DCCReference Include="..\EtureFrontend\framework\senCille.CustomWebForm.pas">
             <Form>scCustomWebForm</Form>
             <DesignClass>TWebForm</DesignClass>
@@ -121,8 +117,14 @@
         <DCCReference Include="..\EtureFrontend\framework\senCille.DataManagement.pas">
             <Form>$R *.res</Form>
         </DCCReference>
-        <DCCReference Include="TestCallUps.pas"/>
         <DCCReference Include="..\EtureFrontend\framework\senCille.TypeConverter.pas"/>
+        <DCCReference Include="..\EtureFrontend\Dummy\Dummy.pas">
+            <Form>DummyForm</Form>
+            <DesignClass>TWebForm</DesignClass>
+        </DCCReference>
+        <DCCReference Include="TestAppIssues.pas"/>
+        <DCCReference Include="TestCallUps.pas"/>
+        <DCCReference Include="TestProperties.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
