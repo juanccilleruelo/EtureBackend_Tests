@@ -121,17 +121,8 @@
         <DCCReference Include="..\EtureFrontend\framework\senCille.DataManagement.pas">
             <Form>$R *.res</Form>
         </DCCReference>
-        <DCCReference Include="TestUniversities.pas"/>
-        <DCCReference Include="TestCalendarEvents.pas"/>
-        <DCCReference Include="TestTeams.pas"/>
-        <DCCReference Include="TestProperties.pas"/>
-        <DCCReference Include="TestMyVisaTemplates.pas"/>
-        <DCCReference Include="TestSocialMedia.pas"/>
-        <DCCReference Include="TestStates.pas"/>
-        <DCCReference Include="TestMyVisaExamples.pas"/>
-        <DCCReference Include="TestAppIssues.pas"/>
-        <DCCReference Include="TestMyVisaOverview.pas"/>
-        <DCCReference Include="TestMailTemplates.pas"/>
+        <DCCReference Include="TestCallUps.pas"/>
+        <DCCReference Include="..\EtureFrontend\framework\senCille.TypeConverter.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

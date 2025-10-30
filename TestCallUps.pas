@@ -19,18 +19,16 @@ type
    [TestFixture]
    TTestCallUps = class(TObject)
    private
-      const LOCAL_PATH            = '/callups';
-      const TEST_TEAM_CODE        = 'UT_TEAM_0001';
-      const TEST_CALL_UP_DATE_ISO = '2025-03-15T10:30:00';
-      const TEST_MATCH            = 'Unit Test Friendly Match';
-      const UPDATED_MATCH         = 'Unit Test Friendly Match - Updated';
+      const LOCAL_PATH     = '/callups';
+      const TEST_TEAM_CODE = 'b'; //'UT_TEAM_0001';
+      const TEST_MATCH     = 'Unit Test Friendly Match';
+      const UPDATED_MATCH  = 'Unit Test Friendly Match - Updated';
    private
       function CreateDataSet:TWebClientDataSet;
       procedure FillCallUpData(ADataSet :TWebClientDataSet; const AMatch :string);
       [async] function HasTestCallUp:Boolean;
       [async] procedure EnsureTestCallUpExists;
       [async] procedure DeleteTestCallUpIfExists;
-      function CallUpDate: TDateTime;
    published
       [Test] [async] procedure TestInsert;
       [Test] [async] procedure TestLoad;
@@ -45,15 +43,14 @@ type
 
 implementation
 
-uses
-   SysUtils,
-   senCille.DataManagement;
+uses SysUtils,
+     senCille.DataManagement, senCille.TypeConverter;
 
 { TTestCallUps }
 
-function TTestCallUps.CallUpDate:TDateTime;
+function TEST_CALLUP_DATE: TDateTime; inline;
 begin
-   Result := ISO8601ToDate(TEST_CALL_UP_DATE_ISO);
+  Result := EncodeDateTime(2025, 1, 1, 8, 30, 0, 0);
 end;
 
 function TTestCallUps.CreateDataSet:TWebClientDataSet;
@@ -86,6 +83,12 @@ begin
    Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
 
    NewField := TStringField.Create(Result);
+   NewField.FieldName   := 'PLACE';
+   NewField.Size        := 50;
+   NewField.DataSet     := Result;
+   Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
+
+   NewField := TStringField.Create(Result);
    NewField.FieldName   := 'MEETING_POINT';
    NewField.Size        := 50;
    NewField.DataSet     := Result;
@@ -105,7 +108,7 @@ begin
 
    NewField := TStringField.Create(Result);
    NewField.FieldName   := 'TRAVEL_BY';
-   NewField.Size        := 50;
+   NewField.Size        := 1;
    NewField.DataSet     := Result;
    Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
 
@@ -127,13 +130,14 @@ procedure TTestCallUps.FillCallUpData(ADataSet :TWebClientDataSet; const AMatch 
 begin
    ADataSet.Append;
    ADataSet.FieldByName('CD_TEAM').AsString          := TEST_TEAM_CODE;
-   ADataSet.FieldByName('DT_CALL_UP').AsDateTime     := CallUpDate;
+   ADataSet.FieldByName('DT_CALL_UP').AsDateTime     := TEST_CALLUP_DATE;
    ADataSet.FieldByName('DS_TEAM').AsString          := 'Unit Test Team';
    ADataSet.FieldByName('MATCH').AsString            := AMatch;
+   ADataSet.FieldByName('PLACE').AsString            := 'Counterpart Stadium';
    ADataSet.FieldByName('MEETING_POINT').AsString    := 'Training Center';
    ADataSet.FieldByName('LOCATION').AsString         := 'Unit Test City';
-   ADataSet.FieldByName('TRANSPORTATION').AsString   := 'Bus';
-   ADataSet.FieldByName('TRAVEL_BY').AsString        := 'Coach';
+   ADataSet.FieldByName('TRANSPORTATION').AsString   := 'O'; //Por cuenta Propia {O}  Por el club {C}
+   ADataSet.FieldByName('TRAVEL_BY').AsString        := 'M';  //MATVB  autoMóvil, Autobus, Tren, aVion, Barco
    ADataSet.FieldByName('UNIFORM').AsString          := 'Home Kit';
    ADataSet.FieldByName('NOTES').AsString            := 'Generated from automated unit testing.';
    ADataSet.Post;
@@ -146,8 +150,8 @@ begin
    try
       try
          await(TDB.GetRow(LOCAL_PATH,
-                          [['CD_TEAM', TEST_TEAM_CODE],
-                           ['DT_CALL_UP', TEST_CALL_UP_DATE_ISO]],
+                          [['CD_TEAM'   , TEST_TEAM_CODE],
+                           ['DT_CALL_UP', TTypeConv.DateTimeToJSON(TEST_CALLUP_DATE)]],
                           DataSet));
       except
          on E:Exception do if DataSet.Active then DataSet.EmptyDataSet;
@@ -183,8 +187,8 @@ end;
 begin
    try
       await(TDB.Delete(LOCAL_PATH,
-                       [['CD_TEAM', TEST_TEAM_CODE],
-                        ['DT_CALL_UP', TEST_CALL_UP_DATE_ISO]]));
+                       [['CD_TEAM'   , TEST_TEAM_CODE                          ],
+                        ['DT_CALL_UP', TTypeConv.DateTimeToJSON(TEST_CALLUP_DATE)]]));
    except
       on E:Exception do ;
    end;
@@ -233,8 +237,8 @@ begin
       Assert.IsTrue(ExceptMsg = 'ok', 'Exception in Load -> '+ExceptMsg);
       Assert.IsTrue(Count > 0, 'Count greater than 0');
       Assert.IsTrue(DataSet.Locate('CD_TEAM', TEST_TEAM_CODE, []) and
-                    (FormatDateTime('yyyymmddhhnnss', DataSet.FieldByName('DT_CALL_UP').AsDateTime) =
-                     FormatDateTime('yyyymmddhhnnss', CallUpDate)),
+                    (FormatDateTime('yyyymmddhhnnsszzz', DataSet.FieldByName('DT_CALL_UP').AsDateTime) =
+                     FormatDateTime('yyyymmddhhnnsszzz', TEST_CALLUP_DATE)),
                     'Test call-up located in dataset');
    finally
       DataSet.Free;
@@ -251,8 +255,8 @@ begin
    try
       try
          await(TDB.GetRow(LOCAL_PATH,
-                          [['CD_TEAM', TEST_TEAM_CODE],
-                           ['DT_CALL_UP', TEST_CALL_UP_DATE_ISO]],
+                          [['CD_TEAM'   , TEST_TEAM_CODE],
+                           ['DT_CALL_UP', TTypeConv.DateTimeToJSON(TEST_CALLUP_DATE)]],
                           DataSet));
          ExceptMsg := 'ok';
       except
@@ -298,8 +302,8 @@ begin
    DataSet := CreateDataSet;
    try
       await(TDB.GetRow(LOCAL_PATH,
-                       [['CD_TEAM', TEST_TEAM_CODE],
-                        ['DT_CALL_UP', TEST_CALL_UP_DATE_ISO]],
+                       [['CD_TEAM'   , TEST_TEAM_CODE],
+                        ['DT_CALL_UP', TTypeConv.DateTimeToJSON(TEST_CALLUP_DATE)]],
                        DataSet));
 
       DataSet.Edit;
@@ -308,10 +312,8 @@ begin
 
       try
          await(TDB.Update(LOCAL_PATH,
-                          [['CD_TEAM', TEST_TEAM_CODE],
-                           ['OLD_CD_TEAM', TEST_TEAM_CODE],
-                           ['DT_CALL_UP', TEST_CALL_UP_DATE_ISO],
-                           ['OLD_DT_CALL_UP', TEST_CALL_UP_DATE_ISO]],
+                          [['OLD_CD_TEAM'   , TEST_TEAM_CODE],
+                           ['OLD_DT_CALL_UP', TTypeConv.DateTimeToJSON(TEST_CALLUP_DATE)]],
                           DataSet));
          ExceptMsg := 'ok';
       except
@@ -321,8 +323,8 @@ begin
       Assert.IsTrue(ExceptMsg = 'ok', 'Exception in Update -> '+ExceptMsg);
 
       await(TDB.GetRow(LOCAL_PATH,
-                       [['CD_TEAM', TEST_TEAM_CODE],
-                        ['DT_CALL_UP', TEST_CALL_UP_DATE_ISO]],
+                       [['CD_TEAM'   , TEST_TEAM_CODE],
+                        ['DT_CALL_UP', TTypeConv.DateTimeToJSON(TEST_CALLUP_DATE)]],
                        DataSet));
 
       Assert.IsTrue(DataSet.FieldByName('MATCH').AsString = UPDATED_MATCH, 'Updated match stored in database');
@@ -331,10 +333,8 @@ begin
       DataSet.FieldByName('MATCH').AsString := TEST_MATCH;
       DataSet.Post;
       await(TDB.Update(LOCAL_PATH,
-                       [['CD_TEAM', TEST_TEAM_CODE],
-                        ['OLD_CD_TEAM', TEST_TEAM_CODE],
-                        ['DT_CALL_UP', TEST_CALL_UP_DATE_ISO],
-                        ['OLD_DT_CALL_UP', TEST_CALL_UP_DATE_ISO]],
+                       [['OLD_CD_TEAM'   , TEST_TEAM_CODE],
+                        ['OLD_DT_CALL_UP', TTypeConv.DateTimeToJSON(TEST_CALLUP_DATE)]],
                        DataSet));
    finally
       DataSet.Free;
@@ -352,8 +352,8 @@ begin
    DataSet := CreateDataSet;
    try
       await(TDB.GetRow(LOCAL_PATH,
-                       [['CD_TEAM', TEST_TEAM_CODE],
-                        ['DT_CALL_UP', TEST_CALL_UP_DATE_ISO]],
+                       [['CD_TEAM'   , TEST_TEAM_CODE],
+                        ['DT_CALL_UP', TTypeConv.DateTimeToJSON(TEST_CALLUP_DATE)]],
                        DataSet));
       try
          IsReferenced := await(Boolean, TDB.IsReferenced(LOCAL_PATH, DataSet, TextMessage));
@@ -377,8 +377,8 @@ begin
 
    try
       await(TDB.Delete(LOCAL_PATH,
-                       [['CD_TEAM', TEST_TEAM_CODE],
-                        ['DT_CALL_UP', TEST_CALL_UP_DATE_ISO]]));
+                       [['CD_TEAM'   , TEST_TEAM_CODE                          ],
+                        ['DT_CALL_UP', TTypeConv.DateTimeToJSON(TEST_CALLUP_DATE)]]));
       ExceptMsg := 'ok';
    except
       on E:Exception do ExceptMsg := E.Message;
@@ -389,8 +389,8 @@ begin
    DataSet := CreateDataSet;
    try
       await(TDB.GetRow(LOCAL_PATH,
-                       [['CD_TEAM', TEST_TEAM_CODE],
-                        ['DT_CALL_UP', TEST_CALL_UP_DATE_ISO]],
+                       [['CD_TEAM'   , TEST_TEAM_CODE],
+                        ['DT_CALL_UP', TTypeConv.DateTimeToJSON(TEST_CALLUP_DATE)]],
                        DataSet));
       Assert.IsTrue(DataSet.IsEmpty, 'Call-up successfully removed');
    finally
