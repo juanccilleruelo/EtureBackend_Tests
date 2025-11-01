@@ -271,9 +271,9 @@ begin
    try
       try
          Count := await(TDB.Select(LOCAL_PATH,
-                        [['PageNumber', '1'           ],
-                         ['SearchText', 'Unit Test'    ],
-                         ['OrderField', ''             ]],
+                        [['PageNumber', '1'        ],
+                         ['SearchText', 'Unit Test'],
+                         ['OrderField', ''         ]],
                         DataSet));
          ExceptMsg := 'ok';
       except

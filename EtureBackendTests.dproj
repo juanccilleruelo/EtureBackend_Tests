@@ -122,9 +122,7 @@
             <Form>DummyForm</Form>
             <DesignClass>TWebForm</DesignClass>
         </DCCReference>
-        <DCCReference Include="TestAppIssues.pas"/>
-        <DCCReference Include="TestCallUps.pas"/>
-        <DCCReference Include="TestProperties.pas"/>
+        <DCCReference Include="TestSocialMedia.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -22,13 +22,13 @@ type
       const LOCAL_PATH                 = '/universities';
       const TEST_UNIVERSITY_CODE       = 'UT_UNI_0001';
       const TEST_UNIVERSITY_NAME       = 'Unit Test University';
-      const TEST_CONFERENCE_CODE       = 'UTC01';
+      const TEST_CONFERENCE_CODE       = 'BEC'; {From the table CONFERENCES}
       const TEST_DIVISION_CODE         = 'DIVISION';
       const TEST_RANKING               = 42;
       const TEST_COUNTRY_CODE          = 'UTC';
       const TEST_STATE_CODE            = 'UTS';
-      const UPDATED_UNIVERSITY_NAME    = 'Unit Test University - Updated';
-      const UPDATED_DIVISION_CODE      = 'DIVISION2';
+      const UPDATED_UNIVERSITY_NAME    = 'Test University - Updated';
+      const UPDATED_DIVISION_CODE      = 'DIV_2';
       const UPDATED_RANKING            = 24;
    private
       function CreateDataSet:TWebClientDataSet;
@@ -108,13 +108,13 @@ end;
 procedure TTestUniversities.FillUniversityData(ADataSet :TWebClientDataSet; const AName, ADivision :string; const ARanking :Integer);
 begin
    ADataSet.Append;
-   ADataSet.FieldByName('CD_UNIVERSITY').AsString := TEST_UNIVERSITY_CODE;
-   ADataSet.FieldByName('DS_UNIVERSITY').AsString := AName;
-   ADataSet.FieldByName('CD_CONFERENCE').AsString := TEST_CONFERENCE_CODE;
-   ADataSet.FieldByName('CD_DIVISION').AsString := ADivision;
-   ADataSet.FieldByName('RANKING').AsInteger := ARanking;
-   ADataSet.FieldByName('CD_COUNTRY').AsString := TEST_COUNTRY_CODE;
-   ADataSet.FieldByName('CD_STATE').AsString := TEST_STATE_CODE;
+   ADataSet.FieldByName('CD_UNIVERSITY').AsString  := TEST_UNIVERSITY_CODE;
+   ADataSet.FieldByName('DS_UNIVERSITY').AsString  := AName;
+   ADataSet.FieldByName('CD_CONFERENCE').AsString  := TEST_CONFERENCE_CODE;
+   ADataSet.FieldByName('CD_DIVISION'  ).AsString  := ADivision;
+   ADataSet.FieldByName('RANKING'      ).AsInteger := ARanking;
+   ADataSet.FieldByName('CD_COUNTRY'   ).AsString  := TEST_COUNTRY_CODE;
+   ADataSet.FieldByName('CD_STATE'     ).AsString  := TEST_STATE_CODE;
    ADataSet.Post;
 end;
 
@@ -260,7 +260,7 @@ begin
          on E:Exception do ExceptMsg := E.Message;
       end;
       Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetAll -> '+ExceptMsg);
-      Assert.IsTrue(Items.IndexOfName(TEST_UNIVERSITY_CODE) >= 0, 'Test university present in GetAll list');
+      Assert.IsTrue(TMisc.ListContains(Items, TEST_UNIVERSITY_CODE), 'Test university present in GetAll list');
    finally
       Items.Free;
    end;
@@ -279,14 +279,14 @@ begin
                        DataSet));
 
       DataSet.Edit;
-      DataSet.FieldByName('DS_UNIVERSITY').AsString := UPDATED_UNIVERSITY_NAME;
-      DataSet.FieldByName('CD_DIVISION').AsString := UPDATED_DIVISION_CODE;
-      DataSet.FieldByName('RANKING').AsInteger := UPDATED_RANKING;
+      DataSet.FieldByName('DS_UNIVERSITY').AsString  := UPDATED_UNIVERSITY_NAME;
+      DataSet.FieldByName('CD_DIVISION'  ).AsString  := UPDATED_DIVISION_CODE;
+      DataSet.FieldByName('RANKING'      ).AsInteger := UPDATED_RANKING;
       DataSet.Post;
 
       try
          await(TDB.Update(LOCAL_PATH,
-                          [['CD_UNIVERSITY', TEST_UNIVERSITY_CODE],
+                          [['CD_UNIVERSITY'    , TEST_UNIVERSITY_CODE],
                            ['OLD_CD_UNIVERSITY', TEST_UNIVERSITY_CODE]],
                           DataSet));
          ExceptMsg := 'ok';
@@ -298,17 +298,17 @@ begin
       await(TDB.GetRow(LOCAL_PATH,
                        [['CD_UNIVERSITY', TEST_UNIVERSITY_CODE]],
                        DataSet));
-      Assert.IsTrue(DataSet.FieldByName('DS_UNIVERSITY').AsString = UPDATED_UNIVERSITY_NAME, 'Updated university name stored');
-      Assert.IsTrue(DataSet.FieldByName('CD_DIVISION').AsString = UPDATED_DIVISION_CODE, 'Updated division stored');
-      Assert.IsTrue(DataSet.FieldByName('RANKING').AsInteger = UPDATED_RANKING, 'Updated ranking stored');
+      Assert.IsTrue(DataSet.FieldByName('DS_UNIVERSITY').AsString  = UPDATED_UNIVERSITY_NAME, 'Updated university name stored');
+      Assert.IsTrue(DataSet.FieldByName('CD_DIVISION'  ).AsString  = UPDATED_DIVISION_CODE  , 'Updated division stored'       );
+      Assert.IsTrue(DataSet.FieldByName('RANKING'      ).AsInteger = UPDATED_RANKING        , 'Updated ranking stored'        );
 
       DataSet.Edit;
-      DataSet.FieldByName('DS_UNIVERSITY').AsString := TEST_UNIVERSITY_NAME;
-      DataSet.FieldByName('CD_DIVISION').AsString := TEST_DIVISION_CODE;
-      DataSet.FieldByName('RANKING').AsInteger := TEST_RANKING;
+      DataSet.FieldByName('DS_UNIVERSITY').AsString  := TEST_UNIVERSITY_NAME;
+      DataSet.FieldByName('CD_DIVISION'  ).AsString  := TEST_DIVISION_CODE;
+      DataSet.FieldByName('RANKING'      ).AsInteger := TEST_RANKING;
       DataSet.Post;
       await(TDB.Update(LOCAL_PATH,
-                       [['CD_UNIVERSITY', TEST_UNIVERSITY_CODE],
+                       [['CD_UNIVERSITY'    , TEST_UNIVERSITY_CODE],
                         ['OLD_CD_UNIVERSITY', TEST_UNIVERSITY_CODE]],
                        DataSet));
    finally

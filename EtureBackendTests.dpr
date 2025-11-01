@@ -13,17 +13,21 @@ uses
   senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
   Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
   {... ...}
+  (*
   TestAppIssues in 'TestAppIssues.pas',
   TestCallUps in 'TestCallUps.pas',
-  TestProperties in 'TestProperties.pas';
+  TestProperties in 'TestProperties.pas',
+  TestUniversities in 'TestUniversities.pas',
+  TestTeams in 'TestTeams.pas',
+  *)
 
+  TestSocialMedia in 'TestSocialMedia.pas';
 (*
+   TestCalendarEvents in 'TestCalendarEvents.pas';
 
-   TestCalendarEvents in 'TestCalendarEvents.pas',
-   TestUniversities in 'TestUniversities.pas',
-   TestTeams in 'TestTeams.pas',
+
    //TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
-   TestSocialMedia in 'TestSocialMedia.pas',
+
    TestStates in 'TestStates.pas',
    //TestMyVisaExamples in 'TestMyVisaExamples.pas',
    TestMyVisaOverview in 'TestMyVisaOverview.pas',

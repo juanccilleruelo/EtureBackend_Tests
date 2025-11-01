@@ -20,10 +20,10 @@ type
    TTestTeams = class(TObject)
    private
       const LOCAL_PATH            = '/teams';
-      const TEST_TEAM_CODE        = 'UT_TEAM_UNIT_0001';
+      const TEST_TEAM_CODE        = 'UT_TEAM_0001';
       const TEST_TEAM_NAME        = 'Unit Test Team';
       const UPDATED_TEAM_NAME     = 'Unit Test Team - Updated';
-      const TEST_PLAYER_CODE      = 'UT_TEAM_PLAYER_0001';
+      const TEST_PLAYER_CODE      = 'PLAYERUS'; //From PLAYERS
       const TEST_PLAYER_ROLE      = 'Unit Test Midfielder';
       const TEST_JERSEY_NUMBER    = '99';
    private
@@ -132,9 +132,9 @@ end;
 procedure TTestTeams.FillTeamData(ADataSet :TWebClientDataSet; const ATeamName :string);
 begin
    ADataSet.Append;
-   ADataSet.FieldByName('CD_TEAM').AsString := TEST_TEAM_CODE;
-   ADataSet.FieldByName('DS_TEAM').AsString := ATeamName;
-   ADataSet.FieldByName('NOTES').AsString := 'Generated from automated unit testing.';
+   ADataSet.FieldByName('CD_TEAM' ).AsString := TEST_TEAM_CODE;
+   ADataSet.FieldByName('DS_TEAM' ).AsString := ATeamName;
+   ADataSet.FieldByName('NOTES'   ).AsString := 'Generated from automated unit testing.';
    ADataSet.FieldByName('IMG_LOGO').AsString := 'UnitTestLogo';
    ADataSet.Post;
 end;
@@ -142,11 +142,11 @@ end;
 procedure TTestTeams.FillTeamPlayerData(ADataSet :TWebClientDataSet);
 begin
    ADataSet.Append;
-   ADataSet.FieldByName('CD_TEAM').AsString := TEST_TEAM_CODE;
-   ADataSet.FieldByName('CD_USER').AsString := TEST_PLAYER_CODE;
-   ADataSet.FieldByName('PLAYER_ROLE').AsString := TEST_PLAYER_ROLE;
+   ADataSet.FieldByName('CD_TEAM'      ).AsString := TEST_TEAM_CODE;
+   ADataSet.FieldByName('CD_USER'      ).AsString := TEST_PLAYER_CODE;
+   ADataSet.FieldByName('PLAYER_ROLE'  ).AsString := TEST_PLAYER_ROLE;
    ADataSet.FieldByName('JERSEY_NUMBER').AsString := TEST_JERSEY_NUMBER;
-   ADataSet.FieldByName('NOTES').AsString := 'Generated from automated unit testing.';
+   ADataSet.FieldByName('NOTES'        ).AsString := 'Generated from automated unit testing.';
    ADataSet.Post;
 end;
 
@@ -204,10 +204,10 @@ begin
    DataSet := CreateTeamPlayerDataSet;
    try
       try
-         await(TDB.GetRow(LOCAL_PATH+'/getoneteamplayer',
+         await(TDB.GetRow(LOCAL_PATH,
                           [['CD_TEAM', TEST_TEAM_CODE],
                            ['CD_USER', TEST_PLAYER_CODE]],
-                          DataSet));
+                          DataSet, '/getoneteamplayer'));
       except
          on E:Exception do if DataSet.Active then DataSet.EmptyDataSet;
       end;
@@ -228,7 +228,7 @@ begin
    try
       FillTeamPlayerData(DataSet);
       try
-         await(TDB.Insert(LOCAL_PATH+'/insertteamplayer', DataSet));
+         await(TDB.Insert(LOCAL_PATH, DataSet, '/insertteamplayer'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
@@ -242,9 +242,10 @@ end;
 [async] procedure TTestTeams.DeleteTestTeamPlayerIfExists;
 begin
    try
-      await(TDB.Delete(LOCAL_PATH+'/deleteteamplayer',
+      await(TDB.Delete(LOCAL_PATH,
                        [['CD_TEAM', TEST_TEAM_CODE],
-                        ['CD_USER', TEST_PLAYER_CODE]]));
+                        ['CD_USER', TEST_PLAYER_CODE]],
+                        '/deleteteamplayer'));
    except
       on E:Exception do ;
    end;
@@ -475,7 +476,7 @@ begin
    try
       FillTeamPlayerData(DataSet);
       try
-         await(TDB.Insert(LOCAL_PATH+'/insertteamplayer', DataSet));
+         await(TDB.Insert(LOCAL_PATH, DataSet, '/insertteamplayer'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
@@ -495,10 +496,10 @@ begin
    DataSet := CreateTeamPlayerDataSet;
    try
       try
-         await(TDB.GetRow(LOCAL_PATH+'/getoneteamplayer',
-                          [['CD_TEAM', TEST_TEAM_CODE],
+         await(TDB.GetRow(LOCAL_PATH,
+                          [['CD_TEAM', TEST_TEAM_CODE  ],
                            ['CD_USER', TEST_PLAYER_CODE]],
-                          DataSet));
+                          DataSet, '/getoneteamplayer'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
@@ -522,9 +523,9 @@ begin
    DataSet := CreateTeamPlayerDataSet;
    try
       try
-         Count := await(TDB.Select(LOCAL_PATH+'/getallteamplayers',
-                        [['CD_TEAM', TEST_TEAM_CODE]],
-                        DataSet));
+         Count := await(TDB.Select(LOCAL_PATH,
+                                   [['CD_TEAM', TEST_TEAM_CODE]],
+                                   DataSet, '/getallteamplayers'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
@@ -545,9 +546,10 @@ begin
    await(EnsureTestTeamPlayerExists());
 
    try
-      await(TDB.Delete(LOCAL_PATH+'/deleteteamplayer',
-                       [['CD_TEAM', TEST_TEAM_CODE],
-                        ['CD_USER', TEST_PLAYER_CODE]]));
+      await(TDB.Delete(LOCAL_PATH,
+                       [['CD_TEAM', TEST_TEAM_CODE  ],
+                        ['CD_USER', TEST_PLAYER_CODE]],
+                        '/deleteteamplayer'));
       ExceptMsg := 'ok';
    except
       on E:Exception do ExceptMsg := E.Message;
@@ -557,10 +559,10 @@ begin
 
    DataSet := CreateTeamPlayerDataSet;
    try
-      await(TDB.GetRow(LOCAL_PATH+'/getoneteamplayer',
-                       [['CD_TEAM', TEST_TEAM_CODE],
+      await(TDB.GetRow(LOCAL_PATH,
+                       [['CD_TEAM', TEST_TEAM_CODE  ],
                         ['CD_USER', TEST_PLAYER_CODE]],
-                       DataSet));
+                       DataSet, '/getoneteamplayer'));
       Assert.IsTrue(DataSet.IsEmpty, 'Team player successfully removed');
    finally
       DataSet.Free;
