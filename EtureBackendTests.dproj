@@ -123,6 +123,32 @@
             <DesignClass>TWebForm</DesignClass>
         </DCCReference>
         <DCCReference Include="TestSocialMedia.pas"/>
+        <DCCReference Include="TestStates.pas">
+            <Form>*
+   TestCalendarEvents in &apos;TestCalendarEvents.pas&apos;;
+   //TestMyVisaTemplates in &apos;TestMyVisaTemplates.pas&apos;,
+
+   //TestMyVisaExamples in &apos;TestMyVisaExamples.pas&apos;,
+   TestMyVisaOverview in &apos;TestMyVisaOverview.pas&apos;,
+   TestMailTemplates in &apos;TestMailTemplates.pas&apos;,
+   TestBackendConnection in &apos;TestBackendConnection.pas&apos;,
+   TestCategories in &apos;TestCategories.pas&apos;,
+   TestClubs in &apos;TestClubs.pas&apos;,
+   TestAssays in &apos;TestAssays.pas&apos;,
+   TestPublicResources in &apos;TestPublicResources.pas&apos;,
+   TestCountries in &apos;TestCountries.pas&apos;,
+   TestCampaigns in &apos;TestCampaigns.pas&apos;,
+
+   TestPositions in &apos;TestPositions.pas&apos;,
+   TestParents in &apos;TestParents.pas&apos;,
+   TestAuxData in &apos;TestAuxData.pas&apos;,
+   TestConferences in &apos;TestConferences.pas&apos;;
+   TestCareerHistory in &apos;TestCareerHistory.pas&apos;,
+   TestInjuryAuxModels in &apos;TestInjuryAuxModels.pas&apos;,
+   TestAcademicRecords in &apos;TestAcademicRecords.pas&apos;,
+   TestClinicalRecords in &apos;TestClinicalRecords.pas&apos;;
+   *</Form>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

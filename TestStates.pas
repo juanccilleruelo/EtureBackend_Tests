@@ -1,4 +1,4 @@
-unit TestStates;
+﻿unit TestStates;
 
 interface
 
@@ -20,15 +20,16 @@ type
    TTestStates = class(TObject)
    private
       const LOCAL_PATH             = '/states';
-      const COUNTRIES_PATH         = '/countries';
-      const TEST_COUNTRY_CODE      = 'UTC';
-      const TEST_COUNTRY_NAME_EN   = 'Unit Test Country';
-      const TEST_COUNTRY_NAME_ES   = 'País de Prueba';
       const TEST_STATE_CODE        = 'UTS';
       const TEST_STATE_NAME_EN     = 'Unit Test State';
       const TEST_STATE_NAME_ES     = 'Estado de Prueba';
       const UPDATED_STATE_NAME_EN  = 'Updated Unit Test State';
       const UPDATED_STATE_NAME_ES  = 'Estado de Prueba Actualizado';
+
+      const COUNTRIES_PATH         = '/countries';
+      const TEST_COUNTRY_CODE      = 'UTC';
+      const TEST_COUNTRY_NAME_EN   = 'Unit Test Country';
+      const TEST_COUNTRY_NAME_ES   = 'País de Prueba';
    private
       function CreateDataSet:TWebClientDataSet;
       procedure FillStateData(ADataSet :TWebClientDataSet; const ACountryCode, AStateCode, ANameEn, ANameEs :string);
@@ -92,8 +93,8 @@ end;
 procedure TTestStates.FillStateData(ADataSet :TWebClientDataSet; const ACountryCode, AStateCode, ANameEn, ANameEs :string);
 begin
    ADataSet.Append;
-   ADataSet.FieldByName('CD_COUNTRY').AsString := ACountryCode;
-   ADataSet.FieldByName('CD_STATE').AsString   := AStateCode;
+   ADataSet.FieldByName('CD_COUNTRY' ).AsString := ACountryCode;
+   ADataSet.FieldByName('CD_STATE'   ).AsString := AStateCode;
    ADataSet.FieldByName('DS_STATE_EN').AsString := ANameEn;
    ADataSet.FieldByName('DS_STATE_ES').AsString := ANameEs;
    ADataSet.Post;
@@ -118,13 +119,14 @@ begin
       DataSet.Close;
       DataSet.FieldDefs.Clear;
 
-      DataSet.FieldDefs.Add('CD_COUNTRY', ftString, 3);
+      DataSet.FieldDefs.Add('CD_COUNTRY'   , ftString,  3);
       DataSet.FieldDefs.Add('DS_COUNTRY_EN', ftString, 50);
       DataSet.FieldDefs.Add('DS_COUNTRY_ES', ftString, 50);
       DataSet.CreateDataSet;
+      DataSet.Active := True;
 
       DataSet.Append;
-      DataSet.FieldByName('CD_COUNTRY').AsString    := TEST_COUNTRY_CODE;
+      DataSet.FieldByName('CD_COUNTRY'   ).AsString := TEST_COUNTRY_CODE;
       DataSet.FieldByName('DS_COUNTRY_EN').AsString := TEST_COUNTRY_NAME_EN;
       DataSet.FieldByName('DS_COUNTRY_ES').AsString := TEST_COUNTRY_NAME_ES;
       DataSet.Post;
@@ -149,7 +151,7 @@ begin
       try
          await(TDB.GetRow(LOCAL_PATH,
                           [['CD_COUNTRY', TEST_COUNTRY_CODE],
-                           ['CD_STATE', TEST_STATE_CODE]],
+                           ['CD_STATE'  , TEST_STATE_CODE  ]],
                           DataSet));
       except
          on E:Exception do if DataSet.Active then DataSet.EmptyDataSet;
@@ -190,9 +192,16 @@ end;
 [async] procedure TTestStates.DeleteTestStateIfExists;
 begin
    try
+      await(TDB.Delete(COUNTRIES_PATH,
+                       [['CD_COUNTRY', TEST_COUNTRY_CODE]]));
+   except
+      on E:Exception do ;
+   end;
+
+   try
       await(TDB.Delete(LOCAL_PATH,
                        [['CD_COUNTRY', TEST_COUNTRY_CODE],
-                        ['CD_STATE', TEST_STATE_CODE]]));
+                        ['CD_STATE'  , TEST_STATE_CODE  ]]));
    except
       on E:Exception do ;
    end;
