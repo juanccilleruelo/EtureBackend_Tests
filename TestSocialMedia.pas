@@ -19,10 +19,10 @@ type
    [TestFixture]
    TTestSocialMedia = class(TObject)
    private
-      const LOCAL_PATH               = '/socialmedia';
-      const TEST_SOCIAL_MEDIA_CODE   = 'UTSM';
-      const TEST_SOCIAL_MEDIA_NAME   = 'Unit Test Social Medium';
-      const UPDATED_SOCIAL_MEDIA_NAME = 'Unit Test Social Medium - Updated';
+      const LOCAL_PATH                = '/socialmedia';
+      const TEST_SOCIAL_MEDIA_CODE    = 'UTSM';
+      const TEST_SOCIAL_MEDIA_NAME    = 'Unit Test Social Medium';
+      const UPDATED_SOCIAL_MEDIA_NAME = 'Test - Updated';
    private
       function CreateDataSet:TWebClientDataSet;
       procedure FillSocialMediaData(ADataSet :TWebClientDataSet; const ADescription :string);
@@ -166,10 +166,10 @@ begin
    try
       try
          Count := await(TDB.Select(LOCAL_PATH,
-                        [['PageNumber', '1'        ],
-                         ['SearchText', 'Unit Test'],
-                         ['OrderField', ''         ]],
-                        DataSet));
+                                   [['PageNumber', '1'        ],
+                                    ['SearchText', 'Unit Test'],
+                                    ['OrderField', ''         ]],
+                                   DataSet));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
