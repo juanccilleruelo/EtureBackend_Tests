@@ -135,7 +135,11 @@ begin
          await(TDB.Insert(COUNTRIES_PATH, DataSet));
          ExceptMsg := 'ok';
       except
-         on E:Exception do ExceptMsg := E.Message;
+         on E:Exception do
+            if Pos('"PK_COUNTRIES"', UpperCase(E.Message)) > 0 then
+               ExceptMsg := 'ok'
+            else
+               ExceptMsg := E.Message;
       end;
       Assert.IsTrue(ExceptMsg = 'ok', 'EnsureTestCountryExists -> '+ExceptMsg);
    finally
