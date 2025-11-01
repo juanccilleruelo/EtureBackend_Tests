@@ -192,16 +192,16 @@ end;
 [async] procedure TTestStates.DeleteTestStateIfExists;
 begin
    try
-      await(TDB.Delete(COUNTRIES_PATH,
-                       [['CD_COUNTRY', TEST_COUNTRY_CODE]]));
+      await(TDB.Delete(LOCAL_PATH,
+                       [['CD_COUNTRY', TEST_COUNTRY_CODE],
+                        ['CD_STATE'  , TEST_STATE_CODE  ]]));
    except
       on E:Exception do ;
    end;
 
    try
-      await(TDB.Delete(LOCAL_PATH,
-                       [['CD_COUNTRY', TEST_COUNTRY_CODE],
-                        ['CD_STATE'  , TEST_STATE_CODE  ]]));
+      await(TDB.Delete(COUNTRIES_PATH,
+                       [['CD_COUNTRY', TEST_COUNTRY_CODE]]));
    except
       on E:Exception do ;
    end;
