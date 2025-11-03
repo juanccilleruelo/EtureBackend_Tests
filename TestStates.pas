@@ -23,8 +23,8 @@ type
       const TEST_STATE_CODE        = 'UTS';
       const TEST_STATE_NAME_EN     = 'Unit Test State';
       const TEST_STATE_NAME_ES     = 'Estado de Prueba';
-      const UPDATED_STATE_NAME_EN  = 'Updated Unit Test State';
-      const UPDATED_STATE_NAME_ES  = 'Estado de Prueba Actualizado';
+      const UPDATED_STATE_NAME_EN  = 'Updated State';
+      const UPDATED_STATE_NAME_ES  = 'Estado Actualizado';
 
       const COUNTRIES_PATH         = '/countries';
       const TEST_COUNTRY_CODE      = 'UTC';
@@ -249,9 +249,9 @@ begin
    try
       try
          Count := await(TDB.Select(LOCAL_PATH,
-                        [['PageNumber', IntToStr(1)],
+                        [['PageNumber', IntToStr(1)    ],
                          ['SearchText', TEST_STATE_CODE],
-                         ['OrderField', '']],
+                         ['OrderField', ''             ]],
                         DataSet));
          ExceptMsg := 'ok';
       except
@@ -347,7 +347,7 @@ begin
    try
       await(TDB.GetRow(LOCAL_PATH,
                        [['CD_COUNTRY', TEST_COUNTRY_CODE],
-                        ['CD_STATE', TEST_STATE_CODE]],
+                        ['CD_STATE'  , TEST_STATE_CODE  ]],
                        DataSet));
 
       DataSet.Edit;
@@ -357,10 +357,10 @@ begin
 
       try
          await(TDB.Update(LOCAL_PATH,
-                          [['CD_COUNTRY', TEST_COUNTRY_CODE],
-                           ['CD_STATE', TEST_STATE_CODE],
+                          [['CD_COUNTRY'    , TEST_COUNTRY_CODE],
+                           ['CD_STATE'      , TEST_STATE_CODE  ],
                            ['OLD_CD_COUNTRY', TEST_COUNTRY_CODE],
-                           ['OLD_CD_STATE', TEST_STATE_CODE]],
+                           ['OLD_CD_STATE'  , TEST_STATE_CODE  ]],
                           DataSet));
          ExceptMsg := 'ok';
       except
@@ -370,23 +370,22 @@ begin
 
       await(TDB.GetRow(LOCAL_PATH,
                        [['CD_COUNTRY', TEST_COUNTRY_CODE],
-                        ['CD_STATE', TEST_STATE_CODE]],
+                        ['CD_STATE'  , TEST_STATE_CODE]],
                        DataSet));
 
-      Assert.IsTrue(DataSet.FieldByName('DS_STATE_EN').AsString = UPDATED_STATE_NAME_EN,
-                    'Updated English name stored in database');
-      Assert.IsTrue(DataSet.FieldByName('DS_STATE_ES').AsString = UPDATED_STATE_NAME_ES,
-                    'Updated Spanish name stored in database');
+      Assert.IsTrue(DataSet.FieldByName('DS_STATE_EN').AsString = UPDATED_STATE_NAME_EN, 'Updated English name stored in database');
+      Assert.IsTrue(DataSet.FieldByName('DS_STATE_ES').AsString = UPDATED_STATE_NAME_ES, 'Updated Spanish name stored in database');
 
       DataSet.Edit;
       DataSet.FieldByName('DS_STATE_EN').AsString := TEST_STATE_NAME_EN;
       DataSet.FieldByName('DS_STATE_ES').AsString := TEST_STATE_NAME_ES;
       DataSet.Post;
+
       await(TDB.Update(LOCAL_PATH,
-                       [['CD_COUNTRY', TEST_COUNTRY_CODE],
-                        ['CD_STATE', TEST_STATE_CODE],
+                       [['CD_COUNTRY'    , TEST_COUNTRY_CODE],
+                        ['CD_STATE'      , TEST_STATE_CODE  ],
                         ['OLD_CD_COUNTRY', TEST_COUNTRY_CODE],
-                        ['OLD_CD_STATE', TEST_STATE_CODE]],
+                        ['OLD_CD_STATE'  , TEST_STATE_CODE  ]],
                        DataSet));
    finally
       DataSet.Free;

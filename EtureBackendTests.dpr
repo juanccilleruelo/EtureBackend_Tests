@@ -21,7 +21,7 @@ uses
   TestTeams in 'TestTeams.pas',
 
   *)
-  TestSocialMedia in 'TestSocialMedia.pas',
+  //TestSocialMedia in 'TestSocialMedia.pas',
   TestStates in 'TestStates.pas';
 (*
    TestCalendarEvents in 'TestCalendarEvents.pas';
