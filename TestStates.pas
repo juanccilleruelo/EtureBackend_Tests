@@ -33,10 +33,9 @@ type
    private
       function CreateDataSet:TWebClientDataSet;
       procedure FillStateData(ADataSet :TWebClientDataSet; const ACountryCode, AStateCode, ANameEn, ANameEs :string);
-      [async] procedure EnsureTestCountryExists;
       [async] function HasTestState:Boolean;
       [async] procedure EnsureTestStateExists;
-      [async] procedure DeleteTestStateIfExists;
+      [async] procedure DeleteTestStateAndCountryIfExists;
    published
       [Test] [async] procedure TestInsert;
       [Test] [async] procedure TestLoad;
@@ -100,53 +99,6 @@ begin
    ADataSet.Post;
 end;
 
-[async] procedure TTestStates.EnsureTestCountryExists;
-var DataSet   :TWebClientDataSet;
-    ExceptMsg :string;
-begin
-   DataSet := TWebClientDataSet.Create(nil);
-   try
-      try
-         await(TDB.GetRow(COUNTRIES_PATH,
-                          [['CD_COUNTRY', TEST_COUNTRY_CODE]],
-                          DataSet));
-      except
-         on E:Exception do if DataSet.Active then DataSet.EmptyDataSet;
-      end;
-
-      if not DataSet.IsEmpty then Exit;
-
-      DataSet.Close;
-      DataSet.FieldDefs.Clear;
-
-      DataSet.FieldDefs.Add('CD_COUNTRY'   , ftString,  3);
-      DataSet.FieldDefs.Add('DS_COUNTRY_EN', ftString, 50);
-      DataSet.FieldDefs.Add('DS_COUNTRY_ES', ftString, 50);
-      DataSet.CreateDataSet;
-      DataSet.Active := True;
-
-      DataSet.Append;
-      DataSet.FieldByName('CD_COUNTRY'   ).AsString := TEST_COUNTRY_CODE;
-      DataSet.FieldByName('DS_COUNTRY_EN').AsString := TEST_COUNTRY_NAME_EN;
-      DataSet.FieldByName('DS_COUNTRY_ES').AsString := TEST_COUNTRY_NAME_ES;
-      DataSet.Post;
-
-      try
-         await(TDB.Insert(COUNTRIES_PATH, DataSet));
-         ExceptMsg := 'ok';
-      except
-         on E:Exception do
-            if Pos('"PK_COUNTRIES"', UpperCase(E.Message)) > 0 then
-               ExceptMsg := 'ok'
-            else
-               ExceptMsg := E.Message;
-      end;
-      Assert.IsTrue(ExceptMsg = 'ok', 'EnsureTestCountryExists -> '+ExceptMsg);
-   finally
-      DataSet.Free;
-   end;
-end;
-
 [async] function TTestStates.HasTestState:Boolean;
 var DataSet :TWebClientDataSet;
 begin
@@ -167,33 +119,58 @@ begin
 end;
 
 [async] procedure TTestStates.EnsureTestStateExists;
-var DataSet   :TWebClientDataSet;
-    ExceptMsg :string;
+var CountryData :TWebClientDataSet;
+    StateData   :TWebClientDataSet;
 begin
-   await(EnsureTestCountryExists());
-
    if await(Boolean, HasTestState()) then Exit;
 
-   DataSet := CreateDataSet;
+   CountryData := TWebClientDataSet.Create(nil);
    try
-      FillStateData(DataSet,
+      try
+         await(TDB.GetRow(COUNTRIES_PATH,
+                          [['CD_COUNTRY', TEST_COUNTRY_CODE]],
+                          CountryData));
+      except
+         on E:Exception do if CountryData.Active then CountryData.EmptyDataSet;
+      end;
+
+      if CountryData.IsEmpty then
+      begin
+         CountryData.Close;
+         CountryData.FieldDefs.Clear;
+
+         CountryData.FieldDefs.Add('CD_COUNTRY'   , ftString,  3);
+         CountryData.FieldDefs.Add('DS_COUNTRY_EN', ftString, 50);
+         CountryData.FieldDefs.Add('DS_COUNTRY_ES', ftString, 50);
+         CountryData.CreateDataSet;
+         CountryData.Active := True;
+
+         CountryData.Append;
+         CountryData.FieldByName('CD_COUNTRY'   ).AsString := TEST_COUNTRY_CODE;
+         CountryData.FieldByName('DS_COUNTRY_EN').AsString := TEST_COUNTRY_NAME_EN;
+         CountryData.FieldByName('DS_COUNTRY_ES').AsString := TEST_COUNTRY_NAME_ES;
+         CountryData.Post;
+
+         await(TDB.Insert(COUNTRIES_PATH, CountryData));
+      end;
+   finally
+      CountryData.Free;
+   end;
+
+   StateData := CreateDataSet;
+   try
+      FillStateData(StateData,
                     TEST_COUNTRY_CODE,
                     TEST_STATE_CODE,
                     TEST_STATE_NAME_EN,
                     TEST_STATE_NAME_ES);
-      try
-         await(TDB.Insert(LOCAL_PATH, DataSet));
-         ExceptMsg := 'ok';
-      except
-         on E:Exception do ExceptMsg := E.Message;
-      end;
-      Assert.IsTrue(ExceptMsg = 'ok', 'EnsureTestStateExists -> '+ExceptMsg);
+      await(TDB.Insert(LOCAL_PATH, StateData));
    finally
-      DataSet.Free;
+      StateData.Free;
    end;
 end;
 
-[async] procedure TTestStates.DeleteTestStateIfExists;
+[async] procedure TTestStates.DeleteTestStateAndCountryIfExists;
 begin
    try
       await(TDB.Delete(LOCAL_PATH,
@@ -212,11 +189,30 @@ begin
 end;
 
 [Test] [async] procedure TTestStates.TestInsert;
-var DataSet   :TWebClientDataSet;
-    ExceptMsg :string;
+var CountryData :TWebClientDataSet;
+    DataSet     :TWebClientDataSet;
+    ExceptMsg   :string;
 begin
-   await(DeleteTestStateIfExists());
-   await(EnsureTestCountryExists());
+   await(DeleteTestStateAndCountryIfExists());
+
+   CountryData := TWebClientDataSet.Create(nil);
+   try
+      CountryData.FieldDefs.Add('CD_COUNTRY'   , ftString,  3);
+      CountryData.FieldDefs.Add('DS_COUNTRY_EN', ftString, 50);
+      CountryData.FieldDefs.Add('DS_COUNTRY_ES', ftString, 50);
+      CountryData.CreateDataSet;
+      CountryData.Active := True;
+
+      CountryData.Append;
+      CountryData.FieldByName('CD_COUNTRY'   ).AsString := TEST_COUNTRY_CODE;
+      CountryData.FieldByName('DS_COUNTRY_EN').AsString := TEST_COUNTRY_NAME_EN;
+      CountryData.FieldByName('DS_COUNTRY_ES').AsString := TEST_COUNTRY_NAME_ES;
+      CountryData.Post;
+
+      await(TDB.Insert(COUNTRIES_PATH, CountryData));
+   finally
+      CountryData.Free;
+   end;
 
    DataSet := CreateDataSet;
    try
