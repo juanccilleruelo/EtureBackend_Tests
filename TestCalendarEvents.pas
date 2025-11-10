@@ -55,7 +55,7 @@ type
 
 implementation
 
-uses senCille.DataManagement, senCille.TypeConverter;
+uses System.DateUtils, senCille.DataManagement, senCille.TypeConverter;
 
 { TTestCalendarEvents }
 
@@ -217,15 +217,48 @@ end;
 [async] procedure TTestCalendarEvents.EnsureTestEventExists;
 var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
+    EndDate   :TDateTime;
+    Exists    :Boolean;
 begin
-   if await(Boolean, HasTestEvent()) then begin
+   StartDate := RecodeTime(IncDay(Date, 1), 9, 0, 0, 0);
+   EndDate := StartDate + EncodeTime(1, 0, 0, 0);
+   Exists := await(Boolean, HasTestEvent());
+
+   if Exists then begin
+      DataSet := CreateEventsDataSet;
+      try
+         await(TDB.GetRow(LOCAL_PATH,
+                          [['ID_EVENT', TEST_EVENT_ID]],
+                          DataSet));
+         Created_EVENT_ID := DataSet.FieldByName('ID_EVENT').AsString;
+         if DataSet.FieldByName('DT_START').AsDateTime < StartDate then begin
+            DataSet.Edit;
+            DataSet.FieldByName('DT_START').AsDateTime := StartDate;
+            DataSet.FieldByName('DT_START_DATE').AsString := FormatDateTime('yyyy-mm-dd', StartDate);
+            DataSet.FieldByName('DT_START_TIME').AsString := FormatDateTime('hh:nn', StartDate);
+            DataSet.FieldByName('DT_END').AsDateTime := EndDate;
+            DataSet.FieldByName('DT_END_DATE').AsString := FormatDateTime('yyyy-mm-dd', EndDate);
+            DataSet.FieldByName('DT_END_TIME').AsString := FormatDateTime('hh:nn', EndDate);
+            DataSet.Post;
+            ExceptMsg := 'ok';
+            try
+               await(TDB.Update(LOCAL_PATH, [['ID_EVENT', Created_EVENT_ID], ['OLD_ID_EVENT', Created_EVENT_ID]], DataSet));
+            except
+               on E:Exception do begin
+                  ExceptMsg := E.Message;
+               end;
+            end;
+            Assert.IsTrue(ExceptMsg = 'ok', 'EnsureTestEventExists -> '+ExceptMsg);
+         end;
+      finally
+         DataSet.Free;
+      end;
       Exit;
    end;
 
    DataSet := CreateEventsDataSet;
    try
-      StartDate := EncodeDate(2024, 1, 1) + EncodeTime(9, 0, 0, 0);
-      FillEventData(DataSet, TEST_EVENT_TITLE, StartDate, StartDate + EncodeTime(1, 0, 0, 0));
+      FillEventData(DataSet, TEST_EVENT_TITLE, StartDate, EndDate);
       try
          await(TDB.Insert(LOCAL_PATH, DataSet));
          ExceptMsg := 'ok';
@@ -235,6 +268,9 @@ begin
          end;
       end;
       Assert.IsTrue(ExceptMsg = 'ok', 'EnsureTestEventExists -> '+ExceptMsg);
+      if ExceptMsg = 'ok' then begin
+         Created_EVENT_ID := TEST_EVENT_ID;
+      end;
    finally
       DataSet.Free;
    end;
