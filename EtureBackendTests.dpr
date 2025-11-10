@@ -19,12 +19,14 @@ uses
   TestProperties in 'TestProperties.pas',
   TestUniversities in 'TestUniversities.pas',
   TestTeams in 'TestTeams.pas',
-
-  *)
-  //TestSocialMedia in 'TestSocialMedia.pas',
   TestStates in 'TestStates.pas';
+  *)
+
+
+  TestSocialMedia in 'TestSocialMedia.pas',
+  TestCalendarEvents in 'TestCalendarEvents.pas';
 (*
-   TestCalendarEvents in 'TestCalendarEvents.pas';
+
    //TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
    //TestMyVisaExamples in 'TestMyVisaExamples.pas',
    TestMyVisaOverview in 'TestMyVisaOverview.pas',
