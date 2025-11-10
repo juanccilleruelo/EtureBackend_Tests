@@ -20,7 +20,7 @@ type
    TTestClubs = class(TObject)
    private
       const LOCAL_PATH          = '/clubs';
-      const TEST_USER_CODE      = 'UT_CLUB_USER_0001';
+      const TEST_USER_CODE      = 'UT_CLUB_0001';
       const TEST_USER_NAME      = 'Unit Test Club User';
       const UPDATED_USER_NAME   = 'Unit Test Club User - Updated';
    private

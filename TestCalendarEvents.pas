@@ -221,8 +221,8 @@ var DataSet   :TWebClientDataSet;
     Exists    :Boolean;
 begin
    StartDate := RecodeTime(IncDay(Date, 1), 9, 0, 0, 0);
-   EndDate := StartDate + EncodeTime(1, 0, 0, 0);
-   Exists := await(Boolean, HasTestEvent());
+   EndDate   := StartDate + EncodeTime(1, 0, 0, 0);
+   Exists    := await(Boolean, HasTestEvent());
 
    if Exists then begin
       DataSet := CreateEventsDataSet;
@@ -230,7 +230,7 @@ begin
          await(TDB.GetRow(LOCAL_PATH,
                           [['ID_EVENT', TEST_EVENT_ID]],
                           DataSet));
-         Created_EVENT_ID := DataSet.FieldByName('ID_EVENT').AsString;
+         CreatedID_EVENT := DataSet.FieldByName('ID_EVENT').AsString;
          if DataSet.FieldByName('DT_START').AsDateTime < StartDate then begin
             DataSet.Edit;
             DataSet.FieldByName('DT_START').AsDateTime := StartDate;
@@ -242,7 +242,7 @@ begin
             DataSet.Post;
             ExceptMsg := 'ok';
             try
-               await(TDB.Update(LOCAL_PATH, [['ID_EVENT', Created_EVENT_ID], ['OLD_ID_EVENT', Created_EVENT_ID]], DataSet));
+               await(TDB.Update(LOCAL_PATH, [['ID_EVENT', CreatedID_EVENT], ['OLD_ID_EVENT', CreatedID_EVENT]], DataSet));
             except
                on E:Exception do begin
                   ExceptMsg := E.Message;
@@ -269,7 +269,7 @@ begin
       end;
       Assert.IsTrue(ExceptMsg = 'ok', 'EnsureTestEventExists -> '+ExceptMsg);
       if ExceptMsg = 'ok' then begin
-         Created_EVENT_ID := TEST_EVENT_ID;
+         CreatedID_EVENT := TEST_EVENT_ID;
       end;
    finally
       DataSet.Free;

@@ -20,7 +20,7 @@ type
    TTestCategories = class(TObject)
    private
       const LOCAL_PATH            = '/categories';
-      const TEST_CATEGORY_CODE    = 'UT_CATEGORY_0001';
+      const TEST_CATEGORY_CODE    = 'UT_CAT_0001';
       const TEST_DESCRIPTION      = 'Unit Test Category';
       const UPDATED_DESCRIPTION   = 'Unit Test Category - Updated';
    private

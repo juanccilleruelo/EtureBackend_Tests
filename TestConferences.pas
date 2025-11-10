@@ -22,7 +22,7 @@ type
       const LOCAL_PATH = '/conferences';
       const TEST_CONFERENCE_CODE = 'UTCF1';
       const TEST_DESCRIPTION = 'Unit Test Conference';
-      const UPDATED_DESCRIPTION = 'Unit Test Conference - Updated';
+      const UPDATED_DESCRIPTION = 'UT Conf - Updated';
    private
       function CreateDataSet:TWebClientDataSet;
       procedure FillConferenceData(ADataSet :TWebClientDataSet; const ADescription :string);

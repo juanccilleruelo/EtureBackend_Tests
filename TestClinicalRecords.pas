@@ -20,7 +20,7 @@ type
    TTestClinicalRecords = class(TObject)
    private
       const LOCAL_PATH             = '/clinicalrecord';
-      const TEST_USER              = 'UT_CLINICAL_RECORD';
+      const TEST_USER              = 'PLAYERUS';
       const TEST_USER_NAME         = 'Unit Test Clinical Record';
       const TEST_EMAIL             = 'clinical.record@example.com';
       const TEST_PHONE_NUMBER      = '+1-555-000-1234';

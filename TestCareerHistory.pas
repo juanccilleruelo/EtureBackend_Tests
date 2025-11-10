@@ -201,9 +201,9 @@ begin
    try
       try
          Count := await(TDB.Select(LOCAL_PATH,
-                        [['PageNumber', '1'                       ],
-                         ['CD_USER', TEST_USER                    ],
-                         ['OrderField', 'SEASON DESC, TEAM_NAME' ]],
+                        [['PageNumber', '1'     ],
+                         ['CD_USER', TEST_USER  ],
+                         ['OrderField', ''      ]],
                         DataSet));
          ExceptMsg := 'ok';
       except
