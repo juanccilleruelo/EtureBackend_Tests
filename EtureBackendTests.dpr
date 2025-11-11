@@ -30,8 +30,9 @@ uses
   TestBackendConnection in 'TestBackendConnection.pas',
   *)
 
-  TestMyVisaExamples in 'TestMyVisaExamples.pas',
-  TestSocialMedia in 'TestSocialMedia.pas';
+   TestMyVisaExamples in 'TestMyVisaExamples.pas',
+   TestSocialMedia in 'TestSocialMedia.pas',
+   TestPlayers in 'TestPlayers.pas';
   //TestCalendarEvents in 'TestCalendarEvents.pas';
 (*
 
