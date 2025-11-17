@@ -271,7 +271,7 @@ begin
                        [['DOC_TYPE', TEST_DOC_TYPE]],
                        DataSet));
       try
-         ExistsRecord := await(Boolean, TDB.CheckExistence(LOCAL_PATH+'/existsexample', DataSet, TextMessage));
+         ExistsRecord := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/existsexample', [['DOC_TYPE', 'FBI_CHECK']]));
          ExceptMsg := 'ok';
       except
          on E:Exception do begin

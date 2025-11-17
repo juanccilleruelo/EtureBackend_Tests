@@ -122,21 +122,7 @@
             <Form>DummyForm</Form>
             <DesignClass>TWebForm</DesignClass>
         </DCCReference>
-        <DCCReference Include="TestAppIssues.pas"/>
-        <DCCReference Include="TestCallUps.pas"/>
-        <DCCReference Include="TestProperties.pas"/>
-        <DCCReference Include="TestUniversities.pas"/>
-        <DCCReference Include="TestTeams.pas"/>
-        <DCCReference Include="TestStates.pas"/>
-        <DCCReference Include="TestAuxData.pas"/>
-        <DCCReference Include="TestCategories.pas"/>
-        <DCCReference Include="TestConferences.pas"/>
-        <DCCReference Include="TestCampaigns.pas"/>
-        <DCCReference Include="TestAssays.pas"/>
-        <DCCReference Include="TestMyVisaTemplates.pas"/>
-        <DCCReference Include="TestBackendConnection.pas">
-            <Form>/TestMyVisaExamples in &apos;TestMyVisaExamples.pas&apos;,</Form>
-        </DCCReference>
+        <DCCReference Include="TestMyVisaExamples.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

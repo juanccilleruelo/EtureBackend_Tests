@@ -15,7 +15,7 @@ uses
   {... ...}
 
 
-  TestAppIssues in 'TestAppIssues.pas',
+  (*TestAppIssues in 'TestAppIssues.pas',
   TestCallUps in 'TestCallUps.pas',
   TestProperties in 'TestProperties.pas',
   TestUniversities in 'TestUniversities.pas',
@@ -28,8 +28,9 @@ uses
   TestAssays in 'TestAssays.pas',
   TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
   TestBackendConnection in 'TestBackendConnection.pas';
+  *)
 
-  //TestMyVisaExamples in 'TestMyVisaExamples.pas',
+  TestMyVisaExamples in 'TestMyVisaExamples.pas';
 
 (*C:\Views\EtureServer\Campaigns\CampaignsController.pas
 C:\Views\EtureServer\CareerHistory\CareerHistoryController.pas
