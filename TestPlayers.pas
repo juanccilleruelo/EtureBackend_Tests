@@ -1052,7 +1052,7 @@ begin
       FillWorkflowData(DataSet);
       DataSet.FieldByName('NM_STEPS').AsInteger := 3;
       try
-         await(TDB.Update(LOCAL_PATH, DataSet, '/updatestep'));
+         await(TDB.Update(LOCAL_PATH, [], DataSet, '/updatestep'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;

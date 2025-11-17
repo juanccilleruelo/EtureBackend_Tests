@@ -13,7 +13,7 @@ uses
   senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
   Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
   {... ...}
-  (*
+
 
   TestAppIssues in 'TestAppIssues.pas',
   TestCallUps in 'TestCallUps.pas',
@@ -27,12 +27,44 @@ uses
   TestCampaigns in 'TestCampaigns.pas',
   TestAssays in 'TestAssays.pas',
   TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
-  TestBackendConnection in 'TestBackendConnection.pas',
-  *)
+  TestBackendConnection in 'TestBackendConnection.pas';
 
-   TestMyVisaExamples in 'TestMyVisaExamples.pas',
-   TestSocialMedia in 'TestSocialMedia.pas',
-   TestPlayers in 'TestPlayers.pas';
+  //TestMyVisaExamples in 'TestMyVisaExamples.pas',
+
+(*C:\Views\EtureServer\Campaigns\CampaignsController.pas
+C:\Views\EtureServer\CareerHistory\CareerHistoryController.pas
+C:\Views\EtureServer\ClinicalRecord\ClinicalRecordController.pas
+C:\Views\EtureServer\Clubs\ClubsController.pas
+C:\Views\EtureServer\Conferences\ConferencesController.pas
+C:\Views\EtureServer\DataTypes\DataTypesController.pas
+C:\Views\EtureServer\DominantFoot\DominantFootController.pas
+C:\Views\EtureServer\Injuries\InjuriesController.pas
+C:\Views\EtureServer\MailTemplates\MailTemplatesController.pas
+C:\Views\EtureServer\MyVisaExamples\MyVisaExamplesController.pas ***
+C:\Views\EtureServer\MyVisaOverview\MyVisaOverviewController.pas
+C:\Views\EtureServer\MyVisaTemplates\MyVisaTemplatesController.pas
+C:\Views\EtureServer\Notices\NoticesController.pas
+C:\Views\EtureServer\PlayerDocuments\PlayerDocumentsController.pas
+C:\Views\EtureServer\PlayerInjuries\PlayerInjuriesController.pas
+C:\Views\EtureServer\PlayerSanctions\PlayerSanctionsController.pas
+C:\Views\EtureServer\Players\PlayersController.pas
+C:\Views\EtureServer\Positions\PositionsController.pas
+C:\Views\EtureServer\Reminders\RemindersController.pas
+C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
+C:\Views\EtureServer\SchoolCourses\SchoolCoursesController.pas
+C:\Views\EtureServer\SchoolTypes\SchoolTypesController.pas
+C:\Views\EtureServer\SocialMedia\SocialMediaController.pas
+C:\Views\EtureServer\States\StatesController.pas
+C:\Views\EtureServer\Universities\UniversityOfferedController.pas
+C:\Views\EtureServer\Universities\UniversityTeamController.pas
+C:\Views\EtureServer\Users\UsersController.pas
+C:\Views\EtureServer\Vehicles\VehiclesController.pas
+C:\Views\EtureServer\WFStepTypes\WFStepTypesController.pas
+C:\Views\EtureServer\Workflows\WorkflowsController.pas  *)
+
+
+   //TestSocialMedia in 'TestSocialMedia.pas',
+   //TestPlayers in 'TestPlayers.pas';
   //TestCalendarEvents in 'TestCalendarEvents.pas';
 (*
 
