@@ -29,7 +29,6 @@ type
       [async] function HasTestTemplate:Boolean;
       [async] procedure EnsureTestTemplateExists;
       [async] procedure DeleteTestTemplateIfExists;
-      [async] function CallExistsTemplate(const DocType :string):Boolean;
    published
       [Test] [async] procedure TestInsert;
       [Test] [async] procedure TestGetOne;
@@ -124,54 +123,6 @@ begin
       await(TDB.Delete(LOCAL_PATH, [['DOC_TYPE', TEST_DOC_TYPE]]));
    except
       on E:Exception do ;
-   end;
-end;
-
-[async] function TTestMyVisaTemplates.CallExistsTemplate(const DocType :string):Boolean;
-var Request      :TWebHttpRequest;
-    Response     :TJSXMLHttpRequest;
-    JSONObject   :TJSONObject;
-    ResponseJSON :TJSONValue;
-    ResponseText :string;
-    JSONObj      :TJSONObject;
-    JSONString   :string;
-begin
-   Result := False;
-   Request := TWebHttpRequest.Create(nil);
-   JSONObject := TJSONObject.Create;
-   try
-      JSONObject.AddPair('DOC_TYPE', DocType);
-      Request.URL := TMVCReq.Host + LOCAL_PATH + '/existstemplate';
-      //Request.Method := 'POST';
-      Request.Headers.Add('Content-Type=application/json');
-      Request.PostData := JSONObject.ToJSON;
-
-      Response := await(TJSXMLHttpRequest, Request.Perform);
-      Assert.IsTrue(Response.Status = 200, 'ExistsTemplate must answer HTTP 200');
-
-      ResponseText := Trim(string(Response.ResponseText));
-      if ResponseText = '' then Exit(False);
-
-      ResponseJSON := TJSONObject.ParseJSONValue(ResponseText);
-      try
-         if ResponseJSON is TJSONObject then
-         begin
-            JSONObj := TJSONObject(ResponseJSON);
-            JSONString := LowerCase(JSONObj.ToJSON);
-            Result := Pos('"exists":true', JSONString) > 0;
-            if not Result then
-               Result := Pos('"existstemplate":true', JSONString) > 0;
-            if not Result then
-               Result := Pos('true', JSONString) > 0;
-         end
-         else
-            Result := Pos('true', LowerCase(ResponseText)) > 0;
-      finally
-         ResponseJSON.Free;
-      end;
-   finally
-      JSONObject.Free;
-      Request.Free;
    end;
 end;
 
@@ -328,12 +279,37 @@ begin
 end;
 
 [Test] [async] procedure TTestMyVisaTemplates.TestExistsTemplate;
-var Exists :Boolean;
+var ExceptMsg            :string;
+    TextMessage          :string;
+    ExistsFinancialMeans :Boolean;
+    ExistsTranslateFBI   :Boolean;
 begin
    await(EnsureTestTemplateExists());
+   try
+      ExistsFinancialMeans := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/existstemplate', [['DOC_TYPE', 'FINANCIAL_MEANS']]));
+      ExceptMsg := 'ok';
+   except
+      on E:Exception do begin
+         ExceptMsg            := E.Message;
+         ExistsFinancialMeans := False;
+      end;
+   end;
 
-   Exists := await(Boolean, CallExistsTemplate(TEST_DOC_TYPE));
-   Assert.IsTrue(Exists, 'ExistsTemplate must return true for an existing template');
+   Assert.IsTrue(ExceptMsg = 'ok', 'Exception in ExistsExample -> '+ExceptMsg);
+   Assert.IsTrue(ExistsFinancialMeans, 'Financial Means exist');
+
+   try
+      ExistsTranslateFBI := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/existstemplate', [['DOC_TYPE', 'TRANSLATE_FBI']]));
+      ExceptMsg := 'ok';
+   except
+      on E:Exception do begin
+         ExceptMsg          := E.Message;
+         ExistsTranslateFBI := False;
+      end;
+   end;
+
+   Assert.IsTrue(ExceptMsg = 'ok', 'Exception in ExistsExample -> '+ExceptMsg);
+   Assert.IsTrue(not ExistsTranslateFBI, 'Translate FBI does not exist');
 end;
 
 initialization

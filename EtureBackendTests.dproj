@@ -122,6 +122,7 @@
             <Form>DummyForm</Form>
             <DesignClass>TWebForm</DesignClass>
         </DCCReference>
+        <DCCReference Include="TestMyVisaTemplates.pas"/>
         <DCCReference Include="TestMyVisaExamples.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

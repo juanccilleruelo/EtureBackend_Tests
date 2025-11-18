@@ -26,10 +26,11 @@ uses
   TestConferences in 'TestConferences.pas',
   TestCampaigns in 'TestCampaigns.pas',
   TestAssays in 'TestAssays.pas',
-  TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
+
   TestBackendConnection in 'TestBackendConnection.pas';
   *)
 
+  TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
   TestMyVisaExamples in 'TestMyVisaExamples.pas';
 
 (*C:\Views\EtureServer\Campaigns\CampaignsController.pas
