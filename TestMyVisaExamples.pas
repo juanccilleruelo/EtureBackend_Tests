@@ -258,33 +258,37 @@ begin
 end;
 
 [Test] [async] procedure TTestMyVisaExamples.TestExistsExample;
-var DataSet :TWebClientDataSet;
-    ExceptMsg :string;
-    ExistsRecord :Boolean;
-    TextMessage :string;
+var ExceptMsg            :string;
+    TextMessage          :string;
+    ExistsFinancialMeans :Boolean;
+    ExistsFBICheck       :Boolean;
 begin
    await(EnsureTestExampleExists());
-
-   DataSet := CreateDataSet;
    try
-      await(TDB.GetRow(LOCAL_PATH,
-                       [['DOC_TYPE', TEST_DOC_TYPE]],
-                       DataSet));
-      try
-         ExistsRecord := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/existsexample', [['DOC_TYPE', 'FBI_CHECK']]));
-         ExceptMsg := 'ok';
-      except
-         on E:Exception do begin
-            ExceptMsg := E.Message;
-            ExistsRecord := False;
-         end;
+      ExistsFinancialMeans := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/existsexample', [['DOC_TYPE', 'FINANCIAL_MEANS']]));
+      ExceptMsg := 'ok';
+   except
+      on E:Exception do begin
+         ExceptMsg            := E.Message;
+         ExistsFinancialMeans := False;
       end;
-
-      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in ExistsExample -> '+ExceptMsg);
-      Assert.IsTrue(ExistsRecord = True, 'Test example should exist');
-   finally
-      DataSet.Free;
    end;
+
+   Assert.IsTrue(ExceptMsg = 'ok', 'Exception in ExistsExample -> '+ExceptMsg);
+   Assert.IsTrue(ExistsFinancialMeans, 'Financial Means exist');
+
+   try
+      ExistsFBICheck := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/existsexample', [['DOC_TYPE', 'FBI_CHECK']]));
+      ExceptMsg := 'ok';
+   except
+      on E:Exception do begin
+         ExceptMsg      := E.Message;
+         ExistsFBICheck := False;
+      end;
+   end;
+
+   Assert.IsTrue(ExceptMsg = 'ok', 'Exception in ExistsExample -> '+ExceptMsg);
+   Assert.IsTrue(not ExistsFBICheck, 'FBI Check does not exist');
 end;
 
 initialization
