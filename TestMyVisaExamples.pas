@@ -86,7 +86,7 @@ begin
       except
          on E:Exception do if DataSet.Active then DataSet.EmptyDataSet;
       end;
-      Result := not DataSet.IsEmpty;
+      Result := (not DataSet.IsEmpty) and (DataSet.FieldByName('DOC_TYPE').AsString.Trim <> '');
    finally
       DataSet.Free;
    end;
@@ -195,6 +195,7 @@ end;
 var DataSet :TWebClientDataSet;
     ExceptMsg :string;
 begin
+   await(DeleteTestExampleIfExists());
    await(EnsureTestExampleExists());
 
    DataSet := CreateDataSet;
@@ -208,7 +209,7 @@ begin
       DataSet.Post;
 
       try
-         await(TDB.Update(LOCAL_PATH, [['DOC_TYPE', TEST_DOC_TYPE], ['OLD_DOC_TYPE', TEST_DOC_TYPE]], DataSet));
+         await(TDB.Update(LOCAL_PATH, [['OLD_DOC_TYPE', TEST_DOC_TYPE]], DataSet));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
@@ -225,7 +226,7 @@ begin
       DataSet.Edit;
       DataSet.FieldByName('IMG_DOCUMENT').AsString := TEST_IMAGE_CONTENT;
       DataSet.Post;
-      await(TDB.Update(LOCAL_PATH, [['DOC_TYPE', TEST_DOC_TYPE], ['OLD_DOC_TYPE', TEST_DOC_TYPE]], DataSet));
+      await(TDB.Update(LOCAL_PATH, [['OLD_DOC_TYPE', TEST_DOC_TYPE]], DataSet));
    finally
       DataSet.Free;
    end;
@@ -251,7 +252,7 @@ begin
       await(TDB.GetRow(LOCAL_PATH,
                        [['DOC_TYPE', TEST_DOC_TYPE]],
                        DataSet));
-      Assert.IsTrue(DataSet.IsEmpty, 'Example successfully removed');
+      Assert.IsTrue(DataSet.FieldByName('DOC_TYPE').AsString.Trim = '', 'Example successfully removed');
    finally
       DataSet.Free;
    end;

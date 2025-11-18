@@ -88,7 +88,7 @@ begin
       except
          on E:Exception do if DataSet.Active then DataSet.EmptyDataSet;
       end;
-      Result := not DataSet.IsEmpty;
+      Result := (not DataSet.IsEmpty) and (DataSet.FieldByName('DOC_TYPE').AsString.Trim <> '');
    finally
       DataSet.Free;
    end;
@@ -202,6 +202,7 @@ end;
 var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
 begin
+   await(DeleteTestTemplateIfExists());
    await(EnsureTestTemplateExists());
 
    DataSet := CreateDataSet;
@@ -215,7 +216,7 @@ begin
       DataSet.Post;
 
       try
-         await(TDB.Update(LOCAL_PATH, [['DOC_TYPE', TEST_DOC_TYPE]], DataSet));
+         await(TDB.Update(LOCAL_PATH, [['OLD_DOC_TYPE', TEST_DOC_TYPE]], DataSet));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
@@ -232,10 +233,12 @@ begin
       DataSet.Edit;
       DataSet.FieldByName('IMG_DOCUMENT').AsString := TEST_IMAGE_DATA;
       DataSet.Post;
-      await(TDB.Update(LOCAL_PATH, [['DOC_TYPE', TEST_DOC_TYPE]], DataSet));
+      await(TDB.Update(LOCAL_PATH, [['OLD_DOC_TYPE', TEST_DOC_TYPE]], DataSet));
    finally
       DataSet.Free;
    end;
+
+   await(DeleteTestTemplateIfExists());
 end;
 
 [Test] [async] procedure TTestMyVisaTemplates.TestDelete;
