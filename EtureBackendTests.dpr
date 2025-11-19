@@ -14,8 +14,7 @@ uses
   Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
   {... ...}
 
-
-
+  (*
   TestBackendConnection in 'TestBackendConnection.pas',
   TestAppIssues in 'TestAppIssues.pas',
   TestCallUps in 'TestCallUps.pas',
@@ -30,11 +29,16 @@ uses
   TestAssays in 'TestAssays.pas',
   TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
   TestMyVisaExamples in 'TestMyVisaExamples.pas',
-  TestUsers in 'TestUsers.pas';
+  TestSocialMedia in 'TestSocialMedia.pas',
+  *)
+
+  TestUsers in 'TestUsers.pas',
+  TestPlayers in 'TestPlayers.pas';
 
 
-
-(*C:\Views\EtureServer\Campaigns\CampaignsController.pas
+(*
+C:\Views\EtureServer\Users\UsersController.pas
+C:\Views\EtureServer\Campaigns\CampaignsController.pas
 C:\Views\EtureServer\CareerHistory\CareerHistoryController.pas
 C:\Views\EtureServer\ClinicalRecord\ClinicalRecordController.pas
 C:\Views\EtureServer\Clubs\ClubsController.pas
@@ -60,14 +64,11 @@ C:\Views\EtureServer\SocialMedia\SocialMediaController.pas
 C:\Views\EtureServer\States\StatesController.pas
 C:\Views\EtureServer\Universities\UniversityOfferedController.pas
 C:\Views\EtureServer\Universities\UniversityTeamController.pas
-C:\Views\EtureServer\Users\UsersController.pas
 C:\Views\EtureServer\Vehicles\VehiclesController.pas
 C:\Views\EtureServer\WFStepTypes\WFStepTypesController.pas
 C:\Views\EtureServer\Workflows\WorkflowsController.pas  *)
-
-
-   //TestSocialMedia in 'TestSocialMedia.pas',
-   //TestPlayers in 'TestPlayers.pas';
+   //
+   //
   //TestCalendarEvents in 'TestCalendarEvents.pas';
 (*
 
