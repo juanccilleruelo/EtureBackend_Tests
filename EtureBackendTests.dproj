@@ -122,6 +122,21 @@
             <Form>DummyForm</Form>
             <DesignClass>TWebForm</DesignClass>
         </DCCReference>
+        <DCCReference Include="TestBackendConnection.pas"/>
+        <DCCReference Include="TestAppIssues.pas"/>
+        <DCCReference Include="TestCallUps.pas"/>
+        <DCCReference Include="TestProperties.pas"/>
+        <DCCReference Include="TestUniversities.pas"/>
+        <DCCReference Include="TestTeams.pas"/>
+        <DCCReference Include="TestStates.pas"/>
+        <DCCReference Include="TestAuxData.pas"/>
+        <DCCReference Include="TestCategories.pas"/>
+        <DCCReference Include="TestConferences.pas"/>
+        <DCCReference Include="TestCampaigns.pas"/>
+        <DCCReference Include="TestAssays.pas"/>
+        <DCCReference Include="TestMyVisaTemplates.pas"/>
+        <DCCReference Include="TestMyVisaExamples.pas"/>
+        <DCCReference Include="TestUsers.pas"/>
         <DCCReference Include="TestPlayers.pas">
             <Form>*C</Form>
             <DesignClass>Views\EtureServer\Campaigns\CampaignsController.pas

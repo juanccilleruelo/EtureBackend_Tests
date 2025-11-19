@@ -32,6 +32,7 @@ uses
   TestSocialMedia in 'TestSocialMedia.pas',
   *)
 
+  TestUsers in 'TestUsers.pas',
   TestPlayers in 'TestPlayers.pas';
 
 
