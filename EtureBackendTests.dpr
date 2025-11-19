@@ -29,7 +29,8 @@ uses
   TestCampaigns in 'TestCampaigns.pas',
   TestAssays in 'TestAssays.pas',
   TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
-  TestMyVisaExamples in 'TestMyVisaExamples.pas';
+  TestMyVisaExamples in 'TestMyVisaExamples.pas',
+  TestUsers in 'TestUsers.pas';
 
 
 

@@ -136,6 +136,7 @@
         <DCCReference Include="TestAssays.pas"/>
         <DCCReference Include="TestMyVisaTemplates.pas"/>
         <DCCReference Include="TestMyVisaExamples.pas"/>
+        <DCCReference Include="TestUsers.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
