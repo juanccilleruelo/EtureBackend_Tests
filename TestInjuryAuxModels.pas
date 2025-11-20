@@ -19,9 +19,9 @@ type
   [TestFixture]
   TTestInjuryAuxModels = class(TObject)
   private
-    LocalPath :string;
-    function BuildPath(const ATable, AAction :string):string;
-    [async] function GetFirstCode(const ATable, ACodeField, ADescField :string; out ACode :string):Boolean;
+    const LOCAL_PATH = '/injuries';
+  private
+    [async] function GetFirstCode(const AAction, ACodeField, ADescField :string; out ACode :string):Boolean;
   public
     constructor Create; reintroduce; virtual;
     function CreateDataSet(Table :string):TWebClientDataSet;
@@ -63,12 +63,7 @@ begin
    {Place where initialize de Dataset when we use it.}
 end;
 
-function TTestInjuryAuxModels.BuildPath(const ATable, AAction :string):string;
-begin
-   Result := LocalPath + '/' + LowerCase(ATable) + '/' + LowerCase(AAction);
-end;
-
-[async] function TTestInjuryAuxModels.GetFirstCode(const ATable, ACodeField, ADescField :string; out ACode :string):Boolean;
+[async] function TTestInjuryAuxModels.GetFirstCode(const AAction, ACodeField, ADescField :string; out ACode :string):Boolean;
 var Items     :TStrings;
     ExceptMsg :string;
 begin
@@ -76,7 +71,7 @@ begin
    try
       try
          await(TDB.FillComboBox(Items,
-                                BuildPath(ATable, 'getall'),
+                                AAction,
                                 ACodeField,
                                 ADescField,
                                 []));
@@ -88,7 +83,7 @@ begin
       Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetFirstCode -> '+ExceptMsg);
       Result := Items.Count > 0;
       if Result then begin
-         ACode := Items.Names[0];
+         ACode := Items.ValueFromIndex[0];
          if ACode = '' then begin
             ACode := Items.ValueFromIndex[0];
          end;
@@ -103,8 +98,6 @@ var NewField :TField;
 begin
    inherited;
 
-   LocalPath := '/injuries';
-
    Result := TWebClientDataSet.Create(nil);
    if Table = 'BODY_PART' then begin
       NewField := TStringField.Create(Result);
@@ -117,6 +110,7 @@ begin
       NewField.FieldName   := 'DS_INJURY_BODY_PART';
       NewField.Size        := 30;
       NewField.DataSet     := Result;
+      Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
    end else
    if Table = 'SURFACE' then begin
       NewField := TStringField.Create(Result);
@@ -129,6 +123,7 @@ begin
       NewField.FieldName   := 'DS_INJURY_SURFACE';
       NewField.Size        := 30;
       NewField.DataSet     := Result;
+      Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
    end else
    if Table = 'NATURE' then begin
       NewField := TStringField.Create(Result);
@@ -141,6 +136,7 @@ begin
       NewField.FieldName   := 'DS_INJURY_NATURE';
       NewField.Size        := 30;
       NewField.DataSet     := Result;
+      Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
    end else
    if Table = 'TIME_OF_ONSET' then begin
       NewField := TStringField.Create(Result);
@@ -153,6 +149,7 @@ begin
       NewField.FieldName   := 'DS_INJURY_TIME_OF_ONSET';
       NewField.Size        := 30;
       NewField.DataSet     := Result;
+      Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
    end else
    if Table = 'TYPE' then begin
       NewField := TStringField.Create(Result);
@@ -165,6 +162,7 @@ begin
       NewField.FieldName   := 'DS_INJURY_TYPE';
       NewField.Size        := 30;
       NewField.DataSet     := Result;
+      Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
    end else
    if Table = 'MECHANISM' then begin
       NewField := TStringField.Create(Result);
@@ -177,6 +175,7 @@ begin
       NewField.FieldName   := 'DS_INJURY_MECHANISM';
       NewField.Size        := 30;
       NewField.DataSet     := Result;
+      Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
    end else
    if Table = 'AFFECTED_ORGAN' then begin
       NewField := TStringField.Create(Result);
@@ -189,9 +188,8 @@ begin
       NewField.FieldName   := 'DS_INJURY_AFFECTED_ORGAN';
       NewField.Size        := 30;
       NewField.DataSet     := Result;
+      Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
    end;
-
-   Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
 
    Result.Active := True;
 end;
@@ -204,7 +202,7 @@ begin
    try
       try
          await(TDB.FillComboBox(Items,
-                                BuildPath('BODY_PART', 'getall'),
+                                LOCAL_PATH+'/getallbodypart',
                                 'CD_INJURY_BODY_PART',
                                 'DS_INJURY_BODY_PART',
                                 []));
@@ -225,17 +223,18 @@ var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
     Code      :string;
 begin
-   if not await(Boolean, GetFirstCode('BODY_PART', 'CD_INJURY_BODY_PART', 'DS_INJURY_BODY_PART', Code)) then begin
-      Assert.Fail('No injury body part data available');
+   if not await(Boolean, GetFirstCode(LOCAL_PATH+'/getallbodypart', 'CD_INJURY_BODY_PART', 'DS_INJURY_BODY_PART', Code)) then begin
+      Assert.IsTrue(False, 'No injury body part data available');
       Exit;
    end;
 
    DataSet := CreateDataSet('BODY_PART');
    try
       try
-         await(TDB.GetRow(BuildPath('BODY_PART', 'getone'),
+         await(TDB.GetRow(LOCAL_PATH,
                           [[DataSet.Fields[0].FieldName, Code]],
-                          DataSet));
+                          DataSet,
+                          '/getonebodypart'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
@@ -257,7 +256,7 @@ begin
    try
       try
          await(TDB.FillComboBox(Items,
-                                BuildPath('SURFACE', 'getall'),
+                                LOCAL_PATH+'/getallsurface',
                                 'CD_INJURY_SURFACE',
                                 'DS_INJURY_SURFACE',
                                 []));
@@ -278,17 +277,18 @@ var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
     Code      :string;
 begin
-   if not await(Boolean, GetFirstCode('SURFACE', 'CD_INJURY_SURFACE', 'DS_INJURY_SURFACE', Code)) then begin
-      Assert.Fail('No injury surface data available');
+   if not await(Boolean, GetFirstCode(LOCAL_PATH+'/getallsurface', 'CD_INJURY_SURFACE', 'DS_INJURY_SURFACE', Code)) then begin
+      Assert.IsTrue(False, 'No injury surface data available');
       Exit;
    end;
 
    DataSet := CreateDataSet('SURFACE');
    try
       try
-         await(TDB.GetRow(BuildPath('SURFACE', 'getone'),
+         await(TDB.GetRow(LOCAL_PATH,
                           [[DataSet.Fields[0].FieldName, Code]],
-                          DataSet));
+                          DataSet,
+                          '/getonesurface'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
@@ -310,7 +310,7 @@ begin
    try
       try
          await(TDB.FillComboBox(Items,
-                                BuildPath('NATURE', 'getall'),
+                                LOCAL_PATH+'/getallnature',
                                 'CD_INJURY_NATURE',
                                 'DS_INJURY_NATURE',
                                 []));
@@ -331,17 +331,18 @@ var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
     Code      :string;
 begin
-   if not await(Boolean, GetFirstCode('NATURE', 'CD_INJURY_NATURE', 'DS_INJURY_NATURE', Code)) then begin
-      Assert.Fail('No injury nature data available');
+   if not await(Boolean, GetFirstCode(LOCAL_PATH+'/getallnature', 'CD_INJURY_NATURE', 'DS_INJURY_NATURE', Code)) then begin
+      Assert.IsTrue(False, 'No injury nature data available');
       Exit;
    end;
 
    DataSet := CreateDataSet('NATURE');
    try
       try
-         await(TDB.GetRow(BuildPath('NATURE', 'getone'),
+         await(TDB.GetRow(LOCAL_PATH,
                           [[DataSet.Fields[0].FieldName, Code]],
-                          DataSet));
+                          DataSet,
+                          '/getonenature'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
@@ -363,7 +364,7 @@ begin
    try
       try
          await(TDB.FillComboBox(Items,
-                                BuildPath('TIME_OF_ONSET', 'getall'),
+                                LOCAL_PATH+'/getalltimeofonset',
                                 'CD_INJURY_TIME_OF_ONSET',
                                 'DS_INJURY_TIME_OF_ONSET',
                                 []));
@@ -384,17 +385,18 @@ var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
     Code      :string;
 begin
-   if not await(Boolean, GetFirstCode('TIME_OF_ONSET', 'CD_INJURY_TIME_OF_ONSET', 'DS_INJURY_TIME_OF_ONSET', Code)) then begin
-      Assert.Fail('No injury time of onset data available');
+   if not await(Boolean, GetFirstCode(LOCAL_PATH+'/getalltimeofonset', 'CD_INJURY_TIME_OF_ONSET', 'DS_INJURY_TIME_OF_ONSET', Code)) then begin
+      Assert.IsTrue(False, 'No injury time of onset data available');
       Exit;
    end;
 
    DataSet := CreateDataSet('TIME_OF_ONSET');
    try
       try
-         await(TDB.GetRow(BuildPath('TIME_OF_ONSET', 'getone'),
+         await(TDB.GetRow(LOCAL_PATH,
                           [[DataSet.Fields[0].FieldName, Code]],
-                          DataSet));
+                          DataSet,
+                          '/getonetimeofonset'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
@@ -416,7 +418,7 @@ begin
    try
       try
          await(TDB.FillComboBox(Items,
-                                BuildPath('TYPE', 'getall'),
+                                LOCAL_PATH+'/getalltype',
                                 'CD_INJURY_TYPE',
                                 'DS_INJURY_TYPE',
                                 []));
@@ -437,17 +439,18 @@ var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
     Code      :string;
 begin
-   if not await(Boolean, GetFirstCode('TYPE', 'CD_INJURY_TYPE', 'DS_INJURY_TYPE', Code)) then begin
-      Assert.Fail('No injury type data available');
+   if not await(Boolean, GetFirstCode(LOCAL_PATH+'/getalltype', 'CD_INJURY_TYPE', 'DS_INJURY_TYPE', Code)) then begin
+      Assert.IsTrue(False, 'No injury type data available');
       Exit;
    end;
 
    DataSet := CreateDataSet('TYPE');
    try
       try
-         await(TDB.GetRow(BuildPath('TYPE', 'getone'),
+         await(TDB.GetRow(LOCAL_PATH,
                           [[DataSet.Fields[0].FieldName, Code]],
-                          DataSet));
+                          DataSet,
+                          '/getonetype'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
@@ -469,7 +472,7 @@ begin
    try
       try
          await(TDB.FillComboBox(Items,
-                                BuildPath('MECHANISM', 'getall'),
+                                LOCAL_PATH+'/getallmechanism',
                                 'CD_INJURY_MECHANISM',
                                 'DS_INJURY_MECHANISM',
                                 []));
@@ -490,17 +493,18 @@ var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
     Code      :string;
 begin
-   if not await(Boolean, GetFirstCode('MECHANISM', 'CD_INJURY_MECHANISM', 'DS_INJURY_MECHANISM', Code)) then begin
-      Assert.Fail('No injury mechanism data available');
+   if not await(Boolean, GetFirstCode(LOCAL_PATH+'/getallmechanism', 'CD_INJURY_MECHANISM', 'DS_INJURY_MECHANISM', Code)) then begin
+      Assert.IsTrue(False, 'No injury mechanism data available');
       Exit;
    end;
 
    DataSet := CreateDataSet('MECHANISM');
    try
       try
-         await(TDB.GetRow(BuildPath('MECHANISM', 'getone'),
+         await(TDB.GetRow(LOCAL_PATH,
                           [[DataSet.Fields[0].FieldName, Code]],
-                          DataSet));
+                          DataSet,
+                          '/getonemechanism'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
@@ -522,7 +526,7 @@ begin
    try
       try
          await(TDB.FillComboBox(Items,
-                                BuildPath('AFFECTED_ORGAN', 'getall'),
+                                LOCAL_PATH+'/getallaffectedorgan',
                                 'CD_INJURY_AFFECTED_ORGAN',
                                 'DS_INJURY_AFFECTED_ORGAN',
                                 []));
@@ -543,17 +547,18 @@ var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
     Code      :string;
 begin
-   if not await(Boolean, GetFirstCode('AFFECTED_ORGAN', 'CD_INJURY_AFFECTED_ORGAN', 'DS_INJURY_AFFECTED_ORGAN', Code)) then begin
-      Assert.Fail('No injury affected organ data available');
+   if not await(Boolean, GetFirstCode(LOCAL_PATH+'/getallaffectedorgan', 'CD_INJURY_AFFECTED_ORGAN', 'DS_INJURY_AFFECTED_ORGAN', Code)) then begin
+      Assert.IsTrue(False, 'No injury affected organ data available');
       Exit;
    end;
 
    DataSet := CreateDataSet('AFFECTED_ORGAN');
    try
       try
-         await(TDB.GetRow(BuildPath('AFFECTED_ORGAN', 'getone'),
+         await(TDB.GetRow(LOCAL_PATH,
                           [[DataSet.Fields[0].FieldName, Code]],
-                          DataSet));
+                          DataSet,
+                          '/getoneaffectedorgan'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
