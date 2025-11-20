@@ -9,10 +9,14 @@ uses
   senCille.MVCRequests in '..\EtureFrontend\framework\senCille.MVCRequests.pas',
   senCille.Miscellaneous in '..\EtureFrontend\framework\senCille.Miscellaneous.pas',
   senCille.CustomWebForm in '..\EtureFrontend\framework\senCille.CustomWebForm.pas' {scCustomWebForm: TWebForm} {*.html},
+  {$R}
   senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas' {$R *.res},
   senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
   Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
-  {... ...}
+
+
+  TestDataTypes in 'TestDataTypes.pas';
+
 
   (*
   TestBackendConnection in 'TestBackendConnection.pas',
@@ -32,6 +36,7 @@ uses
   TestSocialMedia in 'TestSocialMedia.pas',
   TestPositions in 'TestPositions.pas',
   TestClubs in 'TestClubs.pas',
+  TestInjuryAuxModels in 'TestInjuryAuxModels.pas';
   *)
 
 
@@ -39,16 +44,26 @@ uses
   //TestUsers in 'TestUsers.pas',
   //TestPlayers in 'TestPlayers.pas';
 
-  TestInjuryAuxModels in 'TestInjuryAuxModels.pas';
+  //TestMyVisaOverview in 'TestMyVisaOverview.pas',
+ //TestMailTemplates in 'TestMailTemplates.pas',
+
+
+
+
+
+//TestCalendarEvents in 'TestCalendarEvents.pas',
+  //TestUsers in 'TestUsers.pas',
+  //TestPlayers in 'TestPlayers.pas';
 
 (*
 C:\Views\EtureServer\Users\UsersController.pas
+
 C:\Views\EtureServer\Campaigns\CampaignsController.pas
 C:\Views\EtureServer\CareerHistory\CareerHistoryController.pas
 C:\Views\EtureServer\ClinicalRecord\ClinicalRecordController.pas
-C:\Views\EtureServer\Clubs\ClubsController.pas
-C:\Views\EtureServer\Conferences\ConferencesController.pas
+
 C:\Views\EtureServer\DataTypes\DataTypesController.pas
+
 C:\Views\EtureServer\DominantFoot\DominantFootController.pas
 C:\Views\EtureServer\Injuries\InjuriesController.pas
 C:\Views\EtureServer\MailTemplates\MailTemplatesController.pas
@@ -80,18 +95,16 @@ C:\Views\EtureServer\Workflows\WorkflowsController.pas  *)
 
 
     TestParents in 'TestParents.pas',     {Reconstruct it}
-    TestPublicResources in 'TestPublicResources.pas', {Reconstruct it}
     TestCareerHistory in 'TestCareerHistory.pas', {Model needs to be completed}
-
 
     TestAcademicRecords in 'TestAcademicRecords.pas', {this module don't have tests inside}
     TestClinicalRecords in 'TestClinicalRecords.pas', {Needs a revision}
     TestCountries in 'TestCountries.pas', {Needs revision}
 
+    TestPublicResources in 'TestPublicResources.pas';
    //
    //
-   //TestMyVisaOverview in 'TestMyVisaOverview.pas',
-   //TestMailTemplates in 'TestMailTemplates.pas',
+
    *)
   {... ...}
 
