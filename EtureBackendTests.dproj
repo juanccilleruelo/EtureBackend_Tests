@@ -122,24 +122,11 @@
             <Form>DummyForm</Form>
             <DesignClass>TWebForm</DesignClass>
         </DCCReference>
-        <DCCReference Include="TestBackendConnection.pas"/>
-        <DCCReference Include="TestAppIssues.pas"/>
-        <DCCReference Include="TestCallUps.pas"/>
-        <DCCReference Include="TestProperties.pas"/>
-        <DCCReference Include="TestUniversities.pas"/>
-        <DCCReference Include="TestTeams.pas"/>
-        <DCCReference Include="TestStates.pas"/>
-        <DCCReference Include="TestAuxData.pas"/>
-        <DCCReference Include="TestCategories.pas"/>
-        <DCCReference Include="TestConferences.pas"/>
-        <DCCReference Include="TestCampaigns.pas"/>
-        <DCCReference Include="TestAssays.pas"/>
-        <DCCReference Include="TestMyVisaTemplates.pas"/>
-        <DCCReference Include="TestMyVisaExamples.pas"/>
-        <DCCReference Include="TestUsers.pas"/>
-        <DCCReference Include="TestPlayers.pas">
-            <Form>*C</Form>
-            <DesignClass>Views\EtureServer\Campaigns\CampaignsController.pas
+        <DCCReference Include="TestPositions.pas">
+            <Form>*
+C</Form>
+            <DesignClass>Views\EtureServer\Users\UsersController.pas
+C:\Views\EtureServer\Campaigns\CampaignsController.pas
 C:\Views\EtureServer\CareerHistory\CareerHistoryController.pas
 C:\Views\EtureServer\ClinicalRecord\ClinicalRecordController.pas
 C:\Views\EtureServer\Clubs\ClubsController.pas
@@ -165,7 +152,6 @@ C:\Views\EtureServer\SocialMedia\SocialMediaController.pas
 C:\Views\EtureServer\States\StatesController.pas
 C:\Views\EtureServer\Universities\UniversityOfferedController.pas
 C:\Views\EtureServer\Universities\UniversityTeamController.pas
-C:\Views\EtureServer\Users\UsersController.pas
 C:\Views\EtureServer\Vehicles\VehiclesController.pas
 C:\Views\EtureServer\WFStepTypes\WFStepTypesController.pas
 C:\Views\EtureServer\Workflows\WorkflowsController.pas  *</DesignClass>

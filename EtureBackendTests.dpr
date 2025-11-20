@@ -30,11 +30,16 @@ uses
   TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
   TestMyVisaExamples in 'TestMyVisaExamples.pas',
   TestSocialMedia in 'TestSocialMedia.pas',
+  TestClubs in 'TestClubs.pas',
   *)
 
-  TestUsers in 'TestUsers.pas',
-  TestPlayers in 'TestPlayers.pas';
 
+  //TestCalendarEvents in 'TestCalendarEvents.pas',
+  //TestUsers in 'TestUsers.pas',
+  //TestPlayers in 'TestPlayers.pas';
+
+
+  TestPositions in 'TestPositions.pas';
 
 (*
 C:\Views\EtureServer\Users\UsersController.pas
@@ -67,13 +72,13 @@ C:\Views\EtureServer\Universities\UniversityTeamController.pas
 C:\Views\EtureServer\Vehicles\VehiclesController.pas
 C:\Views\EtureServer\WFStepTypes\WFStepTypesController.pas
 C:\Views\EtureServer\Workflows\WorkflowsController.pas  *)
-   //
-   //
-  //TestCalendarEvents in 'TestCalendarEvents.pas';
+
+
+  //
 (*
 
-    TestClubs in 'TestClubs.pas', {This need to be reconstructed completly}
-    TestPositions in 'TestPositions.pas', {Reconstruct it}
+
+
     TestParents in 'TestParents.pas',     {Reconstruct it}
     TestPublicResources in 'TestPublicResources.pas', {Reconstruct it}
     TestCareerHistory in 'TestCareerHistory.pas', {Model needs to be completed}

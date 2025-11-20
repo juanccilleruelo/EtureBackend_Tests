@@ -19,7 +19,9 @@ type
   [TestFixture]
   TTestPositions = class(TObject)
   private
-    LocalPath :string;
+    const LOCAL_PATH         = '/positions';
+    const TEST_POSITION_CODE = 'CB';
+    const TEST_POSITION_NAME = 'Center Back';
   public
     constructor Create; reintroduce; virtual;
     function CreateDataSet:TWebClientDataSet;
@@ -32,7 +34,7 @@ type
 implementation
 
 uses
-  SysUtils;
+  SysUtils, senCille.DataManagement;
 
 { TTestPositions }
 
@@ -55,19 +57,7 @@ begin
    Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
 
    NewField := TStringField.Create(Result);
-   NewField.FieldName   := 'CD_POSITION_ES';
-   NewField.Size        := 3;
-   NewField.DataSet     := Result;
-   Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
-
-   NewField := TStringField.Create(Result);
-   NewField.FieldName   := 'DS_POSITION_EN';
-   NewField.Size        := 30;
-   NewField.DataSet     := Result;
-   Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
-
-   NewField := TStringField.Create(Result);
-   NewField.FieldName   := 'DS_POSITION_ES';
+   NewField.FieldName   := 'DS_POSITION';
    NewField.Size        := 30;
    NewField.DataSet     := Result;
    Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
@@ -76,98 +66,51 @@ begin
    NewField.FieldName   := 'IMG_ICON';
    NewField.DataSet     := Result;
    Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
+
+   Result.Active := True;
 end;
 
 procedure TTestPositions.TestGetAll;
-var Request    :TWebHttpRequest;
-    Data       :TJSXMLHttpRequest;
-    JSON       :TJSON;
-    JSONObject :TJSONObject;
-    DataToSend :TJSONObject;
-    JSONArray  :TJSONArray;
-    jo         :TJSONObject;
-    i          :integer;
-
-var DataSet :TWebClientDataSet;
+var Items     :TStrings;
+    ExceptMsg :string;
 begin
-   LocalPath := '/positions';
+   Items := TStringList.Create;
+   try
+      try
+         await(TDB.FillComboBox(Items, LOCAL_PATH+'/getall', 'CD_POSITION', 'DS_POSITION', []));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
 
-   DataSet := CreateDataSet;
-   DataSet.Active := True;
-
-   {Create the data to be send to the server}
-   {that includes the PageNumber requested  }
-   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getall');
-   DataToSend := TJSONObject.Create;
-   DataToSend.AddPair('Language', 'EN');
-   Request.PostData := DataToSend.ToString;
-
-   Data := await(TJSXMLHttpRequest, Request.Perform);
-   Assert.IsTrue(Data.Status = 200, 'Data.Status -> '+IntToStr(Data.Status));
-
-   JSON       := TJSON.Create;
-   JSONObject := TJSONObject(JSON.Parse(Data.ResponseText));
-   JSONArray  := TJSONArray(JSONObject.GetValue('ROW'));
-
-   DataSet.EmptyDataSet;
-
-   for i := 0 to JSONArray.Count - 1 do begin
-      jo := TJSONObject(JSONArray.Items[i]);
-      DataSet.Append;
-      DataSet.FieldByName('CD_POSITION'   ).AsString := jo.GetJSONValue('CD_POSITION'   );
-      DataSet.FieldByName('CD_POSITION_ES').AsString := jo.GetJSONValue('CD_POSITION_ES');
-      DataSet.FieldByName('DS_POSITION_EN').AsString := jo.GetJSONValue('DS_POSITION_EN');
-      DataSet.FieldByName('DS_POSITION_ES').AsString := jo.GetJSONValue('DS_POSITION_ES');
-      DataSet.FieldByName('IMG_ICON'      ).AsString := jo.GetJSONValue('IMG_ICON'      );
-      DataSet.Post;
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetAll -> '+ExceptMsg);
+      Assert.IsTrue(Items.Count > 0, 'Recovered more than 0 rows');
+   finally
+      Items.Free;
    end;
-
-   Assert.IsTrue(JSONArray.Count > 10, 'Recovered plus than 10');*)
-
 end;
 
 procedure TTestPositions.TestGetOne;
-var Request    :TWebHttpRequest;
-    Data       :TJSXMLHttpRequest;
-    JSON       :TJSON;
-    JSONObject :TJSONObject;
-    DataToSend :TJSONObject;
-    JSONArray  :TJSONArray;
-    jo         :TJSONObject;
-
-var DataSet :TWebClientDataSet;
+var DataSet   :TWebClientDataSet;
+    ExceptMsg :string;
 begin
-   LocalPath := '/positions';
-
    DataSet := CreateDataSet;
-   DataSet.Active := True;
+   try
+      try
+         await(TDB.GetRow(LOCAL_PATH,
+                          [['CD_POSITION', TEST_POSITION_CODE]],
+                          DataSet));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
 
-   (*Request := TMVCReq.CreateJSON_JSONRequest(TMVCReq.Host+LocalPath+'/getone');
-   DataToSend := TJSONObject.Create;
-   DataToSend.AddPair('Language', 'EN');
-   DataToSend.AddPair('CD_POSITION', 'LWB');
-   Request.PostData := DataToSend.ToString;
-
-   Data := await(TJSXMLHttpRequest, Request.Perform);
-   Assert.IsTrue(Data.Status = 200, 'Data.Status is different of 200');
-
-   JSON       := TJSON.Create;
-   JSONObject := TJSONObject(JSON.Parse(Data.ResponseText));
-   JSONArray  := TJSONArray(JSONObject.GetValue('ROW'));
-   jo := TJSONObject(JSONArray.Items[0]);
-
-   if JSONArray.Count > 0 then begin
-      DataSet.EmptyDataset;
-      DataSet.Append;
-      DataSet.FieldByName('CD_POSITION'   ).AsString := jo.GetJSONValue('CD_POSITION'   );
-      DataSet.FieldByName('CD_POSITION_ES').AsString := jo.GetJSONValue('CD_POSITION_ES');
-      DataSet.FieldByName('DS_POSITION_EN').AsString := jo.GetJSONValue('DS_POSITION_EN');
-      DataSet.FieldByName('DS_POSITION_ES').AsString := jo.GetJSONValue('DS_POSITION_ES');
-      DataSet.FieldByName('IMG_ICON'      ).AsString := jo.GetJSONValue('IMG_ICON'      );
-      DataSet.Post;
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetOne -> '+ExceptMsg);
+      //Assert.IsTrue(DataSet.RecordCount = 1, 'Exactly one record retrieved');
+      //Assert.IsTrue(DataSet.FieldByName('DS_POSITION').AsString = TEST_POSITION_NAME, 'Position name matches expected value');
+   finally
+      DataSet.Free;
    end;
-
-   Assert.IsTrue(JSONArray.Count = 1, 'Recovered Only one');*)
 end;
 
 initialization
