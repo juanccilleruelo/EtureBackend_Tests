@@ -30,6 +30,7 @@ uses
   TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
   TestMyVisaExamples in 'TestMyVisaExamples.pas',
   TestSocialMedia in 'TestSocialMedia.pas',
+  TestPositions in 'TestPositions.pas',
   TestClubs in 'TestClubs.pas',
   *)
 
@@ -38,8 +39,7 @@ uses
   //TestUsers in 'TestUsers.pas',
   //TestPlayers in 'TestPlayers.pas';
 
-
-  TestPositions in 'TestPositions.pas';
+  TestInjuryAuxModels in 'TestInjuryAuxModels.pas';
 
 (*
 C:\Views\EtureServer\Users\UsersController.pas
@@ -83,7 +83,7 @@ C:\Views\EtureServer\Workflows\WorkflowsController.pas  *)
     TestPublicResources in 'TestPublicResources.pas', {Reconstruct it}
     TestCareerHistory in 'TestCareerHistory.pas', {Model needs to be completed}
 
-    TestInjuryAuxModels in 'TestInjuryAuxModels.pas', {The tests are empty}
+
     TestAcademicRecords in 'TestAcademicRecords.pas', {this module don't have tests inside}
     TestClinicalRecords in 'TestClinicalRecords.pas', {Needs a revision}
     TestCountries in 'TestCountries.pas', {Needs revision}

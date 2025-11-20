@@ -154,6 +154,8 @@ begin
    end;
 
    Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
+
+   Result.Active := True;
 end;
 
 procedure TTestInjuryAuxModels.TestGetAllBodyPart;
