@@ -15,7 +15,8 @@ uses
   Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
 
 
-  TestDataTypes in 'TestDataTypes.pas';
+   TestDataTypes in 'TestDataTypes.pas',
+   TestDominantFoot in 'TestDominantFoot.pas';
 
 
   (*
