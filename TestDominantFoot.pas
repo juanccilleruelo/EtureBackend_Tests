@@ -24,10 +24,6 @@ type
       const TEST_DOMINANT_FOOT_NAME   = 'Right';
    private
       function CreateDataSet:TWebClientDataSet;
-      procedure FillDominantFootData(ADataSet :TWebClientDataSet; const ACode, AName :string);
-      [async] function HasTestDominantFoot:Boolean;
-      [async] procedure EnsureTestDominantFootExists;
-      [async] procedure DeleteTestDominantFootIfExists;
    published
       [Test] [async] procedure TestGetOne;
       [Test] [async] procedure TestGetAll;
@@ -63,72 +59,10 @@ begin
    Result.Active := True;
 end;
 
-procedure TTestDominantFoot.FillDominantFootData(ADataSet :TWebClientDataSet; const ACode, AName :string);
-begin
-   ADataSet.Append;
-   ADataSet.FieldByName('CD_DOMINANT_FOOT').AsString := ACode;
-   ADataSet.FieldByName('DS_DOMINANT_FOOT').AsString := AName;
-   ADataSet.Post;
-end;
-
-[async] function TTestDominantFoot.HasTestDominantFoot:Boolean;
-var DataSet :TWebClientDataSet;
-begin
-   DataSet := CreateDataSet;
-   try
-      try
-         await(TDB.GetRow(LOCAL_PATH,
-                          [['CD_DOMINANT_FOOT', TEST_DOMINANT_FOOT_CODE]],
-                          DataSet));
-      except
-         on E:Exception do if DataSet.Active then DataSet.EmptyDataSet;
-      end;
-      Result := not DataSet.IsEmpty;
-   finally
-      DataSet.Free;
-   end;
-end;
-
-[async] procedure TTestDominantFoot.EnsureTestDominantFootExists;
-var DataSet   :TWebClientDataSet;
-    ExceptMsg :string;
-begin
-   if await(Boolean, HasTestDominantFoot()) then begin
-      Exit;
-   end;
-
-   DataSet := CreateDataSet;
-   try
-      FillDominantFootData(DataSet,
-                           TEST_DOMINANT_FOOT_CODE,
-                           TEST_DOMINANT_FOOT_NAME);
-      try
-         await(TDB.Insert(LOCAL_PATH, DataSet));
-         ExceptMsg := 'ok';
-      except
-         on E:Exception do ExceptMsg := E.Message;
-      end;
-      Assert.IsTrue(ExceptMsg = 'ok', 'EnsureTestDominantFootExists -> '+ExceptMsg);
-   finally
-      DataSet.Free;
-   end;
-end;
-
-[async] procedure TTestDominantFoot.DeleteTestDominantFootIfExists;
-begin
-   try
-      await(TDB.Delete(LOCAL_PATH, [['CD_DOMINANT_FOOT', TEST_DOMINANT_FOOT_CODE]]));
-   except
-      on E:Exception do ;
-   end;
-end;
-
 [Test] [async] procedure TTestDominantFoot.TestGetOne;
 var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
 begin
-   await(EnsureTestDominantFootExists());
-
    DataSet := CreateDataSet;
    try
       try
@@ -152,8 +86,6 @@ end;
 var Items     :TStrings;
     ExceptMsg :string;
 begin
-   await(EnsureTestDominantFootExists());
-
    Items := TStringList.Create;
    try
       try

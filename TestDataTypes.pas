@@ -24,10 +24,6 @@ type
       const TEST_DATA_TYPE_NAME = 'Text';
    private
       function CreateDataSet:TWebClientDataSet;
-      procedure FillDataTypeData(ADataSet :TWebClientDataSet; const ACode, AName :string);
-      [async] function HasTestDataType:Boolean;
-      [async] procedure EnsureTestDataTypeExists;
-      [async] procedure DeleteTestDataTypeIfExists;
    published
       [Test] [async] procedure TestGetOne;
       [Test] [async] procedure TestGetAll;
@@ -63,72 +59,10 @@ begin
    Result.Active := True;
 end;
 
-procedure TTestDataTypes.FillDataTypeData(ADataSet :TWebClientDataSet; const ACode, AName :string);
-begin
-   ADataSet.Append;
-   ADataSet.FieldByName('CD_DATA_TYPE').AsString := ACode;
-   ADataSet.FieldByName('DS_DATA_TYPE').AsString := AName;
-   ADataSet.Post;
-end;
-
-[async] function TTestDataTypes.HasTestDataType:Boolean;
-var DataSet :TWebClientDataSet;
-begin
-   DataSet := CreateDataSet;
-   try
-      try
-         await(TDB.GetRow(LOCAL_PATH,
-                          [['CD_DATA_TYPE', TEST_DATA_TYPE_CODE]],
-                          DataSet));
-      except
-         on E:Exception do if DataSet.Active then DataSet.EmptyDataSet;
-      end;
-      Result := not DataSet.IsEmpty;
-   finally
-      DataSet.Free;
-   end;
-end;
-
-[async] procedure TTestDataTypes.EnsureTestDataTypeExists;
-var DataSet   :TWebClientDataSet;
-    ExceptMsg :string;
-begin
-   if await(Boolean, HasTestDataType()) then begin
-      Exit;
-   end;
-
-   DataSet := CreateDataSet;
-   try
-      FillDataTypeData(DataSet,
-                       TEST_DATA_TYPE_CODE,
-                       TEST_DATA_TYPE_NAME);
-      try
-         await(TDB.Insert(LOCAL_PATH, DataSet));
-         ExceptMsg := 'ok';
-      except
-         on E:Exception do ExceptMsg := E.Message;
-      end;
-      Assert.IsTrue(ExceptMsg = 'ok', 'EnsureTestDataTypeExists -> '+ExceptMsg);
-   finally
-      DataSet.Free;
-   end;
-end;
-
-[async] procedure TTestDataTypes.DeleteTestDataTypeIfExists;
-begin
-   try
-      await(TDB.Delete(LOCAL_PATH, [['CD_DATA_TYPE', TEST_DATA_TYPE_CODE]]));
-   except
-      on E:Exception do ;
-   end;
-end;
-
 [Test] [async] procedure TTestDataTypes.TestGetOne;
 var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
 begin
-   await(EnsureTestDataTypeExists());
-
    DataSet := CreateDataSet;
    try
       try
@@ -152,8 +86,6 @@ end;
 var Items     :TStrings;
     ExceptMsg :string;
 begin
-   await(EnsureTestDataTypeExists());
-
    Items := TStringList.Create;
    try
       try

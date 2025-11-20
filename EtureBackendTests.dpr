@@ -12,11 +12,10 @@ uses
   {$R}
   senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas' {$R *.res},
   senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
-  Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
+  Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html};
 
 
-   TestDataTypes in 'TestDataTypes.pas',
-   TestDominantFoot in 'TestDominantFoot.pas';
+
 
 
   (*
@@ -37,7 +36,9 @@ uses
   TestSocialMedia in 'TestSocialMedia.pas',
   TestPositions in 'TestPositions.pas',
   TestClubs in 'TestClubs.pas',
-  TestInjuryAuxModels in 'TestInjuryAuxModels.pas';
+  TestInjuryAuxModels in 'TestInjuryAuxModels.pas',
+  TestDataTypes in 'TestDataTypes.pas',
+  TestDominantFoot in 'TestDominantFoot.pas';
   *)
 
 
