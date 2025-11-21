@@ -1,4 +1,4 @@
-unit TestInjuryAuxModels;
+unit TestInjuries;
 
 interface
 

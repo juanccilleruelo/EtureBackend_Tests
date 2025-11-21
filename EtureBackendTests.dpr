@@ -12,9 +12,42 @@ uses
   {$R}
   senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas' {$R *.res},
   senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
-  Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html};
+  Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
+  TestAcademicRecords in 'TestAcademicRecords.pas',
+  TestAppIssues in 'TestAppIssues.pas',
+  TestAssays in 'TestAssays.pas',
+  TestAuxData in 'TestAuxData.pas',
+  TestBackendConnection in 'TestBackendConnection.pas',
+  TestCalendarEvents in 'TestCalendarEvents.pas',
+  TestCallUps in 'TestCallUps.pas',
+  TestCampaigns in 'TestCampaigns.pas',
+  TestCareerHistory in 'TestCareerHistory.pas',
+  TestCategories in 'TestCategories.pas',
+  TestClinicalRecords in 'TestClinicalRecords.pas',
+  TestClubs in 'TestClubs.pas',
+  TestConferences in 'TestConferences.pas',
+  TestCountries in 'TestCountries.pas',
+  TestDataTypes in 'TestDataTypes.pas',
+  TestDominantFoot in 'TestDominantFoot.pas',
+  TestInjuries in 'TestInjuries.pas',
+  TestMailTemplates in 'TestMailTemplates.pas',
+  TestMyVisaExamples in 'TestMyVisaExamples.pas',
+  TestMyVisaOverview in 'TestMyVisaOverview.pas',
+  TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
+  TestParents in 'TestParents.pas',
+  TestPlayers in 'TestPlayers.pas',
+  TestPositions in 'TestPositions.pas',
+  TestProperties in 'TestProperties.pas',
+  TestPublicResources in 'TestPublicResources.pas',
+  TestSocialMedia in 'TestSocialMedia.pas',
+  TestStates in 'TestStates.pas',
+  TestTeams in 'TestTeams.pas',
+  TestUniversities in 'TestUniversities.pas',
+  TestUsers in 'TestUsers.pas';
 
-  (*
+{$R}
+
+(*
   TestBackendConnection in 'TestBackendConnection.pas',
   TestAppIssues in 'TestAppIssues.pas',
   TestCallUps in 'TestCallUps.pas',
@@ -37,20 +70,18 @@ uses
   TestDominantFoot in 'TestDominantFoot.pas';
   *)
 
+  //C:\Views\EtureServer\Injuries\InjuriesController.pas
+
   //TestCalendarEvents in 'TestCalendarEvents.pas',
   //TestUsers in 'TestUsers.pas',
   //TestPlayers in 'TestPlayers.pas';
 
   //TestMyVisaOverview in 'TestMyVisaOverview.pas',
- //TestMailTemplates in 'TestMailTemplates.pas',
-
-//TestCalendarEvents in 'TestCalendarEvents.pas',
-  //TestUsers in 'TestUsers.pas',
-  //TestPlayers in 'TestPlayers.pas';
+  //TestMailTemplates in 'TestMailTemplates.pas',
 
 (*
 C:\Views\EtureServer\Users\UsersController.pas
-C:\Views\EtureServer\Injuries\InjuriesController.pas
+
 C:\Views\EtureServer\MailTemplates\MailTemplatesController.pas
 C:\Views\EtureServer\MyVisaOverview\MyVisaOverviewController.pas
 C:\Views\EtureServer\Notices\NoticesController.pas
