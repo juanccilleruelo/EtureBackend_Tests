@@ -149,6 +149,7 @@
         <DCCReference Include="TestProperties.pas"/>
         <DCCReference Include="TestPublicResources.pas"/>
         <DCCReference Include="TestSocialMedia.pas"/>
+        <DCCReference Include="TestScholarshipTypes.pas"/>
         <DCCReference Include="TestStates.pas"/>
         <DCCReference Include="TestTeams.pas"/>
         <DCCReference Include="TestUniversities.pas"/>

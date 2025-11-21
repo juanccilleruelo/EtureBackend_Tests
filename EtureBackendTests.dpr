@@ -40,6 +40,7 @@ uses
   TestProperties in 'TestProperties.pas',
   TestPublicResources in 'TestPublicResources.pas',
   TestSocialMedia in 'TestSocialMedia.pas',
+  TestScholarshipTypes in 'TestScholarshipTypes.pas',
   TestStates in 'TestStates.pas',
   TestTeams in 'TestTeams.pas',
   TestUniversities in 'TestUniversities.pas',
