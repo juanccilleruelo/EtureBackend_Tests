@@ -14,10 +14,6 @@ uses
   senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
   Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html};
 
-
-
-
-
   (*
   TestBackendConnection in 'TestBackendConnection.pas',
   TestAppIssues in 'TestAppIssues.pas',
@@ -41,7 +37,6 @@ uses
   TestDominantFoot in 'TestDominantFoot.pas';
   *)
 
-
   //TestCalendarEvents in 'TestCalendarEvents.pas',
   //TestUsers in 'TestUsers.pas',
   //TestPlayers in 'TestPlayers.pas';
@@ -49,18 +44,12 @@ uses
   //TestMyVisaOverview in 'TestMyVisaOverview.pas',
  //TestMailTemplates in 'TestMailTemplates.pas',
 
-
-
-
-
 //TestCalendarEvents in 'TestCalendarEvents.pas',
   //TestUsers in 'TestUsers.pas',
   //TestPlayers in 'TestPlayers.pas';
 
 (*
 C:\Views\EtureServer\Users\UsersController.pas
-
-C:\Views\EtureServer\DominantFoot\DominantFootController.pas
 C:\Views\EtureServer\Injuries\InjuriesController.pas
 C:\Views\EtureServer\MailTemplates\MailTemplatesController.pas
 C:\Views\EtureServer\MyVisaOverview\MyVisaOverviewController.pas
@@ -78,14 +67,11 @@ C:\Views\EtureServer\Universities\UniversityOfferedController.pas
 C:\Views\EtureServer\Universities\UniversityTeamController.pas
 C:\Views\EtureServer\Vehicles\VehiclesController.pas
 C:\Views\EtureServer\WFStepTypes\WFStepTypesController.pas
+
 C:\Views\EtureServer\Workflows\WorkflowsController.pas  *)
 
 
-  //
 (*
-
-
-
     TestParents in 'TestParents.pas',     {Reconstruct it}
     TestCareerHistory in 'TestCareerHistory.pas', {Model needs to be completed}
 
@@ -99,9 +85,6 @@ C:\Views\EtureServer\Workflows\WorkflowsController.pas  *)
 
    *)
   {... ...}
-
-
-
 
 {$R *.res}
 
