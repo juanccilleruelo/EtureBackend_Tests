@@ -13,7 +13,7 @@ uses
   senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas' {$R *.res},
   senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
   Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
-  TestAcademicRecords in 'TestAcademicRecords.pas',
+  (*stAcademicRecords in 'TestAcademicRecords.pas',
   TestAppIssues in 'TestAppIssues.pas',
   TestAssays in 'TestAssays.pas',
   TestAuxData in 'TestAuxData.pas',
@@ -30,7 +30,6 @@ uses
   TestDataTypes in 'TestDataTypes.pas',
   TestDominantFoot in 'TestDominantFoot.pas',
   TestInjuries in 'TestInjuries.pas',
-  TestLocalizations in 'TestLocalizations.pas',
   TestMailTemplates in 'TestMailTemplates.pas',
   TestMyVisaExamples in 'TestMyVisaExamples.pas',
   TestMyVisaOverview in 'TestMyVisaOverview.pas',
@@ -45,7 +44,9 @@ uses
   TestStates in 'TestStates.pas',
   TestTeams in 'TestTeams.pas',
   TestUniversities in 'TestUniversities.pas',
-  TestUsers in 'TestUsers.pas';
+  TestUsers in 'TestUsers.pas';*)
+
+  TestLocalizations in 'TestLocalizations.pas';
 
   //C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
 

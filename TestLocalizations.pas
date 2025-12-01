@@ -19,118 +19,114 @@ type
    [TestFixture]
    TTestLocalizations = class(TObject)
    private
-      const LOCAL_PATH = '/localizations';
-      function BuildURL(const AResource :string): string;
    published
       [Test] [async] procedure TestGetValues;
       [Test] [async] procedure TestGetLanguages;
-      [Test] [async] procedure TestTranslate;
+      [Test] [async] procedure TestTranslateWithForm;
+      [Test] [async] procedure TestTranslateWord;
       [Test] [async] procedure TestGetMessage;
    end;
 {$M-}
 
 implementation
 
-uses
-   senCille.WebSetup;
+uses senCille.WebSetup, senCille.DataManagement;
 
 { TTestLocalizations }
 
-function TTestLocalizations.BuildURL(const AResource :string): string;
-begin
-   Result := TMVCReq.Host + LOCAL_PATH + AResource;
-end;
-
 [Test] [async] procedure TTestLocalizations.TestGetValues;
-var Request  :TWebHttpRequest;
-    Response :TJSXMLHttpRequest;
+var JSONArray :TJSONArray;
+    ExceptMsg :string;
 begin
-   TWebSetup.Instance;
+   TWebSetup.Instance.Language := 'ES';
 
-   Request := TWebHttpRequest.Create(nil);
    try
-      Request.URL := BuildURL('/getvalues');
-      Response := await(TJSXMLHttpRequest, Request.Perform);
-
-      Assert.IsTrue((Response.Status >= 200) and (Response.Status < 300), 'GetValues must answer with HTTP success.');
-      Assert.IsTrue(Trim(Response.ResponseText) <> '', 'GetValues must return content.');
-   finally
-      Request.Free;
+      JSONArray := await(TJSONArray, TDB.GetJSONArray('/localizations', [['FORM_NAME', 'TUsersForm']], '/getvalues'));
+      ExceptMsg := 'ok';
+   except
+      on E:Exception do ExceptMsg := E.Message;
    end;
+
+   Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetValues -> '+ExceptMsg);
+   Assert.IsTrue(JSONArray.Count > 0, 'GetValues must return content.');
 end;
 
 [Test] [async] procedure TTestLocalizations.TestGetLanguages;
-var Request  :TWebHttpRequest;
-    Response :TJSXMLHttpRequest;
+var JSONArray :TJSONArray;
+    ExceptMsg :string;
 begin
-   TWebSetup.Instance;
+   TWebSetup.Instance.Language := 'ES';
 
-   Request := TWebHttpRequest.Create(nil);
+   // Delegate the backend call to TDB to reuse unified error handling.
    try
-      Request.URL := BuildURL('/getlanguages');
-      Response := await(TJSXMLHttpRequest, Request.Perform);
-
-      Assert.IsTrue((Response.Status >= 200) and (Response.Status < 300), 'GetLanguages must answer with HTTP success.');
-      Assert.IsTrue(Trim(Response.ResponseText) <> '', 'GetLanguages must return content.');
-   finally
-      Request.Free;
+      JSONArray := await(TJSONArray, TDB.GetJSONArray('/localizations', [], '/getlanguages'));
+      ExceptMsg := 'ok';
+   except
+      on E:Exception do ExceptMsg := E.Message;
    end;
+
+   Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetLanguages -> '+ExceptMsg);
+   Assert.IsTrue(JSONArray.Count > 0, 'GetLanguages must return content.');
 end;
 
-[Test] [async] procedure TTestLocalizations.TestTranslate;
-const SAMPLE_TEXT    = 'Hello world';
-      SOURCE_LANG    = 'en';
-      TARGET_LANG    = 'es';
-var Request  :TWebHttpRequest;
-    Response :TJSXMLHttpRequest;
-    Payload  :TJSONObject;
+[Test] [async] procedure TTestLocalizations.TestTranslateWithForm;
+var Params    :TArrayOfStringPairs;
+    ExceptMsg :string;
+    Value     :string;
 begin
-   TWebSetup.Instance;
+   TWebSetup.Instance.Language := 'ES';
 
-   Request := TWebHttpRequest.Create(nil);
+   Params  := [['form', 'TUsersForm'],
+               ['word', 'Actions'   ]];
    try
-      Request.URL := BuildURL('/translate');
-      Request.Method := 'POST';
-      Request.Headers.Values['Content-Type'] := 'application/json';
-
-      Payload := TJSONObject.Create;
-      try
-         Payload.AddPair('Text', SAMPLE_TEXT);
-         Payload.AddPair('SourceLanguage', SOURCE_LANG);
-         Payload.AddPair('TargetLanguage', TARGET_LANG);
-         Request.PostData := Payload.ToString;
-      finally
-         Payload.Free;
-      end;
-
-      Response := await(TJSXMLHttpRequest, Request.Perform);
-
-      Assert.IsTrue((Response.Status >= 200) and (Response.Status < 300), 'Translate must answer with HTTP success.');
-      Assert.IsTrue(Trim(Response.ResponseText) <> '', 'Translate must return translated content.');
-   finally
-      Request.Free;
+      Value := await(string, TDB.GetString('/localizations', '/translate', Params));
+      ExceptMsg := 'ok';
+   except
+      on E:Exception do ExceptMsg := E.Message;
    end;
+
+   Assert.IsTrue(ExceptMsg = 'ok', 'Exception in /translate -> '+ExceptMsg);
+   Assert.IsTrue(LowerCase(Value) = 'acciones', 'The translation of Actions must be Acciones');
+end;
+
+[Test] [async] procedure TTestLocalizations.TestTranslateWord;
+var Params    :TArrayOfStringPairs;
+    ExceptMsg :string;
+    Value     :string;
+begin
+   TWebSetup.Instance.Language := 'ES';
+
+   Params  := [['word', 'Week']];
+   try
+      Value := await(string, TDB.GetString('/localizations', '/translate', Params));
+      ExceptMsg := 'ok';
+   except
+      on E:Exception do ExceptMsg := E.Message;
+   end;
+
+   Assert.IsTrue(ExceptMsg = 'ok', 'Exception in /translate -> '+ExceptMsg);
+   Assert.IsTrue(LowerCase(Value) = 'semana', 'The translation of Week must be Semana');
 end;
 
 [Test] [async] procedure TTestLocalizations.TestGetMessage;
-var Request  :TWebHttpRequest;
-    Response :TJSXMLHttpRequest;
+var Params    :TArrayOfStringPairs;
+    ExceptMsg :string;
+    Value     :string;
 begin
-   TWebSetup.Instance;
+   TWebSetup.Instance.Language := 'ES';
 
-   Request := TWebHttpRequest.Create(nil);
+   Params  := [['message', 'NoPendingInvitations']];
    try
-      Request.URL := BuildURL('/message');
-      Response := await(TJSXMLHttpRequest, Request.Perform);
-
-      Assert.IsTrue(Response.Status = 200, 'GetMessage must answer with HTTP 200.');
-      Assert.IsTrue(Trim(Response.ResponseText) <> '', 'GetMessage must return content.');
-   finally
-      Request.Free;
+      Value := await(string, TDB.GetString('/localizations', '/message', Params));
+      ExceptMsg := 'ok';
+   except
+      on E:Exception do ExceptMsg := E.Message;
    end;
+
+   Assert.IsTrue(ExceptMsg = 'ok', 'Exception in /message -> '+ExceptMsg);
+   Assert.IsTrue(SameText(Value, 'No hay invitaciones pendientes'), 'The translation of ''NoPendingInvitations'' shall be ''No hay invitaciones pendientes'' ');
 end;
 
 initialization
    TTMSWEBUnitTestingRunner.RegisterClass(TTestLocalizations);
-
 end.

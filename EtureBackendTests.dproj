@@ -122,39 +122,7 @@
             <Form>DummyForm</Form>
             <DesignClass>TWebForm</DesignClass>
         </DCCReference>
-        <DCCReference Include="TestAcademicRecords.pas"/>
-        <DCCReference Include="TestAppIssues.pas"/>
-        <DCCReference Include="TestAssays.pas"/>
-        <DCCReference Include="TestAuxData.pas"/>
-        <DCCReference Include="TestBackendConnection.pas"/>
-        <DCCReference Include="TestCalendarEvents.pas"/>
-        <DCCReference Include="TestCallUps.pas"/>
-        <DCCReference Include="TestCampaigns.pas"/>
-        <DCCReference Include="TestCareerHistory.pas"/>
-        <DCCReference Include="TestCategories.pas"/>
-        <DCCReference Include="TestClinicalRecords.pas"/>
-        <DCCReference Include="TestClubs.pas"/>
-        <DCCReference Include="TestConferences.pas"/>
-        <DCCReference Include="TestCountries.pas"/>
-        <DCCReference Include="TestDataTypes.pas"/>
-        <DCCReference Include="TestDominantFoot.pas"/>
-        <DCCReference Include="TestInjuries.pas"/>
         <DCCReference Include="TestLocalizations.pas"/>
-        <DCCReference Include="TestMailTemplates.pas"/>
-        <DCCReference Include="TestMyVisaExamples.pas"/>
-        <DCCReference Include="TestMyVisaOverview.pas"/>
-        <DCCReference Include="TestMyVisaTemplates.pas"/>
-        <DCCReference Include="TestParents.pas"/>
-        <DCCReference Include="TestPlayers.pas"/>
-        <DCCReference Include="TestPositions.pas"/>
-        <DCCReference Include="TestProperties.pas"/>
-        <DCCReference Include="TestPublicResources.pas"/>
-        <DCCReference Include="TestSocialMedia.pas"/>
-        <DCCReference Include="TestScholarshipTypes.pas"/>
-        <DCCReference Include="TestStates.pas"/>
-        <DCCReference Include="TestTeams.pas"/>
-        <DCCReference Include="TestUniversities.pas"/>
-        <DCCReference Include="TestUsers.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
