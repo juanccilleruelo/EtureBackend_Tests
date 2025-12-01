@@ -139,6 +139,7 @@
         <DCCReference Include="TestDataTypes.pas"/>
         <DCCReference Include="TestDominantFoot.pas"/>
         <DCCReference Include="TestInjuries.pas"/>
+        <DCCReference Include="TestLocalizations.pas"/>
         <DCCReference Include="TestMailTemplates.pas"/>
         <DCCReference Include="TestMyVisaExamples.pas"/>
         <DCCReference Include="TestMyVisaOverview.pas"/>

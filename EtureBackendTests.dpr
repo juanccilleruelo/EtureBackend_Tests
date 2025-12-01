@@ -30,6 +30,7 @@ uses
   TestDataTypes in 'TestDataTypes.pas',
   TestDominantFoot in 'TestDominantFoot.pas',
   TestInjuries in 'TestInjuries.pas',
+  TestLocalizations in 'TestLocalizations.pas',
   TestMailTemplates in 'TestMailTemplates.pas',
   TestMyVisaExamples in 'TestMyVisaExamples.pas',
   TestMyVisaOverview in 'TestMyVisaOverview.pas',
