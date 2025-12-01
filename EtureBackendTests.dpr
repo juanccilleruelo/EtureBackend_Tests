@@ -9,7 +9,7 @@ uses
   senCille.MVCRequests in '..\EtureFrontend\framework\senCille.MVCRequests.pas',
   senCille.Miscellaneous in '..\EtureFrontend\framework\senCille.Miscellaneous.pas',
   senCille.CustomWebForm in '..\EtureFrontend\framework\senCille.CustomWebForm.pas' {scCustomWebForm: TWebForm} {*.html},
-  {$R}
+  {XX}
   senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas' {$R *.res},
   senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
   Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
@@ -47,6 +47,8 @@ uses
   TestUniversities in 'TestUniversities.pas',
   TestUsers in 'TestUsers.pas';
 
+  //C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
+
 {$R}
 
 (*
@@ -72,8 +74,6 @@ uses
   TestDominantFoot in 'TestDominantFoot.pas';
   *)
 
-  //C:\Views\EtureServer\Injuries\InjuriesController.pas
-
   //TestCalendarEvents in 'TestCalendarEvents.pas',
   //TestUsers in 'TestUsers.pas',
   //TestPlayers in 'TestPlayers.pas';
@@ -92,7 +92,7 @@ C:\Views\EtureServer\PlayerInjuries\PlayerInjuriesController.pas
 C:\Views\EtureServer\PlayerSanctions\PlayerSanctionsController.pas
 C:\Views\EtureServer\Players\PlayersController.pas
 C:\Views\EtureServer\Reminders\RemindersController.pas
-C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
+
 C:\Views\EtureServer\SchoolCourses\SchoolCoursesController.pas
 C:\Views\EtureServer\SchoolTypes\SchoolTypesController.pas
 C:\Views\EtureServer\SocialMedia\SocialMediaController.pas
