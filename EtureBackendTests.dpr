@@ -9,11 +9,11 @@ uses
   senCille.MVCRequests in '..\EtureFrontend\framework\senCille.MVCRequests.pas',
   senCille.Miscellaneous in '..\EtureFrontend\framework\senCille.Miscellaneous.pas',
   senCille.CustomWebForm in '..\EtureFrontend\framework\senCille.CustomWebForm.pas' {scCustomWebForm: TWebForm} {*.html},
-  {XX}
   senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas' {$R *.res},
   senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
   Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
-  (*stAcademicRecords in 'TestAcademicRecords.pas',
+  (*
+  TestAcademicRecords in 'TestAcademicRecords.pas',
   TestAppIssues in 'TestAppIssues.pas',
   TestAssays in 'TestAssays.pas',
   TestAuxData in 'TestAuxData.pas',
@@ -44,11 +44,17 @@ uses
   TestStates in 'TestStates.pas',
   TestTeams in 'TestTeams.pas',
   TestUniversities in 'TestUniversities.pas',
-  TestUsers in 'TestUsers.pas';*)
+  TestLocalizations in 'TestLocalizations.pas',
+  TestUsers in 'TestUsers.pas',
+  TestChats in 'TestChats.pas',
+  TestMessages in 'TestMessages.pas',
+  TestParticipants in 'TestParticipants.pas';*)
 
-  TestLocalizations in 'TestLocalizations.pas';
+  TestChats in 'TestChats.pas',
+  TestMessages in 'TestMessages.pas',
+  TestParticipants in 'TestParticipants.pas';
 
-  //C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
+//C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
 
 {$R}
 
