@@ -341,22 +341,33 @@ end;
 
 [Test] [async] procedure TTestChats.TestDeleteChat;
 { Se envía el GUID de un chat existente:
-    Se devuelve el Chat Existente }
+    No devuelve nada }
 
 var JSONArray :TJSONArray;
     ExceptMsg :string;
+    CHAT_ID   :Int64;
+    DataSet   :TWebClientDataSet;
 begin
+   await(DeleteTestChatIfExists());
    TWebSetup.Instance.Language := 'ES';
 
+   CHAT_ID := await(Int64, EnsureTestChatExists());
+
    try
-      JSONArray := await(TJSONArray, TDB.GetJSONArray('/localizations', [['FORM_NAME', 'TUsersForm']], '/getvalues'));
+      await(TDB.Delete(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)]], '/deletechat'));
       ExceptMsg := 'ok';
    except
       on E:Exception do ExceptMsg := E.Message;
    end;
 
-   Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetValues -> '+ExceptMsg);
-   Assert.IsTrue(JSONArray.Count > 0, 'GetValues must return content.');
+   Assert.IsTrue(ExceptMsg = 'ok', 'Exception in DeleteChat -> '+ExceptMsg);
+   DataSet := CreateDataSet;
+   try
+      await(TDB.GetRow(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)]], DataSet, '/getchat'));
+      Assert.IsTrue(DataSet.RecordCount = 0, 'DeleteChat->GetRow must not return content.');
+   finally
+      DataSet.Free;
+   end;
 end;
 
 initialization
