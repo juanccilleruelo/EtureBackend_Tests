@@ -27,15 +27,16 @@ type
    private
      function CreateDataSet:TWebClientDataSet;
      procedure FillChatData(ADataSet :TWebClientDataSet; const ATitle :string; const AChatType: string = 'DIRECT');
-     [async] function HasTestChat:Boolean;
-     [async] function EnsureTestChatExists:Int64;
-     [async] procedure DeleteTestChatIfExists;
+     [async] function HasTestChat(HostUser, GuestUser :string):Boolean;
+     [async] function EnsureTestChatExists(HostUser, GuestUser :string):Int64;
+     [async] procedure DeleteTestChatIfExists(HostUser, GuestUser :string);
    published
       [Test] [async] procedure TestChatExists;
       [Test] [async] procedure TestCreateNewChat;
       [Test] [async] procedure TestGetChat;
       [Test] [async] procedure TestUpdateChat;
       [Test] [async] procedure TestDeleteChat;
+      [Test] [async] procedure TestGetAll;
    end;
 {$M-}
 
@@ -159,15 +160,15 @@ begin
   ADataSet.Post;
 end;
 
-[async] function TTestChats.HasTestChat:Boolean;
+[async] function TTestChats.HasTestChat(HostUser, GuestUser :string):Boolean;
 var ID_CHAT   :Int64;
     ExceptMsg :string;
 begin
    TWebSetup.Instance.Language := 'ES';
    try
       ID_CHAT := await(Int64, TDB.GetInteger(LOCAL_PATH, '/chatexists',
-                       [['CD_USER_1', TEST_HOST_CD_USER ],
-                        ['CD_USER_2', TEST_GUEST_CD_USER]]
+                       [['CD_USER_1', HostUser],
+                        ['CD_USER_2', GuestUser]]
                        ));
       ExceptMsg := 'ok';
    except
@@ -176,17 +177,17 @@ begin
    Result := ID_CHAT <> -1;
 end;
 
-[async] function TTestChats.EnsureTestChatExists:Int64;
+[async] function TTestChats.EnsureTestChatExists(HostUser, GuestUser :string):Int64;
 var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
 begin
-   if await(Boolean, HasTestChat()) then Exit;
+   if await(Boolean, HasTestChat(HostUser, GuestUser)) then Exit;
 
    TWebSetup.Instance.Language := 'ES';
    try
       Result := await(Int64, TDB.GetInteger(LOCAL_PATH, '/createnewchat',
-                       [['CD_USER_1', TEST_HOST_CD_USER ],
-                        ['CD_USER_2', TEST_GUEST_CD_USER]]
+                       [['CD_USER_1', HostUser ],
+                        ['CD_USER_2', GuestUser]]
                        ));
       ExceptMsg := 'ok';
    except
@@ -196,12 +197,12 @@ begin
    Assert.IsTrue(Result > -1, 'EnsureTextChatExists -> '+ExceptMsg);
 end;
 
-[async] procedure TTestChats.DeleteTestChatIfExists;
+[async] procedure TTestChats.DeleteTestChatIfExists(HostUser, GuestUser :string);
 var ID_CHAT :Int64;
 begin
    ID_CHAT := await(Int64, TDB.GetInteger(LOCAL_PATH, '/chatexists',
-                       [['CD_USER_1', TEST_HOST_CD_USER ],
-                        ['CD_USER_2', TEST_GUEST_CD_USER]]
+                       [['CD_USER_1', HostUser ],
+                        ['CD_USER_2', GuestUser]]
                        ));
    if ID_CHAT > -1 then begin
       try
@@ -252,7 +253,7 @@ end;
 var ID_CHAT   :Int64;
     ExceptMsg :string;
 begin
-   await(DeleteTestChatIfExists());
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
    try
       TWebSetup.Instance.Language := 'ES';
       try
@@ -268,7 +269,7 @@ begin
       Assert.IsTrue(ExceptMsg = 'ok', 'Exception in CreateNewChat -> '+ExceptMsg);
       Assert.IsTrue(ID_CHAT > -1, 'CreateNewChat must return a positive integer.');
    finally
-      await(DeleteTestChatIfExists());
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
    end;
 end;
 
@@ -280,9 +281,9 @@ var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
     CHAT_ID   :Int64;
 begin
-   await(DeleteTestChatIfExists());
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
 
-   CHAT_ID := await(Int64, EnsureTestChatExists());
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
    try
       TWebSetup.Instance.Language := 'ES';
       DataSet := CreateDataSet;
@@ -300,7 +301,7 @@ begin
          DataSet.Free;
       end;
    finally
-      await(DeleteTestChatIfExists());
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
    end;
 end;
 
@@ -309,9 +310,9 @@ var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
     CHAT_ID   :Int64;
 begin
-   await(DeleteTestChatIfExists());
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
 
-   CHAT_ID := await(Int64, EnsureTestChatExists());
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
 
    DataSet := CreateDataSet;
    try
@@ -335,7 +336,7 @@ begin
       Assert.IsTrue(DataSet.FieldByName('TITLE').AsString = UPDATED_TITLE, 'Updated title stored in database');
    finally
       DataSet.Free;
-      await(DeleteTestChatIfExists());
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
    end;
 end;
 
@@ -348,10 +349,10 @@ var JSONArray :TJSONArray;
     CHAT_ID   :Int64;
     DataSet   :TWebClientDataSet;
 begin
-   await(DeleteTestChatIfExists());
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
    TWebSetup.Instance.Language := 'ES';
 
-   CHAT_ID := await(Int64, EnsureTestChatExists());
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
 
    try
       await(TDB.Delete(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)]], '/deletechat'));
@@ -367,6 +368,60 @@ begin
       Assert.IsTrue(DataSet.RecordCount = 0, 'DeleteChat->GetRow must not return content.');
    finally
       DataSet.Free;
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestGetAll;
+{ Recupera todos los chats activos de un usuario:
+    Carga el Array de chats en el DataSet }
+
+var DataSet   :TWebClientDataSet;
+    ExceptMsg :string;
+    CHAT_ID_1 :Int64;
+    CHAT_ID_2 :Int64;
+    CHAT_ID_3 :Int64;
+    CHAT_ID_4 :Int64;
+    CHAT_ID_5 :Int64;
+    CHAT_ID_6 :Int64;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'PLAYERUS'));
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'STAFF'   ));
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'AGENT'   ));
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'PARENT'  ));
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'PLAYERES'));
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'COACH'   ));
+
+   CHAT_ID_1 := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, 'PLAYERUS'));
+   CHAT_ID_2 := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, 'STAFF'   ));
+   CHAT_ID_3 := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, 'AGENT'   ));
+   CHAT_ID_4 := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, 'PARENT'  ));
+   CHAT_ID_5 := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, 'PLAYERES'));
+   CHAT_ID_6 := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, 'COACH'   ));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+      DataSet := CreateDataSet;
+      try
+         try
+            await(TDB.GetAll(LOCAL_PATH, [['CD_USER', TEST_HOST_CD_USER]], DataSet));
+            ExceptMsg := 'ok';
+         except
+            on E:Exception do ExceptMsg := E.Message;
+         end;
+
+         Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetAll -> '+ExceptMsg);
+         Assert.IsTrue(DataSet.RecordCount > 0, 'GetAll must return content.');
+         Assert.IsTrue(DataSet.RecordCount = 6, 'GetAll must return 6 chats.');
+      finally
+         DataSet.Free;
+      end;
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'PLAYERUS'));
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'STAFF'   ));
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'AGENT'   ));
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'PARENT'  ));
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'PLAYERES'));
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'COACH'   ));
    end;
 end;
 
