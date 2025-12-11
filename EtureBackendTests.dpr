@@ -9,50 +9,12 @@ uses
   senCille.MVCRequests in '..\EtureFrontend\framework\senCille.MVCRequests.pas',
   senCille.Miscellaneous in '..\EtureFrontend\framework\senCille.Miscellaneous.pas',
   senCille.CustomWebForm in '..\EtureFrontend\framework\senCille.CustomWebForm.pas' {scCustomWebForm: TWebForm} {*.html},
+  {$R}
+  {$R}
   senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas' {$R *.res},
   senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
   Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
-  (*
-  TestAcademicRecords in 'TestAcademicRecords.pas',
-  TestAppIssues in 'TestAppIssues.pas',
-  TestAssays in 'TestAssays.pas',
-  TestAuxData in 'TestAuxData.pas',
-  TestBackendConnection in 'TestBackendConnection.pas',
-  TestCalendarEvents in 'TestCalendarEvents.pas',
-  TestCallUps in 'TestCallUps.pas',
-  TestCampaigns in 'TestCampaigns.pas',
-  TestCareerHistory in 'TestCareerHistory.pas',
-  TestCategories in 'TestCategories.pas',
-  TestClinicalRecords in 'TestClinicalRecords.pas',
-  TestClubs in 'TestClubs.pas',
-  TestConferences in 'TestConferences.pas',
-  TestCountries in 'TestCountries.pas',
-  TestDataTypes in 'TestDataTypes.pas',
-  TestDominantFoot in 'TestDominantFoot.pas',
-  TestInjuries in 'TestInjuries.pas',
-  TestMailTemplates in 'TestMailTemplates.pas',
-  TestMyVisaExamples in 'TestMyVisaExamples.pas',
-  TestMyVisaOverview in 'TestMyVisaOverview.pas',
-  TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
-  TestParents in 'TestParents.pas',
-  TestPlayers in 'TestPlayers.pas',
-  TestPositions in 'TestPositions.pas',
-  TestProperties in 'TestProperties.pas',
-  TestPublicResources in 'TestPublicResources.pas',
-  TestSocialMedia in 'TestSocialMedia.pas',
-  TestScholarshipTypes in 'TestScholarshipTypes.pas',
-  TestStates in 'TestStates.pas',
-  TestTeams in 'TestTeams.pas',
-  TestUniversities in 'TestUniversities.pas',
-  TestLocalizations in 'TestLocalizations.pas',
-  TestUsers in 'TestUsers.pas',
-  TestChats in 'TestChats.pas',
-  TestMessages in 'TestMessages.pas',
-  TestParticipants in 'TestParticipants.pas';*)
-
-  TestChats in 'TestChats.pas',
-  TestMessages in 'TestMessages.pas',
-  TestParticipants in 'TestParticipants.pas';
+  TestChats in 'TestChats.pas';
 
 //C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
 
