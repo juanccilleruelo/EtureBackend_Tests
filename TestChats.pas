@@ -1,4 +1,4 @@
-unit TestChats;
+ï»¿unit TestChats;
 
 interface
 
@@ -40,6 +40,7 @@ type
       [Test] [async] procedure TestGetAll;
       {----- Messages  -----}
       [Test] [async] procedure TestInsertMessage;
+      [Test] [async] procedure TestUpdateMessage;
    end;
 {$M-}
 
@@ -252,28 +253,28 @@ begin
    // No se asigna CHAT_ID: lo genera el servidor / base de datos
    // ADataSet.FieldByName('CHAT_ID').Clear;
 
-   // Usuario anfitrión del chat
+   // Usuario anfitriï¿½n del chat
    ADataSet.FieldByName('HOST_CD_USER').AsString := TEST_HOST_CD_USER;
 
    // Tipo de chat: 'DIRECT' o 'GROUP'
    ADataSet.FieldByName('CHAT_TYPE').AsString := AChatType;
 
-   // Título del chat (para DIRECT puedes usar algo genérico o dejarlo vacío)
+   // Tï¿½tulo del chat (para DIRECT puedes usar algo genï¿½rico o dejarlo vacï¿½o)
    ADataSet.FieldByName('TITLE').AsString := ATitle;
 
    // Estado inicial del chat
    ADataSet.FieldByName('STATUS').AsString := 'ACTIVE';
 
-   // Fechas y últimos mensajes: los dejará a NULL el cliente,
-   // y se rellenarán en el servidor cuando corresponda:
+   // Fechas y ï¿½ltimos mensajes: los dejarï¿½ a NULL el cliente,
+   // y se rellenarï¿½n en el servidor cuando corresponda:
    // ADataSet.FieldByName('CREATED_AT').Clear;
    // ADataSet.FieldByName('UPDATED_AT').Clear;
    // ADataSet.FieldByName('LAST_MESSAGE_AT').Clear;
    // ADataSet.FieldByName('LAST_MESSAGE_ID').Clear;
    // ADataSet.FieldByName('CLOSED_AT').Clear;
 
-   // Metadatos JSON opcionales: lo más simple es dejarlo vacío o NULL
-   // según cómo lo trate tu backend.
+   // Metadatos JSON opcionales: lo mï¿½s simple es dejarlo vacï¿½o o NULL
+   // segï¿½n cï¿½mo lo trate tu backend.
    ADataSet.FieldByName('METADATA_JSON').AsString := ''; // o .Clear;
 
    ADataSet.Post;
@@ -334,12 +335,12 @@ end;
 
 
 [Test] [async] procedure TTestChats.TestChatExists;
-{ Se envían dos códigos de participantes:
+{ Se envï¿½an dos cï¿½digos de participantes:
     El usuario anfitrion y
     El usuario invitado
 
-    Si existe una conversación en la que estén los dos participantes, exclusivamente
-        se devuelve el GUID de esa conversación.
+    Si existe una conversaciï¿½n en la que estï¿½n los dos participantes, exclusivamente
+        se devuelve el GUID de esa conversaciï¿½n.
 
     En caso contrario se devuelve un GUID -1
 }
@@ -363,8 +364,8 @@ begin
 end;
 
 [Test] [async] procedure TTestChats.TestCreateNewChat;
-{ Se envían dos códigos de participantes:
-    El usuario anfitrión y
+{ Se envï¿½an dos cï¿½digos de participantes:
+    El usuario anfitriï¿½n y
     El usuario invitado
 
     Se crea un nuevo Chat y se devuelve el GUID de ese nuevo Chat
@@ -393,7 +394,7 @@ begin
 end;
 
 [Test] [async] procedure TTestChats.TestGetChat;
-{ Se envía el GUID de un chat existente:
+{ Se envï¿½a el GUID de un chat existente:
     Se devuelve el Chat Existente }
 
 var DataSet   :TWebClientDataSet;
@@ -460,7 +461,7 @@ begin
 end;
 
 [Test] [async] procedure TTestChats.TestDeleteChat;
-{ Se envía el GUID de un chat existente:
+{ Se envï¿½a el GUID de un chat existente:
     No devuelve nada }
 
 var JSONArray :TJSONArray;
@@ -583,6 +584,67 @@ begin
             await(TDB.GetAll(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)]], CheckData, '/getmessages'));
             Assert.IsTrue(CheckData.RecordCount > 0, 'GetMessages must return content.');
             Assert.IsTrue(CheckData.Locate('CONTENT_TEXT', MessageTxt, []), 'Inserted message found in chat.');
+         finally
+            CheckData.Free;
+         end;
+      finally
+         DataSet.Free;
+      end;
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestUpdateMessage;
+var DataSet    :TWebClientDataSet;
+    CheckData  :TWebClientDataSet;
+    ExceptMsg  :string;
+    CHAT_ID    :Int64;
+    MESSAGE_ID :Int64;
+    MessageTxt :string;
+    UpdatedTxt :string;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   MessageTxt := 'Unit test message ' + FormatDateTime('yyyymmddhhnnsszzz', Now);
+   UpdatedTxt := 'Updated test message ' + FormatDateTime('yyyymmddhhnnsszzz', Now);
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+      DataSet := CreateMessagesDataSet;
+      try
+         // Primero, insertamos un mensaje
+         DataSet.Append;
+         DataSet.FieldByName('CHAT_ID').AsLargeInt        := CHAT_ID;
+         DataSet.FieldByName('SENDER_CD_USER').AsString   := TEST_HOST_CD_USER;
+         DataSet.FieldByName('MESSAGE_TYPE').AsString     := 'TEXT';
+         DataSet.FieldByName('CONTENT_TEXT').AsString     := MessageTxt;
+         DataSet.FieldByName('STATUS').AsString           := 'NORMAL';
+         DataSet.Post;
+
+         MESSAGE_ID := await(Int64, TDB.InsertAndGetId(LOCAL_PATH, DataSet, '/insertmessage'));
+
+         // Ahora actualizamos el mensaje
+         DataSet.Edit;
+         DataSet.FieldByName('CONTENT_TEXT').AsString := UpdatedTxt;
+         DataSet.Post;
+
+         try
+            await(TDB.Update(LOCAL_PATH, [['OLD_MESSAGE_ID', IntToStr(MESSAGE_ID)]], DataSet, '/updatemessage'));
+            ExceptMsg := 'ok';
+         except
+            on E:Exception do ExceptMsg := E.Message;
+         end;
+
+         Assert.IsTrue(ExceptMsg = 'ok', 'Exception in UpdateMessage -> '+ExceptMsg);
+
+         // Verificamos que el mensaje se actualizÃ³ correctamente
+         CheckData := CreateMessagesDataSet;
+         try
+            await(TDB.GetAll(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)]], CheckData, '/getmessages'));
+            Assert.IsTrue(CheckData.RecordCount > 0, 'GetMessages must return content.');
+            Assert.IsTrue(CheckData.Locate('MESSAGE_ID', MESSAGE_ID, []), 'Updated message found in chat.');
+            Assert.IsTrue(CheckData.FieldByName('CONTENT_TEXT').AsString = UpdatedTxt, 'Message content was updated.');
          finally
             CheckData.Free;
          end;
