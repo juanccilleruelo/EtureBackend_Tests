@@ -42,6 +42,8 @@ type
       [Test] [async] procedure TestInsertMessage;
       [Test] [async] procedure TestUpdateMessage;
       [Test] [async] procedure TestDeleteMessage;
+      [Test] [async] procedure TestGetMessages;
+      [Test] [async] procedure TestGetOneMessage;
    end;
 {$M-}
 
@@ -699,6 +701,121 @@ begin
          try
             await(TDB.GetAll(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)]], CheckData, '/getmessages'));
             Assert.IsFalse(CheckData.Locate('MESSAGE_ID', MESSAGE_ID, []), 'Deleted message must not be found in chat.');
+         finally
+            CheckData.Free;
+         end;
+      finally
+         DataSet.Free;
+      end;
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestGetMessages;
+var DataSet    :TWebClientDataSet;
+    CheckData  :TWebClientDataSet;
+    ExceptMsg  :string;
+    CHAT_ID    :Int64;
+    i          :Integer;
+    MessageTxt :string;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+      DataSet := CreateMessagesDataSet;
+      try
+         // Insertamos 20 mensajes
+         for i := 1 to 20 do begin
+            MessageTxt := 'Test message #' + IntToStr(i) + ' ' + FormatDateTime('yyyymmddhhnnsszzz', Now);
+            
+            DataSet.Append;
+            DataSet.FieldByName('CHAT_ID').AsLargeInt        := CHAT_ID;
+            DataSet.FieldByName('SENDER_CD_USER').AsString   := TEST_HOST_CD_USER;
+            DataSet.FieldByName('MESSAGE_TYPE').AsString     := 'TEXT';
+            DataSet.FieldByName('CONTENT_TEXT').AsString     := MessageTxt;
+            DataSet.FieldByName('STATUS').AsString           := 'NORMAL';
+            DataSet.Post;
+
+            await(Int64, TDB.InsertAndGetId(LOCAL_PATH, DataSet, '/insertmessage'));
+         end;
+
+         // Recuperamos todos los mensajes
+         CheckData := CreateMessagesDataSet;
+         try
+            try
+               await(TDB.GetAll(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)]], CheckData, '/getmessages'));
+               ExceptMsg := 'ok';
+            except
+               on E:Exception do ExceptMsg := E.Message;
+            end;
+
+            Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetMessages -> '+ExceptMsg);
+            Assert.IsTrue(CheckData.RecordCount >= 20, 'GetMessages must return at least 20 messages. Found: ' + IntToStr(CheckData.RecordCount));
+            Assert.IsTrue(CheckData.RecordCount = 20, 'GetMessages must return exactly 20 messages.');
+            
+            // Verificamos que los mensajes contienen el patrón esperado
+            CheckData.First;
+            while not CheckData.Eof do begin
+               Assert.IsTrue(Pos('Test message #', CheckData.FieldByName('CONTENT_TEXT').AsString) > 0, 
+                           'Message content must contain expected pattern.');
+               CheckData.Next;
+            end;
+         finally
+            CheckData.Free;
+         end;
+      finally
+         DataSet.Free;
+      end;
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestGetOneMessage;
+var DataSet    :TWebClientDataSet;
+    CheckData  :TWebClientDataSet;
+    ExceptMsg  :string;
+    CHAT_ID    :Int64;
+    MESSAGE_ID :Int64;
+    MessageTxt :string;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   MessageTxt := 'Unit test get one message ' + FormatDateTime('yyyymmddhhnnsszzz', Now);
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+      DataSet := CreateMessagesDataSet;
+      try
+         // Insertamos un mensaje
+         DataSet.Append;
+         DataSet.FieldByName('CHAT_ID').AsLargeInt        := CHAT_ID;
+         DataSet.FieldByName('SENDER_CD_USER').AsString   := TEST_HOST_CD_USER;
+         DataSet.FieldByName('MESSAGE_TYPE').AsString     := 'TEXT';
+         DataSet.FieldByName('CONTENT_TEXT').AsString     := MessageTxt;
+         DataSet.FieldByName('STATUS').AsString           := 'NORMAL';
+         DataSet.Post;
+
+         MESSAGE_ID := await(Int64, TDB.InsertAndGetId(LOCAL_PATH, DataSet, '/insertmessage'));
+
+         // Recuperamos el mensaje específico
+         CheckData := CreateMessagesDataSet;
+         try
+            try
+               await(TDB.GetRow(LOCAL_PATH, [['MESSAGE_ID', IntToStr(MESSAGE_ID)]], CheckData, '/getonemessage'));
+               ExceptMsg := 'ok';
+            except
+               on E:Exception do ExceptMsg := E.Message;
+            end;
+
+            Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetOneMessage -> '+ExceptMsg);
+            Assert.IsTrue(CheckData.RecordCount > 0, 'GetOneMessage must return content.');
+            Assert.IsTrue(CheckData.FieldByName('MESSAGE_ID').AsLargeInt = MESSAGE_ID, 'Retrieved message ID must match.');
+            Assert.IsTrue(CheckData.FieldByName('CONTENT_TEXT').AsString = MessageTxt, 'Retrieved message content must match.');
+            Assert.IsTrue(CheckData.FieldByName('CHAT_ID').AsLargeInt = CHAT_ID, 'Retrieved message chat ID must match.');
          finally
             CheckData.Free;
          end;
