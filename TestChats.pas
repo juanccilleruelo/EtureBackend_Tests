@@ -41,6 +41,7 @@ type
       {----- Messages  -----}
       [Test] [async] procedure TestInsertMessage;
       [Test] [async] procedure TestUpdateMessage;
+      [Test] [async] procedure TestDeleteMessage;
    end;
 {$M-}
 
@@ -645,6 +646,59 @@ begin
             Assert.IsTrue(CheckData.RecordCount > 0, 'GetMessages must return content.');
             Assert.IsTrue(CheckData.Locate('MESSAGE_ID', MESSAGE_ID, []), 'Updated message found in chat.');
             Assert.IsTrue(CheckData.FieldByName('CONTENT_TEXT').AsString = UpdatedTxt, 'Message content was updated.');
+         finally
+            CheckData.Free;
+         end;
+      finally
+         DataSet.Free;
+      end;
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestDeleteMessage;
+var DataSet    :TWebClientDataSet;
+    CheckData  :TWebClientDataSet;
+    ExceptMsg  :string;
+    CHAT_ID    :Int64;
+    MESSAGE_ID :Int64;
+    MessageTxt :string;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   MessageTxt := 'Unit test message to delete ' + FormatDateTime('yyyymmddhhnnsszzz', Now);
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+      DataSet := CreateMessagesDataSet;
+      try
+         // Primero, insertamos un mensaje
+         DataSet.Append;
+         DataSet.FieldByName('CHAT_ID').AsLargeInt        := CHAT_ID;
+         DataSet.FieldByName('SENDER_CD_USER').AsString   := TEST_HOST_CD_USER;
+         DataSet.FieldByName('MESSAGE_TYPE').AsString     := 'TEXT';
+         DataSet.FieldByName('CONTENT_TEXT').AsString     := MessageTxt;
+         DataSet.FieldByName('STATUS').AsString           := 'NORMAL';
+         DataSet.Post;
+
+         MESSAGE_ID := await(Int64, TDB.InsertAndGetId(LOCAL_PATH, DataSet, '/insertmessage'));
+
+         // Ahora eliminamos el mensaje
+         try
+            await(TDB.Delete(LOCAL_PATH, [['MESSAGE_ID', IntToStr(MESSAGE_ID)]], '/deletemessage'));
+            ExceptMsg := 'ok';
+         except
+            on E:Exception do ExceptMsg := E.Message;
+         end;
+
+         Assert.IsTrue(ExceptMsg = 'ok', 'Exception in DeleteMessage -> '+ExceptMsg);
+
+         // Verificamos que el mensaje fue eliminado
+         CheckData := CreateMessagesDataSet;
+         try
+            await(TDB.GetAll(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)]], CheckData, '/getmessages'));
+            Assert.IsFalse(CheckData.Locate('MESSAGE_ID', MESSAGE_ID, []), 'Deleted message must not be found in chat.');
          finally
             CheckData.Free;
          end;
