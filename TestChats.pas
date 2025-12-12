@@ -547,43 +547,56 @@ end;
 {----- Messages -----}
 
 [Test] [async] procedure TTestChats.TestInsertMessage;
-{ Recupera todos los chats activos de un usuario:
-    Carga el Array de chats en el DataSet }
-
-var DataSet   :TWebClientDataSet;
-    ExceptMsg :string;
-    CHAT_ID   :Int64;
+var DataSet    :TWebClientDataSet;
+    CheckData  :TWebClientDataSet;
+    ExceptMsg  :string;
+    CHAT_ID    :Int64;
+    MessageTxt :string;
 begin
-   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'PLAYERUS'));
-   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, 'PLAYERUS'));
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   MessageTxt := 'Unit test message ' + FormatDateTime('yyyymmddhhnnsszzz', Now);
+
    try
       TWebSetup.Instance.Language := 'ES';
-      DataSet := CreateDataSet;
+      DataSet := CreateMessagesDataSet;
       try
+         DataSet.Append;
+         DataSet.FieldByName('CHAT_ID').AsLargeInt        := CHAT_ID;
+         DataSet.FieldByName('SENDER_CD_USER').AsString   := TEST_HOST_CD_USER;
+         DataSet.FieldByName('MESSAGE_TYPE').AsString     := 'TEXT';
+         DataSet.FieldByName('CONTENT_TEXT').AsString     := MessageTxt;
+         DataSet.FieldByName('STATUS').AsString           := 'NORMAL';
+         DataSet.Post;
+
          try
-            //Inserta un un mensaje
-            await(TDB.Insert(LOCAL_PATH, DataSet));
+            await(TDB.Insert(LOCAL_PATH, DataSet, '/insertmessage'));
             ExceptMsg := 'ok';
          except
             on E:Exception do ExceptMsg := E.Message;
          end;
 
-         //Comprueba que el mensaje existe en la base de datos.
+         Assert.IsTrue(ExceptMsg = 'ok', 'Exception in InsertMessage -> '+ExceptMsg);
 
-         Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetAll -> '+ExceptMsg);
-         Assert.IsTrue(DataSet.RecordCount > 0, 'GetAll must return content.');
-         Assert.IsTrue(DataSet.RecordCount = 1, 'GetAll must return 6 chats.');
+         CheckData := CreateMessagesDataSet;
+         try
+            await(TDB.GetAll(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)]], CheckData, '/getmessages'));
+            Assert.IsTrue(CheckData.RecordCount > 0, 'GetMessages must return content.');
+            Assert.IsTrue(CheckData.Locate('CONTENT_TEXT', MessageTxt, []), 'Inserted message found in chat.');
+         finally
+            CheckData.Free;
+         end;
       finally
          DataSet.Free;
       end;
    finally
-      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'PLAYERUS'));
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
    end;
 end;
-
-
 
 initialization
    TTMSWEBUnitTestingRunner.RegisterClass(TTestChats);
 end.
+
+
 
