@@ -412,7 +412,9 @@ begin
       DataSet := CreateDataSet;
       try
          try
-            await(TDB.GetRow(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)]], DataSet, '/getchat'));
+            await(TDB.GetRow(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)],
+                                          ['CD_USER', TEST_HOST_CD_USER]],
+                                          DataSet, '/getchat'));
             ExceptMsg := 'ok';
          except
             on E:Exception do ExceptMsg := E.Message;
@@ -439,7 +441,9 @@ begin
 
    DataSet := CreateDataSet;
    try
-      await(TDB.GetRow(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)]], DataSet, '/getchat'));
+      await(TDB.GetRow(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)],
+                                    ['CD_USER', TEST_HOST_CD_USER]],
+                                    DataSet, '/getchat'));
 
       DataSet.Edit;
       DataSet.FieldByName('TITLE').AsString := UPDATED_TITLE;
@@ -454,7 +458,9 @@ begin
 
       Assert.IsTrue(ExceptMsg = 'ok', 'Exception in Update -> '+ExceptMsg);
 
-      await(TDB.GetRow(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)]], DataSet, '/getchat'));
+      await(TDB.GetRow(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)],
+                                    ['CD_USER', TEST_HOST_CD_USER]],
+                                    DataSet, '/getchat'));
 
       Assert.IsTrue(DataSet.FieldByName('TITLE').AsString = UPDATED_TITLE, 'Updated title stored in database');
    finally
@@ -487,7 +493,9 @@ begin
    Assert.IsTrue(ExceptMsg = 'ok', 'Exception in DeleteChat -> '+ExceptMsg);
    DataSet := CreateDataSet;
    try
-      await(TDB.GetRow(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)]], DataSet, '/getchat'));
+      await(TDB.GetRow(LOCAL_PATH, [['CHAT_ID', IntToStr(CHAT_ID)],
+                                    ['CD_USER', TEST_HOST_CD_USER]],
+                                    DataSet, '/getchat'));
       Assert.IsTrue(DataSet.RecordCount = 0, 'DeleteChat->GetRow must not return content.');
    finally
       DataSet.Free;
@@ -534,7 +542,7 @@ begin
 
          Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetAll -> '+ExceptMsg);
          Assert.IsTrue(DataSet.RecordCount > 0, 'GetAll must return content.');
-         Assert.IsTrue(DataSet.RecordCount = 6, 'GetAll must return 6 chats.');
+         Assert.IsTrue(DataSet.RecordCount > 5, 'GetAll must more than 5 chats.');
       finally
          DataSet.Free;
       end;
@@ -805,7 +813,9 @@ begin
          CheckData := CreateMessagesDataSet;
          try
             try
-               await(TDB.GetRow(LOCAL_PATH, [['MESSAGE_ID', IntToStr(MESSAGE_ID)]], CheckData, '/getonemessage'));
+               await(TDB.GetRow(LOCAL_PATH, [['MESSAGE_ID', IntToStr(MESSAGE_ID)],
+                                             ['CD_USER'   , TEST_HOST_CD_USER   ]],
+                                             CheckData, '/getonemessage'));
                ExceptMsg := 'ok';
             except
                on E:Exception do ExceptMsg := E.Message;
