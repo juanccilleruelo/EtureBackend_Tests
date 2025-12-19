@@ -45,6 +45,7 @@ type
       [Test] [async] procedure TestGetMessages;
       [Test] [async] procedure TestGetOneMessage;
       [Test] [async] procedure TestChatHasNewMessages;
+      [Test] [async] procedure TestGetTotalUnreadMessages;
    end;
 {$M-}
 
@@ -909,6 +910,106 @@ begin
       end;
    finally
       await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestGetTotalUnreadMessages;
+var DataSet            :TWebClientDataSet;
+    ExceptMsg          :string;
+    CHAT_ID_1          :Int64;
+    CHAT_ID_2          :Int64;
+    CHAT_ID_3          :Int64;
+    i                  :Integer;
+    MessageTxt         :string;
+    TotalUnread        :Integer;
+    ExpectedTotal      :Integer;
+begin
+   // Limpiamos chats de prueba existentes
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'PLAYERUS'));
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'STAFF'));
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'AGENT'));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+      
+      // Creamos 3 chats diferentes
+      CHAT_ID_1 := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, 'PLAYERUS'));
+      CHAT_ID_2 := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, 'STAFF'));
+      CHAT_ID_3 := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, 'AGENT'));
+
+      DataSet := CreateMessagesDataSet;
+      try
+         // En CHAT_ID_1: insertamos 5 mensajes del otro usuario (mensajes no leídos)
+         for i := 1 to 5 do begin
+            MessageTxt := 'Unread message from PLAYERUS #' + IntToStr(i) + ' ' + FormatDateTime('yyyymmddhhnnsszzz', Now);
+            
+            DataSet.Append;
+            DataSet.FieldByName('CHAT_ID').AsLargeInt        := CHAT_ID_1;
+            DataSet.FieldByName('SENDER_CD_USER').AsString   := 'PLAYERUS';
+            DataSet.FieldByName('MESSAGE_TYPE').AsString     := 'TEXT';
+            DataSet.FieldByName('CONTENT_TEXT').AsString     := MessageTxt;
+            DataSet.FieldByName('STATUS').AsString           := 'NORMAL';
+            DataSet.Post;
+
+            await(Int64, TDB.InsertAndGetId(LOCAL_PATH, DataSet, '/insertmessage'));
+         end;
+
+         // En CHAT_ID_2: insertamos 3 mensajes del otro usuario (mensajes no leídos)
+         for i := 1 to 3 do begin
+            MessageTxt := 'Unread message from STAFF #' + IntToStr(i) + ' ' + FormatDateTime('yyyymmddhhnnsszzz', Now);
+            
+            DataSet.Append;
+            DataSet.FieldByName('CHAT_ID').AsLargeInt        := CHAT_ID_2;
+            DataSet.FieldByName('SENDER_CD_USER').AsString   := 'STAFF';
+            DataSet.FieldByName('MESSAGE_TYPE').AsString     := 'TEXT';
+            DataSet.FieldByName('CONTENT_TEXT').AsString     := MessageTxt;
+            DataSet.FieldByName('STATUS').AsString           := 'NORMAL';
+            DataSet.Post;
+
+            await(Int64, TDB.InsertAndGetId(LOCAL_PATH, DataSet, '/insertmessage'));
+         end;
+
+         // En CHAT_ID_3: insertamos 7 mensajes del otro usuario (mensajes no leídos)
+         for i := 1 to 7 do begin
+            MessageTxt := 'Unread message from AGENT #' + IntToStr(i) + ' ' + FormatDateTime('yyyymmddhhnnsszzz', Now);
+            
+            DataSet.Append;
+            DataSet.FieldByName('CHAT_ID').AsLargeInt        := CHAT_ID_3;
+            DataSet.FieldByName('SENDER_CD_USER').AsString   := 'AGENT';
+            DataSet.FieldByName('MESSAGE_TYPE').AsString     := 'TEXT';
+            DataSet.FieldByName('CONTENT_TEXT').AsString     := MessageTxt;
+            DataSet.FieldByName('STATUS').AsString           := 'NORMAL';
+            DataSet.Post;
+
+            await(Int64, TDB.InsertAndGetId(LOCAL_PATH, DataSet, '/insertmessage'));
+         end;
+
+         // Total esperado: 5 + 3 + 7 = 15 mensajes no leídos
+         ExpectedTotal := 15;
+
+         // Consultamos el total de mensajes no leídos para TEST_HOST_CD_USER
+         try
+            TotalUnread := await(Integer, TDB.GetInteger(LOCAL_PATH, '/gettotalunreadmessages',
+                                                         [['CD_USER', TEST_HOST_CD_USER]],
+                                                         'TOTAL_UNREAD_MESSAGES'));
+            ExceptMsg := 'ok';
+         except
+            on E:Exception do begin
+               ExceptMsg := E.Message;
+               TotalUnread := -1;
+            end;
+         end;
+
+         Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetTotalUnreadMessages -> '+ExceptMsg);
+         Assert.IsTrue(TotalUnread = ExpectedTotal, 'Must have ' + IntToStr(ExpectedTotal) + ' unread messages. Found: ' + IntToStr(TotalUnread));
+      finally
+         DataSet.Free;
+      end;
+   finally
+      // Limpieza
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'PLAYERUS'));
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'STAFF'));
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'AGENT'));
    end;
 end;
 
