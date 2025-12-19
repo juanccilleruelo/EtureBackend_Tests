@@ -44,6 +44,7 @@ type
       [Test] [async] procedure TestDeleteMessage;
       [Test] [async] procedure TestGetMessages;
       [Test] [async] procedure TestGetOneMessage;
+      [Test] [async] procedure TestChatHasNewMessages;
    end;
 {$M-}
 
@@ -829,6 +830,80 @@ begin
          finally
             CheckData.Free;
          end;
+      finally
+         DataSet.Free;
+      end;
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestChatHasNewMessages;
+var DataSet            :TWebClientDataSet;
+    ExceptMsg          :string;
+    CHAT_ID            :Int64;
+    LAST_MESSAGE_ID    :Int64;
+    i                  :Integer;
+    MessageTxt         :string;
+    JSONArray          :TJSONArray;
+    jo                 :TJSONObject;
+    NewMessagesCount   :Integer;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+      DataSet := CreateMessagesDataSet;
+      try
+         // Insertamos 5 mensajes iniciales del HOST
+         for i := 1 to 5 do begin
+            MessageTxt := 'Initial message #' + IntToStr(i) + ' ' + FormatDateTime('yyyymmddhhnnsszzz', Now);
+            
+            DataSet.Append;
+            DataSet.FieldByName('CHAT_ID').AsLargeInt        := CHAT_ID;
+            DataSet.FieldByName('SENDER_CD_USER').AsString   := TEST_HOST_CD_USER;
+            DataSet.FieldByName('MESSAGE_TYPE').AsString     := 'TEXT';
+            DataSet.FieldByName('CONTENT_TEXT').AsString     := MessageTxt;
+            DataSet.FieldByName('STATUS').AsString           := 'NORMAL';
+            DataSet.Post;
+
+            LAST_MESSAGE_ID := await(Int64, TDB.InsertAndGetId(LOCAL_PATH, DataSet, '/insertmessage'));
+         end;
+
+         // LAST_MESSAGE_ID contiene el último mensaje que el usuario "vio en pantalla"
+         
+         // Ahora insertamos 3 mensajes nuevos del GUEST (simulando que el otro usuario responde)
+         for i := 1 to 3 do begin
+            MessageTxt := 'New message from guest #' + IntToStr(i) + ' ' + FormatDateTime('yyyymmddhhnnsszzz', Now);
+            
+            DataSet.Append;
+            DataSet.FieldByName('CHAT_ID').AsLargeInt        := CHAT_ID;
+            DataSet.FieldByName('SENDER_CD_USER').AsString   := TEST_GUEST_CD_USER;
+            DataSet.FieldByName('MESSAGE_TYPE').AsString     := 'TEXT';
+            DataSet.FieldByName('CONTENT_TEXT').AsString     := MessageTxt;
+            DataSet.FieldByName('STATUS').AsString           := 'NORMAL';
+            DataSet.Post;
+
+            await(Int64, TDB.InsertAndGetId(LOCAL_PATH, DataSet, '/insertmessage'));
+         end;
+
+         // Ahora preguntamos si hay mensajes nuevos después del LAST_MESSAGE_ID
+         try
+            NewMessagesCount := await(Integer, TDB.GetInteger(LOCAL_PATH, '/chathasnewmessages',
+                                                              [['CHAT_ID'                  , IntToStr(CHAT_ID)        ],
+                                                               ['LAST_MESSAGE_ID_ON_SCREEN', IntToStr(LAST_MESSAGE_ID)]],
+                                                               'NEW_MESSAGES_COUNT'));
+            ExceptMsg := 'ok';
+         except
+            on E:Exception do begin
+               ExceptMsg := E.Message;
+               NewMessagesCount := -1;
+            end;
+         end;
+
+         Assert.IsTrue(ExceptMsg = 'ok', 'Exception in ChatHasNewMessages -> '+ExceptMsg);
+         Assert.IsTrue(NewMessagesCount = 3, 'Must have 3 new messages. Found: ' + IntToStr(NewMessagesCount));
       finally
          DataSet.Free;
       end;
