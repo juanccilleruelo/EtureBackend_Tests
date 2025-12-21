@@ -46,6 +46,7 @@ type
       [Test] [async] procedure TestGetOneMessage;
       [Test] [async] procedure TestChatHasNewMessages;
       [Test] [async] procedure TestGetTotalUnreadMessages;
+      [Test] [async] procedure TestGetTotalUnreadMessagesTimeout;
    end;
 {$M-}
 
@@ -1002,6 +1003,127 @@ begin
 
          Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetTotalUnreadMessages -> '+ExceptMsg);
          Assert.IsTrue(TotalUnread = ExpectedTotal, 'Must have ' + IntToStr(ExpectedTotal) + ' unread messages. Found: ' + IntToStr(TotalUnread));
+      finally
+         DataSet.Free;
+      end;
+   finally
+      // Limpieza
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'PLAYERUS'));
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'STAFF'));
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'AGENT'));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestGetTotalUnreadMessagesTimeout;
+{ Esta prueba documenta el uso correcto del endpoint /gettotalunreadmessages
+  desde un programa cliente, incluyendo el manejo de excepciones.
+  
+  COMPORTAMIENTO ESPERADO:
+  - La consulta debe completarse en menos de 100ms bajo condiciones normales
+  - Si la consulta excede 100ms, el servidor devolverá una excepción 408 (Request Timeout)
+  - El cliente debe manejar esta excepción apropiadamente
+  
+  FORMA DE USO desde el cliente:
+    try
+       TotalUnread := await(Integer, TDB.GetInteger('/chats', '/gettotalunreadmessages',
+                                                    [['CD_USER', CD_USER_CODE]],
+                                                    'TOTAL_UNREAD_MESSAGES'));
+       // Usar TotalUnread normalmente
+    except
+       on E:Exception do begin
+          // Manejar error (timeout u otro error)
+          // Si es timeout (408), el mensaje contendrá '408' o 'timeout'
+          ShowMessage('Error al obtener mensajes no leídos: ' + E.Message);
+       end;
+    end;
+}
+var DataSet            :TWebClientDataSet;
+    ExceptMsg          :string;
+    CHAT_ID_1          :Int64;
+    CHAT_ID_2          :Int64;
+    CHAT_ID_3          :Int64;
+    i                  :Integer;
+    MessageTxt         :string;
+    TotalUnread        :Integer;
+    ExpectedTotal      :Integer;
+begin
+   // Limpiamos chats de prueba existentes
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'PLAYERUS'));
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'STAFF'));
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'AGENT'));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+      
+      // Creamos 3 chats con algunos mensajes no leídos
+      CHAT_ID_1 := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, 'PLAYERUS'));
+      CHAT_ID_2 := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, 'STAFF'));
+      CHAT_ID_3 := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, 'AGENT'));
+
+      DataSet := CreateMessagesDataSet;
+      try
+         // Insertamos mensajes no leídos en los 3 chats
+         for i := 1 to 3 do begin
+            MessageTxt := 'Unread from PLAYERUS #' + IntToStr(i);
+            DataSet.Append;
+            DataSet.FieldByName('CHAT_ID').AsLargeInt        := CHAT_ID_1;
+            DataSet.FieldByName('SENDER_CD_USER').AsString   := 'PLAYERUS';
+            DataSet.FieldByName('MESSAGE_TYPE').AsString     := 'TEXT';
+            DataSet.FieldByName('CONTENT_TEXT').AsString     := MessageTxt;
+            DataSet.FieldByName('STATUS').AsString           := 'NORMAL';
+            DataSet.Post;
+            await(Int64, TDB.InsertAndGetId(LOCAL_PATH, DataSet, '/insertmessage'));
+         end;
+
+         for i := 1 to 2 do begin
+            MessageTxt := 'Unread from STAFF #' + IntToStr(i);
+            DataSet.Append;
+            DataSet.FieldByName('CHAT_ID').AsLargeInt        := CHAT_ID_2;
+            DataSet.FieldByName('SENDER_CD_USER').AsString   := 'STAFF';
+            DataSet.FieldByName('MESSAGE_TYPE').AsString     := 'TEXT';
+            DataSet.FieldByName('CONTENT_TEXT').AsString     := MessageTxt;
+            DataSet.FieldByName('STATUS').AsString           := 'NORMAL';
+            DataSet.Post;
+            await(Int64, TDB.InsertAndGetId(LOCAL_PATH, DataSet, '/insertmessage'));
+         end;
+
+         for i := 1 to 4 do begin
+            MessageTxt := 'Unread from AGENT #' + IntToStr(i);
+            DataSet.Append;
+            DataSet.FieldByName('CHAT_ID').AsLargeInt        := CHAT_ID_3;
+            DataSet.FieldByName('SENDER_CD_USER').AsString   := 'AGENT';
+            DataSet.FieldByName('MESSAGE_TYPE').AsString     := 'TEXT';
+            DataSet.FieldByName('CONTENT_TEXT').AsString     := MessageTxt;
+            DataSet.FieldByName('STATUS').AsString           := 'NORMAL';
+            DataSet.Post;
+            await(Int64, TDB.InsertAndGetId(LOCAL_PATH, DataSet, '/insertmessage'));
+         end;
+
+         ExpectedTotal := 9;  // 3 + 2 + 4
+
+         // Consultamos el total con manejo de excepciones apropiado
+         // Este es el patrón que debe usar cualquier cliente
+         try
+            TotalUnread := await(Integer, TDB.GetInteger(LOCAL_PATH, '/gettotalunreadmessages',
+                                                         [['CD_USER', TEST_HOST_CD_USER]],
+                                                         'TOTAL_UNREAD_MESSAGES'));
+            ExceptMsg := 'ok';
+         except
+            on E:Exception do begin
+               ExceptMsg := E.Message;
+               TotalUnread := -1;
+               // En una aplicación real, aquí se manejaría el error
+               // mostrando un mensaje al usuario o reintentando la operación
+            end;
+         end;
+
+         // Verificamos que la consulta se completó exitosamente (sin timeout)
+         Assert.IsTrue(ExceptMsg = 'ok', 'GetTotalUnreadMessages should complete without timeout. Error: ' + ExceptMsg);
+         Assert.IsTrue(TotalUnread = ExpectedTotal, 
+                      'Expected ' + IntToStr(ExpectedTotal) + ' unread messages, got: ' + IntToStr(TotalUnread));
+         
+         // NOTA: Si la excepción contiene '408' o 'timeout', significa que la consulta
+         // excedió el límite de 100ms establecido en el servidor
       finally
          DataSet.Free;
       end;
