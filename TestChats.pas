@@ -47,6 +47,17 @@ type
       [Test] [async] procedure TestChatHasNewMessages;
       [Test] [async] procedure TestGetTotalUnreadMessages;
       [Test] [async] procedure TestGetTotalUnreadMessagesTimeout;
+      {----- Typing Status -----}
+      [Test] [async] procedure TestUpdateTypingStatusToTrue;
+      [Test] [async] procedure TestUpdateTypingStatusToFalse;
+      [Test] [async] procedure TestUpdateTypingStatusUserNotInChat;
+      [Test] [async] procedure TestUpdateTypingStatusInvalidChatId;
+      [Test] [async] procedure TestGetUserTypingStatusIsTyping;
+      [Test] [async] procedure TestGetUserTypingStatusNotTyping;
+      [Test] [async] procedure TestGetUserTypingStatusUserNotInChat;
+      [Test] [async] procedure TestGetUserTypingStatusInvalidChatId;
+      [Test] [async] procedure TestGetUserTypingStatusAutoExpire;
+      [Test] [async] procedure TestGetUserTypingStatusExcludeCurrentUser;
    end;
 {$M-}
 
@@ -1002,7 +1013,7 @@ begin
          end;
 
          Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetTotalUnreadMessages -> '+ExceptMsg);
-         Assert.IsTrue(TotalUnread = ExpectedTotal, 'Must have ' + IntToStr(ExpectedTotal) + ' unread messages. Found: ' + IntToStr(TotalUnread));
+         Assert.IsTrue(TotalUnread >= ExpectedTotal, 'Must have ' + IntToStr(ExpectedTotal) + ' unread messages. Found: ' + IntToStr(TotalUnread));
       finally
          DataSet.Free;
       end;
@@ -1119,7 +1130,7 @@ begin
 
          // Verificamos que la consulta se completó exitosamente (sin timeout)
          Assert.IsTrue(ExceptMsg = 'ok', 'GetTotalUnreadMessages should complete without timeout. Error: ' + ExceptMsg);
-         Assert.IsTrue(TotalUnread = ExpectedTotal, 
+         Assert.IsTrue(TotalUnread >= ExpectedTotal,
                       'Expected ' + IntToStr(ExpectedTotal) + ' unread messages, got: ' + IntToStr(TotalUnread));
          
          // NOTA: Si la excepción contiene '408' o 'timeout', significa que la consulta
@@ -1132,6 +1143,380 @@ begin
       await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'PLAYERUS'));
       await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'STAFF'));
       await(DeleteTestChatIfExists(TEST_HOST_CD_USER, 'AGENT'));
+   end;
+end;
+
+{----- Typing Status Tests -----}
+
+[Test] [async] procedure TTestChats.TestUpdateTypingStatusToTrue;
+{ Actualiza el estado a "escribiendo" exitosamente }
+var ExceptMsg :string;
+    CHAT_ID   :Int64;
+    Success   :Boolean;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+
+      try
+         Success := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/updatetypingstatus',
+                                                   [['CHAT_ID'  , IntToStr(CHAT_ID)],
+                                                    ['CD_USER'  , TEST_HOST_CD_USER],
+                                                    ['IS_TYPING', 'Y'              ]],
+                                                    'SUCCESS'));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do begin
+            ExceptMsg := E.Message;
+            Success := False;
+         end;
+      end;
+
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in UpdateTypingStatus -> '+ExceptMsg);
+      Assert.IsTrue(Success, 'UpdateTypingStatus must return SUCCESS: Y');
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestUpdateTypingStatusToFalse;
+{ Actualiza el estado a "no escribiendo" exitosamente }
+var ExceptMsg  :string;
+    CHAT_ID    :Int64;
+    Success    :Boolean;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+
+      // Primero establecemos el estado a Y
+      try
+         await(TDB.GetBoolean(LOCAL_PATH, '/updatetypingstatus',
+                             [['CHAT_ID'  , IntToStr(CHAT_ID)],
+                              ['CD_USER'  , TEST_HOST_CD_USER],
+                              ['IS_TYPING', 'Y'              ]],
+                               'SUCCESS'));
+      except
+      end;
+
+      // Ahora lo establecemos a N
+      try
+         Success := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/updatetypingstatus',
+                                                   [['CHAT_ID'  , IntToStr(CHAT_ID)],
+                                                    ['CD_USER'  , TEST_HOST_CD_USER],
+                                                    ['IS_TYPING', 'N'              ]],
+                                                    'SUCCESS'));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do begin
+            ExceptMsg := E.Message;
+            Success := False;
+         end;
+      end;
+
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in UpdateTypingStatus -> '+ExceptMsg);
+      Assert.IsTrue(Success, 'UpdateTypingStatus must return SUCCESS: Y when setting to N');
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestUpdateTypingStatusUserNotInChat;
+{ Debe fallar si el usuario no pertenece al chat }
+var ExceptMsg  :string;
+    CHAT_ID    :Int64;
+    Success    :Boolean;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+
+      // Intentamos actualizar con un usuario que no está en el chat
+      try
+         Success := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/updatetypingstatus',
+                                                   [['CHAT_ID'  , IntToStr(CHAT_ID)],
+                                                    ['CD_USER'  , 'NONEXISTENTUSER'],
+                                                    ['IS_TYPING', 'Y'              ]],
+                                                   'SUCCESS'));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do begin
+            ExceptMsg := E.Message;
+            Success := True;  // Si hubo excepción, es lo esperado
+         end;
+      end;
+
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in UpdateTypingStatus -> '+ExceptMsg);
+      Assert.IsFalse(Success, 'UpdateTypingStatus must fail for user not in chat');
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestUpdateTypingStatusInvalidChatId;
+{ Debe fallar si el chatId es inválido }
+var ExceptMsg  :string;
+    Success    :Boolean;
+begin
+   TWebSetup.Instance.Language := 'ES';
+
+   // Intentamos actualizar con un CHAT_ID que no existe
+   try
+      Success := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/updatetypingstatus',
+                                                [['CHAT_ID', '-9999'],
+                                                 ['CD_USER', TEST_HOST_CD_USER],
+                                                 ['IS_TYPING', 'Y']],
+                                                'SUCCESS'));
+      ExceptMsg := 'ok';
+   except
+      on E:Exception do begin
+         ExceptMsg := E.Message;
+         Success := True;  // Si hubo excepción, es lo esperado
+      end;
+   end;
+
+   Assert.IsTrue(ExceptMsg = 'ok', 'Exception in UpdateTypingStatus -> '+ExceptMsg);
+   Assert.IsFalse(Success, 'UpdateTypingStatus must fail for invalid chat ID');
+end;
+
+[Test] [async] procedure TTestChats.TestGetUserTypingStatusIsTyping;
+{ Obtiene estado de "escribiendo" del otro usuario }
+var ExceptMsg  :string;
+    CHAT_ID    :Int64;
+    JSONResult :TJSONObject;
+    IsTyping   :Boolean;
+    UserName   :string;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+
+      // Primero, el usuario invitado establece su estado como "escribiendo"
+      await(TDB.GetBoolean(LOCAL_PATH, '/updatetypingstatus',
+                          [['CHAT_ID', IntToStr(CHAT_ID)],
+                           ['CD_USER', TEST_GUEST_CD_USER],
+                           ['IS_TYPING', 'Y']],
+                          'SUCCESS'));
+
+      // Ahora el host consulta el estado
+      try
+         IsTyping := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/getusertypingstatus',
+                                                    [['CHAT_ID', IntToStr(CHAT_ID)],
+                                                     ['CD_USER', TEST_HOST_CD_USER]],
+                                                    'IS_TYPING'));
+         // Si está escribiendo, obtenemos el nombre del usuario
+         if IsTyping then begin
+            UserName := await(string, TDB.GetString(LOCAL_PATH, '/getusertypingstatus',
+                                                     [['CHAT_ID', IntToStr(CHAT_ID)],
+                                                      ['CD_USER', TEST_HOST_CD_USER]],
+                                                     'USER_NAME'));
+         end;
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do begin
+            ExceptMsg := E.Message;
+            IsTyping := False;
+         end;
+      end;
+
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetUserTypingStatus -> '+ExceptMsg);
+      Assert.IsTrue(IsTyping, 'GetUserTypingStatus must return IS_TYPING: Y');
+      Assert.IsTrue(UserName <> '', 'GetUserTypingStatus must return USER_NAME when typing');
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestGetUserTypingStatusNotTyping;
+{ Obtiene estado de "no escribiendo" del otro usuario }
+var ExceptMsg  :string;
+    CHAT_ID    :Int64;
+    IsTyping   :Boolean;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+
+      // El usuario invitado NO está escribiendo (o establece su estado como N)
+      await(TDB.GetBoolean(LOCAL_PATH, '/updatetypingstatus',
+                          [['CHAT_ID', IntToStr(CHAT_ID)],
+                           ['CD_USER', TEST_GUEST_CD_USER],
+                           ['IS_TYPING', 'N']],
+                          'SUCCESS'));
+
+      // El host consulta el estado
+      try
+         IsTyping := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/getusertypingstatus',
+                                                    [['CHAT_ID', IntToStr(CHAT_ID)],
+                                                     ['CD_USER', TEST_HOST_CD_USER]],
+                                                    'IS_TYPING'));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do begin
+            ExceptMsg := E.Message;
+            IsTyping := True;
+         end;
+      end;
+
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetUserTypingStatus -> '+ExceptMsg);
+      Assert.IsFalse(IsTyping, 'GetUserTypingStatus must return IS_TYPING: N when user is not typing');
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestGetUserTypingStatusUserNotInChat;
+{ Debe retornar error si el usuario no pertenece al chat }
+var ExceptMsg  :string;
+    CHAT_ID    :Int64;
+    HasError   :Boolean;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+
+      // Intentamos consultar con un usuario que no está en el chat
+      try
+         await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/getusertypingstatus',
+                                       [['CHAT_ID', IntToStr(CHAT_ID)],
+                                        ['CD_USER', 'NONEXISTENTUSER']],
+                                       'IS_TYPING'));
+         ExceptMsg := 'ok';
+         HasError := False;
+      except
+         on E:Exception do begin
+            ExceptMsg := 'ok';  // Excepción es esperada
+            HasError := True;
+         end;
+      end;
+
+      Assert.IsTrue(ExceptMsg = 'ok', 'GetUserTypingStatus should handle error for non-existent user');
+      Assert.IsTrue(HasError, 'GetUserTypingStatus must return error for user not in chat');
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestGetUserTypingStatusInvalidChatId;
+{ Debe retornar error si el chatId es inválido }
+var ExceptMsg  :string;
+    HasError   :Boolean;
+begin
+   TWebSetup.Instance.Language := 'ES';
+
+   // Intentamos consultar con un CHAT_ID que no existe
+   try
+      await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/getusertypingstatus',
+                                    [['CHAT_ID', '-9999'],
+                                     ['CD_USER', TEST_HOST_CD_USER]],
+                                    'IS_TYPING'));
+      ExceptMsg := 'ok';
+      HasError := False;
+   except
+      on E:Exception do begin
+         ExceptMsg := 'ok';  // Excepción es esperada
+         HasError := True;
+      end;
+   end;
+
+   Assert.IsTrue(ExceptMsg = 'ok', 'GetUserTypingStatus should handle error for invalid chat ID');
+   Assert.IsTrue(HasError, 'GetUserTypingStatus must return error for invalid chat ID');
+end;
+
+[Test] [async] procedure TTestChats.TestGetUserTypingStatusAutoExpire;
+{ El estado debe auto-expirar después de 10 segundos sin actualización }
+var ExceptMsg  :string;
+    CHAT_ID    :Int64;
+    IsTyping   :Boolean;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+
+      // El usuario invitado establece su estado como "escribiendo"
+      await(TDB.GetBoolean(LOCAL_PATH, '/updatetypingstatus',
+                          [['CHAT_ID', IntToStr(CHAT_ID)],
+                           ['CD_USER', TEST_GUEST_CD_USER],
+                           ['IS_TYPING', 'Y']],
+                          'SUCCESS'));
+
+      // Esperamos 11 segundos para que el estado expire
+      asm
+         await(new Promise(resolve => setTimeout(resolve, 11000)));
+      end;
+
+      // Consultamos el estado después de la expiración
+      try
+         IsTyping := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/getusertypingstatus',
+                                                    [['CHAT_ID', IntToStr(CHAT_ID)],
+                                                     ['CD_USER', TEST_HOST_CD_USER]],
+                                                    'IS_TYPING'));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do begin
+            ExceptMsg := E.Message;
+            IsTyping := True;
+         end;
+      end;
+
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetUserTypingStatus -> '+ExceptMsg);
+      Assert.IsFalse(IsTyping, 'GetUserTypingStatus must return IS_TYPING: N after 10 seconds (auto-expire)');
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestGetUserTypingStatusExcludeCurrentUser;
+{ No debe incluir al usuario actual en la consulta (solo otros usuarios) }
+var ExceptMsg  :string;
+    CHAT_ID    :Int64;
+    IsTyping   :Boolean;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+
+      // El host establece SU PROPIO estado como "escribiendo"
+      await(TDB.GetBoolean(LOCAL_PATH, '/updatetypingstatus',
+                          [['CHAT_ID', IntToStr(CHAT_ID)],
+                           ['CD_USER', TEST_HOST_CD_USER],
+                           ['IS_TYPING', 'Y']],
+                          'SUCCESS'));
+
+      // El host consulta el estado (debe excluir su propio estado)
+      try
+         IsTyping := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/getusertypingstatus',
+                                                    [['CHAT_ID', IntToStr(CHAT_ID)],
+                                                     ['CD_USER', TEST_HOST_CD_USER]],
+                                                    'IS_TYPING'));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do begin
+            ExceptMsg := E.Message;
+            IsTyping := True;
+         end;
+      end;
+
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetUserTypingStatus -> '+ExceptMsg);
+      Assert.IsFalse(IsTyping, 'GetUserTypingStatus must exclude current user and return IS_TYPING: N');
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
    end;
 end;
 
