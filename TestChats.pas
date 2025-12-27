@@ -58,6 +58,11 @@ type
       [Test] [async] procedure TestGetUserTypingStatusInvalidChatId;
       [Test] [async] procedure TestGetUserTypingStatusAutoExpire;
       [Test] [async] procedure TestGetUserTypingStatusExcludeCurrentUser;
+      {----- Mark Messages As Read -----}
+      [Test] [async] procedure TestMarkChatMessagesAsRead;
+      [Test] [async] procedure TestMarkChatMessagesAsReadValidation;
+      [Test] [async] procedure TestMarkChatMessagesAsReadInvalidChatId;
+      [Test] [async] procedure TestMarkChatMessagesAsReadInvalidUser;
    end;
 {$M-}
 
@@ -1515,6 +1520,195 @@ begin
 
       Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetUserTypingStatus -> '+ExceptMsg);
       Assert.IsFalse(IsTyping, 'GetUserTypingStatus must exclude current user and return IS_TYPING: N');
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+{----- Mark Messages As Read Tests -----}
+
+[Test] [async] procedure TTestChats.TestMarkChatMessagesAsRead;
+{ Prueba el marcado de mensajes como leídos para un usuario en un chat específico }
+var DataSet            :TWebClientDataSet;
+    ExceptMsg          :string;
+    CHAT_ID            :Int64;
+    i                  :Integer;
+    MessageTxt         :string;
+    Success            :Boolean;
+    TotalUnreadBefore  :Integer;
+    TotalUnreadAfter   :Integer;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+      DataSet := CreateMessagesDataSet;
+      try
+         // Insertamos 5 mensajes del otro usuario (mensajes no leídos)
+         for i := 1 to 5 do begin
+            MessageTxt := 'Unread message from guest #' + IntToStr(i) + ' ' + FormatDateTime('yyyymmddhhnnsszzz', Now);
+            
+            DataSet.Append;
+            DataSet.FieldByName('CHAT_ID').AsLargeInt        := CHAT_ID;
+            DataSet.FieldByName('SENDER_CD_USER').AsString   := TEST_GUEST_CD_USER;
+            DataSet.FieldByName('MESSAGE_TYPE').AsString     := 'TEXT';
+            DataSet.FieldByName('CONTENT_TEXT').AsString     := MessageTxt;
+            DataSet.FieldByName('STATUS').AsString           := 'NORMAL';
+            DataSet.Post;
+
+            await(Int64, TDB.InsertAndGetId(LOCAL_PATH, DataSet, '/insertmessage'));
+         end;
+
+         // Verificamos que hay mensajes no leídos antes de marcarlos como leídos
+         try
+            TotalUnreadBefore := await(Integer, TDB.GetInteger(LOCAL_PATH, '/gettotalunreadmessages',
+                                                               [['CD_USER', TEST_HOST_CD_USER]],
+                                                               'TOTAL_UNREAD_MESSAGES'));
+            ExceptMsg := 'ok';
+         except
+            on E:Exception do begin
+               ExceptMsg := E.Message;
+               TotalUnreadBefore := 0;
+            end;
+         end;
+
+         Assert.IsTrue(ExceptMsg = 'ok', 'Exception getting unread messages before -> '+ExceptMsg);
+         Assert.IsTrue(TotalUnreadBefore >= 5, 'Must have at least 5 unread messages. Found: ' + IntToStr(TotalUnreadBefore));
+
+         // Marcamos los mensajes como leídos
+         try
+            Success := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/markchatmessagesasread',
+                                                     [['CHAT_ID', IntToStr(CHAT_ID)],
+                                                      ['CD_USER', TEST_HOST_CD_USER]],
+                                                     'SUCCESS'));
+            ExceptMsg := 'ok';
+         except
+            on E:Exception do begin
+               ExceptMsg := E.Message;
+               Success := False;
+            end;
+         end;
+
+         Assert.IsTrue(ExceptMsg = 'ok', 'Exception in MarkChatMessagesAsRead -> '+ExceptMsg);
+         Assert.IsTrue(Success, 'MarkChatMessagesAsRead must return success: Y');
+
+         // Verificamos que ya no hay mensajes no leídos en este chat
+         try
+            TotalUnreadAfter := await(Integer, TDB.GetInteger(LOCAL_PATH, '/gettotalunreadmessages',
+                                                              [['CD_USER', TEST_HOST_CD_USER]],
+                                                              'TOTAL_UNREAD_MESSAGES'));
+            ExceptMsg := 'ok';
+         except
+            on E:Exception do begin
+               ExceptMsg := E.Message;
+               TotalUnreadAfter := 999;
+            end;
+         end;
+
+         Assert.IsTrue(ExceptMsg = 'ok', 'Exception getting unread messages after -> '+ExceptMsg);
+         Assert.IsTrue(TotalUnreadAfter < TotalUnreadBefore, 'Unread count must decrease after marking as read. Before: ' + IntToStr(TotalUnreadBefore) + ', After: ' + IntToStr(TotalUnreadAfter));
+      finally
+         DataSet.Free;
+      end;
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestMarkChatMessagesAsReadValidation;
+{ Prueba que la operación requiere los campos obligatorios CHAT_ID y CD_USER }
+var ExceptMsg  :string;
+    Success    :Boolean;
+    CHAT_ID    :Int64;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+
+      // Intentamos marcar sin proporcionar CD_USER (debe fallar)
+      try
+         Success := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/markchatmessagesasread',
+                                                  [['CHAT_ID', IntToStr(CHAT_ID)]],
+                                                  'SUCCESS'));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do begin
+            ExceptMsg := E.Message;
+            Success := False;
+         end;
+      end;
+
+      Assert.IsTrue(ExceptMsg <> 'ok', 'Must throw exception when CD_USER is missing');
+      Assert.IsFalse(Success, 'Must return False when CD_USER is missing');
+   finally
+      await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestMarkChatMessagesAsReadInvalidChatId;
+{ Prueba el comportamiento con un CHAT_ID inexistente }
+var ExceptMsg  :string;
+    Success    :Boolean;
+begin
+   try
+      TWebSetup.Instance.Language := 'ES';
+
+      // Intentamos marcar mensajes en un chat inexistente
+      try
+         Success := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/markchatmessagesasread',
+                                                  [['CHAT_ID', '999999999'],
+                                                   ['CD_USER', TEST_HOST_CD_USER]],
+                                                  'SUCCESS'));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do begin
+            ExceptMsg := E.Message;
+            Success := False;
+         end;
+      end;
+
+      // El endpoint debe completarse sin error aunque el chat no exista
+      // (simplemente no actualiza ningún registro)
+      Assert.IsTrue(ExceptMsg = 'ok', 'Should not throw exception with invalid CHAT_ID -> '+ExceptMsg);
+      Assert.IsTrue(Success, 'Should return success even with invalid CHAT_ID');
+   finally
+      // No hay cleanup necesario ya que no creamos ningún chat
+   end;
+end;
+
+[Test] [async] procedure TTestChats.TestMarkChatMessagesAsReadInvalidUser;
+{ Prueba el comportamiento cuando el usuario no es participante del chat }
+var ExceptMsg  :string;
+    Success    :Boolean;
+    CHAT_ID    :Int64;
+begin
+   await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+   CHAT_ID := await(Int64, EnsureTestChatExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
+
+   try
+      TWebSetup.Instance.Language := 'ES';
+
+      // Intentamos marcar mensajes con un usuario que no es participante del chat
+      try
+         Success := await(Boolean, TDB.GetBoolean(LOCAL_PATH, '/markchatmessagesasread',
+                                                  [['CHAT_ID', IntToStr(CHAT_ID)],
+                                                   ['CD_USER', 'INVALID_USER_123']],
+                                                  'SUCCESS'));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do begin
+            ExceptMsg := E.Message;
+            Success := False;
+         end;
+      end;
+
+      // El endpoint debe completarse sin error aunque el usuario no sea participante
+      // (simplemente no actualiza ningún registro)
+      Assert.IsTrue(ExceptMsg = 'ok', 'Should not throw exception with invalid user -> '+ExceptMsg);
+      Assert.IsTrue(Success, 'Should return success even with invalid user');
    finally
       await(DeleteTestChatIfExists(TEST_HOST_CD_USER, TEST_GUEST_CD_USER));
    end;
