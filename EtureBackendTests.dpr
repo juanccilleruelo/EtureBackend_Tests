@@ -9,19 +9,14 @@ uses
   senCille.MVCRequests in '..\EtureFrontend\framework\senCille.MVCRequests.pas',
   senCille.Miscellaneous in '..\EtureFrontend\framework\senCille.Miscellaneous.pas',
   senCille.CustomWebForm in '..\EtureFrontend\framework\senCille.CustomWebForm.pas' {scCustomWebForm: TWebForm} {*.html},
-  {$R}
-  {$R}
-  {$R}
-  senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas' {$R *.res},
+  senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas',
   senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
   Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
-  TestChats in 'TestChats.pas';
+  TestSchedule in 'TestSchedule.pas';
 
 //C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
-
-{$R}
-
 (*
+  TestChats in 'TestChats.pas',
   TestBackendConnection in 'TestBackendConnection.pas',
   TestAppIssues in 'TestAppIssues.pas',
   TestCallUps in 'TestCallUps.pas',
