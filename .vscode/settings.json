@@ -1,3 +1,5 @@
 {
-  "objectpascal.diagnostics.enabled": false
+  "objectpascal.diagnostics.enabled": false,
+  "omnipascal.backgroundSyntaxCheck": false,
+  "omnipascal.delayAfterKeystrokeBeforeSuggest": 0
 }

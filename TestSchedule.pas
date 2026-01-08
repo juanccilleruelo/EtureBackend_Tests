@@ -33,7 +33,7 @@ type
    published
       [Test] [async] procedure TestCalendarExists;
       [Test] [async] procedure TestCreateNewCalendar;
-      //[Test] [async] procedure TestUpdateCalendar;
+      [Test] [async] procedure TestUpdateCalendar;
       //[Test] [async] procedure TestDeleteCalendar;
       //[Test] [async] procedure TestAllCalendarsCalendar;
       //[Test] [async] procedure TestOneCalendar;
@@ -240,6 +240,54 @@ begin
          DataSet.Free;
       end;
    finally
+      await(DeleteTestCalendarIfExists(TEST_DS_CALENDAR));
+   end;
+end;
+
+[Test] [async] procedure TTestSchedule.TestUpdateCalendar;
+{ Actualiza un calendario existente y verifica que los cambios se apliquen correctamente }
+var DataSet     :TWebClientDataSet;
+    ExceptMsg   :string;
+    ID_CALENDAR :Int64;
+begin
+   ID_CALENDAR := await(Int64, EnsureTestCalendarExists(TEST_DS_CALENDAR));
+
+   DataSet := CreateCalendarDataSet;
+   try
+      await(TDB.GetRow(LOCAL_PATH,
+                       [['ID_CALENDAR', IntToStr(ID_CALENDAR)]],
+                       DataSet, '/getonecalendar'));
+
+      DataSet.Edit;
+      DataSet.FieldByName('DS_CALENDAR').AsString := UPDATED_DS_CALENDAR;
+      DataSet.FieldByName('COLOR'      ).AsString := '#00FF00';
+      DataSet.Post;
+
+      try
+         await(TDB.Update(LOCAL_PATH, [['ID_CALENDAR', IntToStr(ID_CALENDAR)],
+                                       ['CD_USER'    , TEST_CD_USER        ]], DataSet, '/updatecalendar'));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
+
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in UpdateCalendar -> '+ExceptMsg);
+
+      await(TDB.GetRow(LOCAL_PATH,
+                       [['ID_CALENDAR', IntToStr(ID_CALENDAR)]],
+                       DataSet, '/getonecalendar'));
+
+      Assert.IsTrue(DataSet.FieldByName('DS_CALENDAR').AsString = UPDATED_DS_CALENDAR, 'Updated calendar name stored');
+      Assert.IsTrue(DataSet.FieldByName('COLOR'      ).AsString = '#00FF00', 'Updated color stored');
+
+      DataSet.Edit;
+      DataSet.FieldByName('DS_CALENDAR').AsString := TEST_DS_CALENDAR;
+      DataSet.FieldByName('COLOR'      ).AsString := TEST_COLOR;
+      DataSet.Post;
+      await(TDB.Update(LOCAL_PATH, [['ID_CALENDAR', IntToStr(ID_CALENDAR)],
+                                    ['CD_USER'    , TEST_CD_USER        ]], DataSet, '/updatecalendar'));
+   finally
+      DataSet.Free;
       await(DeleteTestCalendarIfExists(TEST_DS_CALENDAR));
    end;
 end;
