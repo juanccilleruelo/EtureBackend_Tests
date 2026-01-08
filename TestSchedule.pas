@@ -36,7 +36,7 @@ type
       [Test] [async] procedure TestUpdateCalendar;
       [Test] [async] procedure TestDeleteCalendar;
       [Test] [async] procedure TestAllCalendarsCalendar;
-      //[Test] [async] procedure TestOneCalendar;
+      [Test] [async] procedure TestOneCalendar;
    end;
 {$M-}
 
@@ -396,6 +396,42 @@ begin
       DataSet.Free;
       await(DeleteTestCalendarIfExists(TEST_DS_CALENDAR));
       await(DeleteTestCalendarIfExists(TEST_DS_CALENDAR + ' 2'));
+   end;
+end;
+
+[Test] [async] procedure TTestSchedule.TestOneCalendar;
+{ Obtiene un calendario específico por su ID y verifica que los datos sean correctos }
+var DataSet     :TWebClientDataSet;
+    ExceptMsg   :string;
+    ID_CALENDAR :Int64;
+begin
+   { Create a test calendar }
+   ID_CALENDAR := await(Int64, EnsureTestCalendarExists(TEST_DS_CALENDAR));
+   Assert.IsTrue(ID_CALENDAR > -1, 'Test calendar must exist');
+
+   TWebSetup.Instance.Language := 'ES';
+   DataSet := CreateCalendarDataSet;
+   try
+      try
+         { Get specific calendar by ID }
+         await(TDB.GetRow(LOCAL_PATH, [['ID_CALENDAR', IntToStr(ID_CALENDAR)]], DataSet, '/getonecalendar'));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
+
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetOneCalendar -> '+ExceptMsg);
+      Assert.IsTrue(DataSet.RecordCount = 1, 'Must return exactly one calendar');
+
+      { Verify calendar data }
+      Assert.IsTrue(DataSet.FieldByName('ID_CALENDAR').AsLargeInt = ID_CALENDAR, 'Calendar ID matches');
+      Assert.IsTrue(DataSet.FieldByName('DS_CALENDAR').AsString = TEST_DS_CALENDAR, 'Calendar name matches');
+      Assert.IsTrue(DataSet.FieldByName('CD_USER').AsString = TEST_CD_USER, 'Calendar user matches');
+      Assert.IsTrue(DataSet.FieldByName('COLOR').AsString = TEST_COLOR, 'Calendar color matches');
+      Assert.IsTrue(DataSet.FieldByName('ST').AsString = 'A', 'Calendar status is Active');
+   finally
+      DataSet.Free;
+      await(DeleteTestCalendarIfExists(TEST_DS_CALENDAR));
    end;
 end;
 
