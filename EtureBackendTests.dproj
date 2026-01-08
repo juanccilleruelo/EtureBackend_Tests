@@ -138,6 +138,7 @@
     </BuildConfiguration>
     <None Include="omnipascal.json"/>
     <None Include=".vscode\settings.json"/>
+    <None Include=".copilot-instructions.md"/>
   </ItemGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality.12</Borland.Personality>
