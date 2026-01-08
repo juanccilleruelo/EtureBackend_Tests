@@ -34,7 +34,7 @@ type
       [Test] [async] procedure TestCalendarExists;
       [Test] [async] procedure TestCreateNewCalendar;
       [Test] [async] procedure TestUpdateCalendar;
-      //[Test] [async] procedure TestDeleteCalendar;
+      [Test] [async] procedure TestDeleteCalendar;
       //[Test] [async] procedure TestAllCalendarsCalendar;
       //[Test] [async] procedure TestOneCalendar;
    end;
@@ -290,6 +290,51 @@ begin
       DataSet.Free;
       await(DeleteTestCalendarIfExists(TEST_DS_CALENDAR));
    end;
+end;
+
+[Test] [async] procedure TTestSchedule.TestDeleteCalendar;
+{ Elimina un calendario existente y verifica que ya no exista }
+var ID_CALENDAR :Int64;
+    ExceptMsg   :string;
+    DataSet     :TWebClientDataSet;
+begin
+   ID_CALENDAR := await(Int64, EnsureTestCalendarExists(TEST_DS_CALENDAR));
+   Assert.IsTrue(ID_CALENDAR > -1, 'Calendar must exist before deletion');
+
+   TWebSetup.Instance.Language := 'ES';
+   
+   try
+      { Attempt to delete the calendar }
+      await(TDB.Delete(LOCAL_PATH, [['ID_CALENDAR', IntToStr(ID_CALENDAR)],
+                                    ['CD_USER'    , TEST_CD_USER        ]], '/deletecalendar'));
+      ExceptMsg := 'ok';
+   except
+      on E:Exception do ExceptMsg := E.Message;
+   end;
+
+   Assert.IsTrue(ExceptMsg = 'ok', 'Exception in DeleteCalendar -> '+ExceptMsg);
+
+   { Verify calendar is marked as cancelled (soft delete) }
+   DataSet := CreateCalendarDataSet;
+   try
+      try
+         await(TDB.GetRow(LOCAL_PATH, [['ID_CALENDAR', IntToStr(ID_CALENDAR)]],
+                                       DataSet, '/getonecalendar'));
+         
+         { If the calendar is returned, verify it's marked as cancelled }
+         if DataSet.RecordCount > 0 then begin
+            Assert.IsTrue(DataSet.FieldByName('ST').AsString = 'C', 'Calendar should be marked as cancelled (C)');
+         end;
+         
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
+   finally
+      DataSet.Free;
+   end;
+
+   Assert.IsTrue(ExceptMsg = 'ok', 'Exception verifying calendar state -> '+ExceptMsg);
 end;
 
 initialization
