@@ -35,7 +35,7 @@ type
       [Test] [async] procedure TestCreateNewCalendar;
       [Test] [async] procedure TestUpdateCalendar;
       [Test] [async] procedure TestDeleteCalendar;
-      //[Test] [async] procedure TestAllCalendarsCalendar;
+      [Test] [async] procedure TestAllCalendarsCalendar;
       //[Test] [async] procedure TestOneCalendar;
    end;
 {$M-}
@@ -335,6 +335,68 @@ begin
    end;
 
    Assert.IsTrue(ExceptMsg = 'ok', 'Exception verifying calendar state -> '+ExceptMsg);
+end;
+
+[Test] [async] procedure TTestSchedule.TestAllCalendarsCalendar;
+{ Obtiene todos los calendarios de un usuario y verifica que se devuelvan correctamente }
+var DataSet         :TWebClientDataSet;
+    ExceptMsg       :string;
+    ID_CALENDAR1    :Int64;
+    ID_CALENDAR2    :Int64;
+    InitialCount    :Integer;
+    FinalCount      :Integer;
+    FoundCalendar1  :Boolean;
+    FoundCalendar2  :Boolean;
+begin
+   { Create two test calendars }
+   ID_CALENDAR1 := await(Int64, EnsureTestCalendarExists(TEST_DS_CALENDAR));
+   ID_CALENDAR2 := await(Int64, EnsureTestCalendarExists(TEST_DS_CALENDAR + ' 2'));
+   
+   Assert.IsTrue(ID_CALENDAR1 > -1, 'First test calendar must exist');
+   Assert.IsTrue(ID_CALENDAR2 > -1, 'Second test calendar must exist');
+
+   TWebSetup.Instance.Language := 'ES';
+   DataSet := CreateCalendarDataSet;
+   try
+      try
+         { Get all calendars for the test user }
+         await(TDB.GetAll(LOCAL_PATH, [['CD_USER', TEST_CD_USER]], DataSet, '/getallcalendars'));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
+
+      Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetAllCalendars -> '+ExceptMsg);
+      Assert.IsTrue(DataSet.RecordCount > 0, 'User must have at least one calendar');
+
+      { Verify that our test calendars are in the result }
+      FoundCalendar1 := False;
+      FoundCalendar2 := False;
+      
+      DataSet.First;
+      while not DataSet.Eof do begin
+         if DataSet.FieldByName('ID_CALENDAR').AsLargeInt = ID_CALENDAR1 then begin
+            FoundCalendar1 := True;
+            Assert.IsTrue(DataSet.FieldByName('DS_CALENDAR').AsString = TEST_DS_CALENDAR, 'Calendar 1 name matches');
+            Assert.IsTrue(DataSet.FieldByName('CD_USER').AsString = TEST_CD_USER, 'Calendar 1 user matches');
+         end;
+         
+         if DataSet.FieldByName('ID_CALENDAR').AsLargeInt = ID_CALENDAR2 then begin
+            FoundCalendar2 := True;
+            Assert.IsTrue(DataSet.FieldByName('DS_CALENDAR').AsString = TEST_DS_CALENDAR + ' 2', 'Calendar 2 name matches');
+            Assert.IsTrue(DataSet.FieldByName('CD_USER').AsString = TEST_CD_USER, 'Calendar 2 user matches');
+         end;
+         
+         DataSet.Next;
+      end;
+
+      Assert.IsTrue(FoundCalendar1, 'Test calendar 1 found in results');
+      Assert.IsTrue(FoundCalendar2, 'Test calendar 2 found in results');
+   finally
+      DataSet.Free;
+      await(DeleteTestCalendarIfExists(TEST_DS_CALENDAR));
+      await(DeleteTestCalendarIfExists(TEST_DS_CALENDAR + ' 2'));
+   end;
 end;
 
 initialization
