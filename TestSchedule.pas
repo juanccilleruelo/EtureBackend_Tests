@@ -33,6 +33,10 @@ type
    published
       [Test] [async] procedure TestCalendarExists;
       [Test] [async] procedure TestCreateNewCalendar;
+      //[Test] [async] procedure TestUpdateCalendar;
+      //[Test] [async] procedure TestDeleteCalendar;
+      //[Test] [async] procedure TestAllCalendarsCalendar;
+      //[Test] [async] procedure TestOneCalendar;
    end;
 {$M-}
 
