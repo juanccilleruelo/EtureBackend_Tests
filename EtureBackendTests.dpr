@@ -12,10 +12,13 @@ uses
   senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas',
   senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
   Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
-  TestSchedule in 'TestSchedule.pas';
+
+  TestSchedule in 'TestSchedule.pas',
+  TestLocations in 'TestLocations.pas';
 
 //C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
 (*
+
   TestChats in 'TestChats.pas',
   TestBackendConnection in 'TestBackendConnection.pas',
   TestAppIssues in 'TestAppIssues.pas',
