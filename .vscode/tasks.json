@@ -69,6 +69,20 @@
 			"type": "shell",
 			"command": "echo 'Running TMS Web Core compilation...'",
 			"group": "build"
+		},
+		{
+			"label": "Sync Framework Files",
+			"type": "shell",
+			"command": "PowerShell -ExecutionPolicy Bypass -File '${workspaceFolder}\\framework\\sync-framework-files.ps1'",
+			"group": "none",
+			"presentation": {
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"problemMatcher": []
 		}
 	]
 }

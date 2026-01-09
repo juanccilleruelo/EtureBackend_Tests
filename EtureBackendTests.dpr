@@ -3,15 +3,15 @@ program EtureBackendTests;
 uses
   Vcl.Forms,
   WEBLib.Forms,
-  ConfigurationConsts in '..\EtureFrontend\framework\ConfigurationConsts.pas',
-  senCille.WebSetup in '..\EtureFrontend\framework\senCille.WebSetup.pas',
-  senCille.Bootstrap in '..\EtureFrontend\framework\senCille.Bootstrap.pas',
-  senCille.MVCRequests in '..\EtureFrontend\framework\senCille.MVCRequests.pas',
-  senCille.Miscellaneous in '..\EtureFrontend\framework\senCille.Miscellaneous.pas',
-  senCille.CustomWebForm in '..\EtureFrontend\framework\senCille.CustomWebForm.pas' {scCustomWebForm: TWebForm} {*.html},
-  senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas' {$R *.res},
-  senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
-  Dummy in '..\EtureFrontend\Dummy\Dummy.pas' {DummyForm: TWebForm} {*.html},
+  ConfigurationConsts in 'framework\ConfigurationConsts.pas',
+  senCille.WebSetup in 'framework\senCille.WebSetup.pas',
+  senCille.Bootstrap in 'framework\senCille.Bootstrap.pas',
+  senCille.MVCRequests in 'framework\senCille.MVCRequests.pas',
+  senCille.Miscellaneous in 'framework\senCille.Miscellaneous.pas',
+  senCille.CustomWebForm in 'framework\senCille.CustomWebForm.pas' {scCustomWebForm: TWebForm} {*.html},
+  senCille.DataManagement in 'framework\senCille.DataManagement.pas' {$R *.res},
+  senCille.TypeConverter in 'framework\senCille.TypeConverter.pas',
+  Dummy in 'framework\Dummy.pas' {DummyForm: TWebForm} {*.html},
   TestEvents in 'TestEvents.pas';
 
 //C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas

@@ -71,3 +71,7 @@ modules/
 /Win32/Debug/TMSWebRunner.ini
 Debug
 Release
+
+# Framework hardlinks (enlazados desde EtureFrontend)
+framework/*.pas
+framework/*.html
