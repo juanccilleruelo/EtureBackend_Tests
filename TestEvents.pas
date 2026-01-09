@@ -11,6 +11,7 @@ uses
    WEBLib.DBCtrls, WEBLib.StdCtrls, WEBLib.ComCtrls, WEBLib.REST,
    WEBLib.DB, WEBLib.CDS, WebLib.JSON,
    WEBLib.WebCtrls, WEBLib.Menus, WEBLib.Grids, DB,
+   senCille.TypeConverter,
    senCille.Miscellaneous,
    senCille.MVCRequests;
 
@@ -370,8 +371,8 @@ begin
       try
          try
             await(TDB.GetAll(LOCAL_PATH, [['ID_CALENDAR', IntToStr(ID_CALENDAR)],
-                                          ['START_DATE' , FormatDateTime('yyyy-mm-dd hh:nn:ss', StartDate)],
-                                          ['END_DATE'   , FormatDateTime('yyyy-mm-dd hh:nn:ss', EndDate)]],
+                                          ['START_DATE' , TTypeConv.DateTimeToJSON(StartDate)],
+                                          ['END_DATE'   , TTypeConv.DateTimeToJSON(EndDate  )]],
                                           DataSet, '/geteventsbycalendar'));
             ExceptMsg := 'ok';
          except
@@ -402,8 +403,8 @@ begin
       try
          { Query with date range in the past that should have no events }
          await(TDB.GetAll(LOCAL_PATH, [['ID_CALENDAR', IntToStr(ID_CALENDAR)],
-                                       ['START_DATE' , '2020-01-01 00:00:00'],
-                                       ['END_DATE'   , '2020-01-02 00:00:00']],
+                                       ['START_DATE' , TTypeConv.DateTimeToJSON('2020-01-01 00:00:00')],
+                                       ['END_DATE'   , TTypeConv.DateTimeToJSON('2020-01-02 00:00:00')]],
                                        DataSet, '/geteventsbycalendar'));
          ExceptMsg := 'ok';
       except
