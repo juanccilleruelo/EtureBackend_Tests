@@ -235,25 +235,48 @@ begin
 end;
 
 [async] function TTestEvents.HasTestEvent(const ATitle :string):Int64;
+{ PROPÓSITO:
+  Busca si existe un evento con el título especificado perteneciente al usuario de prueba.
+  
+  PARÁMETROS:
+  - ATitle: Título del evento a buscar
+  
+  RETORNO:
+  - ID_EVENT del evento si se encuentra
+  - -1 si no existe ningún evento con ese título
+  
+  ESTRATEGIA:
+  Obtiene todos los eventos del usuario de prueba y busca secuencialmente
+  uno que coincida con el título especificado.
+  
+  NOTA: Esta es una función auxiliar para tests, no está optimizada para producción.
+}
 var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
 begin
+   { Valor por defecto: -1 indica "no encontrado" }
    Result := -1;
+   
    TWebSetup.Instance.Language := 'ES';
    DataSet := CreateEventDataSet;
    try
       try
+         { PASO 1: Obtener todos los eventos del usuario de prueba }
          await(TDB.GetAll(LOCAL_PATH, [['CD_USER', TEST_CD_USER]],
                                        DataSet, '/geteventsbyuser'));
 
+         { PASO 2: Recorrer todos los eventos buscando uno con el título especificado }
          DataSet.First;
          while not DataSet.Eof do begin
+            { Comparar el título actual con el buscado }
             if DataSet.FieldByName('TITLE').AsString = ATitle then begin
+               { Encontrado: guardar el ID y salir del bucle }
                Result := DataSet.FieldByName('ID_EVENT').AsLargeInt;
                Break;
             end;
             DataSet.Next;
          end;
+         { Si se recorre todo el dataset sin Break, Result permanece en -1 }
 
          ExceptMsg := 'ok';
       except
@@ -265,26 +288,54 @@ begin
 end;
 
 [async] function TTestEvents.EnsureTestEventExists(const ATitle :string):Int64;
+{ PROPÓSITO:
+  Garantiza que existe un evento de prueba con el título especificado.
+  Si el evento ya existe, devuelve su ID sin crear uno nuevo (idempotencia).
+  Si no existe, lo crea y devuelve su ID.
+  
+  PARÁMETROS:
+  - ATitle: Título del evento de prueba a buscar/crear
+  
+  RETORNO:
+  - ID_EVENT del evento (existente o recién creado)
+  - Si falla la creación, se lanza una aserción
+  
+  COMPORTAMIENTO:
+  1. Busca si ya existe un evento con ese título
+  2. Si existe → devuelve su ID inmediatamente (Early Exit)
+  3. Si no existe → lo crea:
+     - Obtiene el calendario de prueba
+     - Crea un evento que empieza mañana y dura 2 horas
+     - Inserta en la base de datos
+     - Recupera y devuelve el ID del evento creado
+}
 var DataSet     :TWebClientDataSet;
     ExceptMsg   :string;
     ID_CALENDAR :Int64;
     StartDate   :TDateTime;
     EndDate     :TDateTime;
 begin
+   { PASO 1: Verificar si el evento ya existe }
    Result := await(Int64, HasTestEvent(ATitle));
-   if Result <> -1 then Exit;
+   if Result <> -1 then Exit;  { Si existe, devolver su ID sin crear nada más }
 
+   { PASO 2: Obtener el calendario de prueba donde se creará el evento }
    ID_CALENDAR := await(Int64, GetTestCalendarID);
    if ID_CALENDAR = -1 then
       raise Exception.Create('Test calendar does not exist');
 
+   { PASO 3: Preparar el dataset para crear el nuevo evento }
    TWebSetup.Instance.Language := 'ES';
    DataSet := CreateEventDataSet;
    try
-      StartDate := Now + 1;
-      EndDate   := StartDate + (2/24); // 2 hours later
+      { Configurar fechas del evento: empieza mañana y dura 2 horas }
+      StartDate := Now + 1;        { Mañana a esta hora }
+      EndDate   := StartDate + (2/24); { 2 horas después (2/24 días = 2 horas) }
 
+      { Llenar el dataset con los datos del evento }
       FillEventData(DataSet, ID_CALENDAR, ATitle, StartDate, EndDate);
+      
+      { PASO 4: Insertar el evento en la base de datos }
       try
          await(TDB.Insert(LOCAL_PATH, DataSet, '/insertevent'));
          ExceptMsg := 'ok';
@@ -292,8 +343,10 @@ begin
          on E:Exception do ExceptMsg := E.Message;
       end;
 
+      { Verificar que la inserción fue exitosa }
       Assert.IsTrue(ExceptMsg = 'ok', 'EnsureTestEventExists -> '+ExceptMsg);
       
+      { PASO 5: Recuperar el ID del evento recién creado }
       Result := await(Int64, HasTestEvent(ATitle));
    finally
       DataSet.Free;
@@ -317,14 +370,33 @@ end;
 { GetEventsByCalendar Tests }
 
 [Test] [async] procedure TTestEvents.TestGetEventsByCalendarWithoutDateRange;
+{ OBJETIVO DE LA PRUEBA:
+  Verifica que el endpoint /geteventsbycalendar devuelve TODOS los eventos de un calendario
+  cuando NO se especifica un rango de fechas (START_DATE y END_DATE).
+  
+  ESCENARIO:
+  - Se crea un evento de prueba en un calendario específico
+  - Se consultan todos los eventos del calendario sin filtrar por fechas
+  
+  VALIDACIONES:
+  1. El calendario de prueba existe
+  2. La llamada al endpoint se ejecuta sin excepciones
+  3. Se devuelve al menos un evento (el que acabamos de crear)
+  
+  COMPORTAMIENTO ESPERADO:
+  El servidor debe devolver todos los eventos asociados al calendario, independientemente
+  de sus fechas de inicio o fin. Esta es la consulta "completa" sin restricciones temporales.
+}
 var DataSet     :TWebClientDataSet;
     ExceptMsg   :string;
     ID_CALENDAR :Int64;
     ID_EVENT    :Int64;
 begin
+   { Preparar datos de prueba: crear un evento de prueba en el calendario }
    ID_EVENT := await(Int64, EnsureTestEventExists(TEST_TITLE));
    
    try
+      { Obtener el ID del calendario de prueba }
       ID_CALENDAR := await(Int64, GetTestCalendarID);
       Assert.IsTrue(ID_CALENDAR > -1, 'Test calendar must exist');
 
@@ -332,6 +404,8 @@ begin
       DataSet := CreateEventDataSet;
       try
          try
+            { Llamar al endpoint SIN parámetros de fecha (START_DATE, END_DATE) }
+            { Esto debe devolver TODOS los eventos del calendario }
             await(TDB.GetAll(LOCAL_PATH, [['ID_CALENDAR', IntToStr(ID_CALENDAR)]],
                                           DataSet, '/geteventsbycalendar'));
             ExceptMsg := 'ok';
@@ -339,12 +413,16 @@ begin
             on E:Exception do ExceptMsg := E.Message;
          end;
 
+         { Verificar que no hubo excepciones }
          Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetEventsByCalendar -> '+ExceptMsg);
+         
+         { Verificar que se devolvió al menos un evento }
          Assert.IsTrue(DataSet.RecordCount > 0, 'Calendar must have at least one event');
       finally
          DataSet.Free;
       end;
    finally
+      { Limpiar: eliminar el evento de prueba }
       await(DeleteTestEventIfExists(TEST_TITLE));
    end;
 end;
