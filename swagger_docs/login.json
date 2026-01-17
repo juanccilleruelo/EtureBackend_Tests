@@ -1,0 +1,413 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login;\/api\/swagger":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/login\/createnewuser":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Login"
+        ]
+,
+        "description":"Create new user account",
+        "operationId":"createNewUser",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"User created successfully"
+          }
+,
+          "400":
+          {
+            "description":"User or email already exists"
+          }
+,
+          "500":
+          {
+            "description":"User creation failed"
+          }
+        }
+      }
+    }
+,
+    "\/login\/getiduser":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Login"
+        ]
+,
+        "description":"Generate unique user ID",
+        "operationId":"getIdUser",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Returns generated unique ID_USER"
+          }
+,
+          "400":
+          {
+            "description":"Invalid user code"
+          }
+,
+          "500":
+          {
+            "description":"ID generation failed"
+          }
+        }
+      }
+    }
+,
+    "\/login\/recovercduser":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Login"
+        ]
+,
+        "description":"Recover user information by email or username",
+        "operationId":"recoverCDUser",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"User information retrieved successfully"
+          }
+,
+          "400":
+          {
+            "description":"Invalid JSON in request body"
+          }
+,
+          "404":
+          {
+            "description":"User not found"
+          }
+,
+          "500":
+          {
+            "description":"User recovery failed"
+          }
+        }
+      }
+    }
+,
+    "\/login\/savenewpassword":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Login"
+        ]
+,
+        "description":"Save new password",
+        "operationId":"saveNewPassword",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Password saved successfully"
+          }
+,
+          "400":
+          {
+            "description":"Invalid user code"
+          }
+,
+          "500":
+          {
+            "description":"Password update failed"
+          }
+        }
+      }
+    }
+,
+    "\/login\/validate\/{UserName}\/{Password}":
+    {
+      "get":
+      {
+        "tags":
+        [
+          "Login"
+        ]
+,
+        "description":"Validate user credentials",
+        "operationId":"validateUser",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"path",
+            "name":"Password",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"path",
+            "name":"UserName",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"User validation successful"
+          }
+,
+          "401":
+          {
+            "description":"Invalid credentials"
+          }
+        }
+      }
+    }
+,
+    "\/login\/sendverificationemail":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Login"
+        ]
+,
+        "description":"Send verification email with validation checks",
+        "operationId":"sendVerificationEmail",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Email sent successfully"
+          }
+,
+          "400":
+          {
+            "description":"User or email already exists"
+          }
+,
+          "500":
+          {
+            "description":"Email sending failed"
+          }
+        }
+      }
+    }
+,
+    "\/login\/sendverificationemailwc":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Login"
+        ]
+,
+        "description":"Send verification email without checks",
+        "operationId":"sendVerificationEmailWC",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Email sent successfully"
+          }
+,
+          "500":
+          {
+            "description":"Email sending failed"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+}

@@ -1,0 +1,443 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login;\/api\/swagger":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/schedule\/updatecalendar":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Schedule"
+        ]
+,
+        "description":"Update an existing calendar",
+        "operationId":"updateCalendar",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"request",
+            "description":"Calendar update (ID_CALENDAR: required, CD_USER: required, DS_CALENDAR: required, COLOR: optional)",
+            "required":true,
+            "schema":
+            {
+              "$ref":"#\/definitions\/JSONObject"
+            }
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Calendar updated"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters"
+          }
+,
+          "404":
+          {
+            "description":"Calendar not found"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/schedule\/deletecalendar":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Schedule"
+        ]
+,
+        "description":"Delete a calendar (soft delete)",
+        "operationId":"deleteCalendar",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"request",
+            "description":"Calendar deletion (ID_CALENDAR: required, CD_USER: required)",
+            "required":true,
+            "schema":
+            {
+              "$ref":"#\/definitions\/JSONObject"
+            }
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Calendar deleted"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters"
+          }
+,
+          "404":
+          {
+            "description":"Calendar not found"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/schedule\/insertcalendar":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Schedule"
+        ]
+,
+        "description":"Create a new calendar",
+        "operationId":"insertCalendar",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"request",
+            "description":"Calendar data (CD_USER: required, DS_CALENDAR: required, COLOR: optional hex color default #0000FF)",
+            "required":true,
+            "schema":
+            {
+              "$ref":"#\/definitions\/JSONObject"
+            }
+          }
+        ]
+,
+        "responses":
+        {
+          "201":
+          {
+            "description":"Calendar created"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters"
+          }
+,
+          "409":
+          {
+            "description":"Calendar name already exists"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/schedule\/getonecalendar":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Schedule"
+        ]
+,
+        "description":"Get one calendar by name or ID",
+        "operationId":"getOneCalendar",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"request",
+            "description":"Calendar filter (CD_USER required, either ID_CALENDAR or DS_CALENDAR)",
+            "required":true,
+            "schema":
+            {
+              "$ref":"#\/definitions\/JSONObject"
+            }
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Calendar found"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters"
+          }
+,
+          "404":
+          {
+            "description":"Calendar not found"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/schedule\/getallcalendars":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Schedule"
+        ]
+,
+        "description":"Get all calendars for a user",
+        "operationId":"getAllCalendars",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"request",
+            "description":"User data",
+            "required":true,
+            "schema":
+            {
+              "$ref":"#\/definitions\/JSONObject"
+            }
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"List of calendars"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+,
+  "definitions":
+  {
+    "JSONObject":
+    {
+      "type":"object",
+      "properties":
+      {
+        "count":
+        {
+          "type":"integer"
+        }
+,
+        "isempty":
+        {
+          "type":"boolean"
+        }
+,
+        "null":
+        {
+          "type":"boolean"
+        }
+,
+        "owned":
+        {
+          "type":"boolean"
+        }
+      }
+    }
+  }
+}

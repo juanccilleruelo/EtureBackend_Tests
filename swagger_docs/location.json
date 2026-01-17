@@ -1,0 +1,469 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login;\/api\/swagger":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/location\/insertlocation":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Location"
+        ]
+,
+        "description":"Create a new location",
+        "operationId":"insertLocation",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"request",
+            "description":"Location data (DS_LOCATION: required, TYPE_LOCATION: required F\/V, ADDRESS_TEXT: optional, VIRTUAL_URL: optional, NOTES: optional)",
+            "required":true,
+            "schema":
+            {
+              "$ref":"#\/definitions\/JSONObject"
+            }
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Location created successfully with NEW_ID"
+          }
+,
+          "400":
+          {
+            "description":"Validation error or duplicate location name"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/location\/updatelocation":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Location"
+        ]
+,
+        "description":"Update an existing location",
+        "operationId":"updateLocation",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"request",
+            "description":"Location data (ID_LOCATION: required, DS_LOCATION: required, TYPE_LOCATION: required F\/V, ADDRESS_TEXT: optional, VIRTUAL_URL: optional, NOTES: optional)",
+            "required":true,
+            "schema":
+            {
+              "$ref":"#\/definitions\/JSONObject"
+            }
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Location updated successfully"
+          }
+,
+          "400":
+          {
+            "description":"Invalid TYPE_LOCATION value or missing required fields"
+          }
+,
+          "404":
+          {
+            "description":"Location not found or inactive"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/location\/deletelocation":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Location"
+        ]
+,
+        "description":"Delete a location (soft delete)",
+        "operationId":"deleteLocation",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"request",
+            "description":"Location deletion (ID_LOCATION: required)",
+            "required":true,
+            "schema":
+            {
+              "$ref":"#\/definitions\/JSONObject"
+            }
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Location deleted successfully"
+          }
+,
+          "404":
+          {
+            "description":"Location not found or already inactive"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/location\/getalllocations":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Location"
+        ]
+,
+        "description":"Get all active locations",
+        "operationId":"getAllLocations",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"List of all active locations"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/location\/getlocationsbytype":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Location"
+        ]
+,
+        "description":"Get locations by type",
+        "operationId":"getLocationsByType",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"request",
+            "description":"Filter criteria (TYPE_LOCATION: required, F=Physical or V=Virtual)",
+            "required":true,
+            "schema":
+            {
+              "$ref":"#\/definitions\/JSONObject"
+            }
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"List of locations filtered by type"
+          }
+,
+          "400":
+          {
+            "description":"Missing or invalid TYPE_LOCATION parameter"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/location\/getonelocation":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Location"
+        ]
+,
+        "description":"Get a single location by ID or name",
+        "operationId":"getOneLocation",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"request",
+            "description":"Location filter (either ID_LOCATION or DS_LOCATION required)",
+            "required":true,
+            "schema":
+            {
+              "$ref":"#\/definitions\/JSONObject"
+            }
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Location details"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters"
+          }
+,
+          "404":
+          {
+            "description":"Location not found"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+,
+  "definitions":
+  {
+    "JSONObject":
+    {
+      "type":"object",
+      "properties":
+      {
+        "count":
+        {
+          "type":"integer"
+        }
+,
+        "isempty":
+        {
+          "type":"boolean"
+        }
+,
+        "null":
+        {
+          "type":"boolean"
+        }
+,
+        "owned":
+        {
+          "type":"boolean"
+        }
+      }
+    }
+  }
+}

@@ -75,3 +75,4 @@ Release
 # Framework hardlinks (enlazados desde EtureFrontend)
 framework/*.pas
 framework/*.html
+swagger_docs.zip
