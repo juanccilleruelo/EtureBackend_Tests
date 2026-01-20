@@ -1,0 +1,626 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login;\/api\/swagger":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/users\/emailexists":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Check if email is registered. Required: EMAIL. Returns JSON with BOOLEAN field (Y\/N)",
+        "operationId":"UsersController.TUsersController_EmailExists",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/getfilterbyprofilesusers":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Get available user profiles\/roles. Required: Language (EN\/ES)",
+        "operationId":"UsersController.TUsersController_GetFilterByProfilesUsers",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/getorderbyfields":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Get available fields for ordering. Required: Language (EN\/ES)",
+        "operationId":"UsersController.TUsersController_GetOrderByFields",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/sendinvitation":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Send invitation email. Required: EMAIL, CD_USER_ROLE (ADMIN\/STAFF\/AGENT\/PARENT), CD_METRICS, PREFERRED_LANGUAGE",
+        "operationId":"UsersController.TUsersController_SendInvitation",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/clearinvitation":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Clear invitation for user. Required: CD_USER",
+        "operationId":"UsersController.TUsersController_ClearInvitation",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/getbasicinfo":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Get basic user info by invitation. Required: GUID",
+        "operationId":"UsersController.TUsersController_GetBasicInfo",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/invitationactive":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Check if invitation is valid. Required: GUID. Returns JSON with BOOLEAN field (Y=valid, N=expired)",
+        "operationId":"UsersController.TUsersController_InvitationActive",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/isreferenced":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Check if user is referenced in other tables. Required: CD_USER",
+        "operationId":"UsersController.TUsersController_IsReferenced",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/getone":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Get single user by code. Required: CD_USER",
+        "operationId":"UsersController.TUsersController_GetOne",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/load":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Load paginated users. Required: PageNumber. Optional: SearchText, OrderField, FilterBy, Language (EN\/ES)",
+        "operationId":"UsersController.TUsersController_Load",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/getbasicdata":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Get user code and name by email. Required: EMAIL",
+        "operationId":"UsersController.TUsersController_GetBasicData",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/delete":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Delete user. Required: CD_USER",
+        "operationId":"UsersController.TUsersController_Delete",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/update":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Update existing user. Required: OLD_CD_USER. Optional: CD_USER, EMAIL, FIRST_NAME, LAST_NAME",
+        "operationId":"UsersController.TUsersController_Update",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/getall":
+    {
+          }
+,
+    "\/users\/insert":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Insert new user (UNIT TESTS ONLY). Required: CD_USER, EMAIL, CREATED, VERIFIED, RENEW_VERIFY, CD_USER_ROLE. Optional SALT, PASSWORD auto-generated",
+        "operationId":"UsersController.TUsersController_Insert",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+}
