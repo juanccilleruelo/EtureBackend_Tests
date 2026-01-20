@@ -12,11 +12,12 @@ uses
   senCille.DataManagement in 'framework\senCille.DataManagement.pas' {$R *.res},
   senCille.TypeConverter in 'framework\senCille.TypeConverter.pas',
   Dummy in 'framework\Dummy.pas' {DummyForm: TWebForm} {*.html},
-  TestEvents in 'TestEvents.pas';
+  TestUsers in 'TestUsers.pas';
+
 
 //C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
 (*
-
+  TestEvents in 'TestEvents.pas';
   TestSchedule in 'TestSchedule.pas',
   TestLocations in 'TestLocations.pas',
   TestChats in 'TestChats.pas',
