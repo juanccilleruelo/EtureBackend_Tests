@@ -124,9 +124,8 @@
             <Form>DummyForm</Form>
             <DesignClass>TWebForm</DesignClass>
         </DCCReference>
-        <DCCReference Include="TestUsers.pas">
-            <Form>/C</Form>
-            <DesignClass>Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas</DesignClass>
+        <DCCReference Include="TestBackendConnection.pas">
+            <Form>/TestUsers in &apos;TestUsers.pas&apos;;</Form>
         </DCCReference>
         <None Include="omnipascal.json"/>
         <None Include=".vscode\settings.json"/>

@@ -14,8 +14,6 @@ uses
   senCille.Miscellaneous,
   senCille.MVCRequests;
 
-const LocalPath = '/login';
-
 type
 {$M+}
   [TestFixture]
