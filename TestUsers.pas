@@ -195,6 +195,18 @@ begin
    Result.FieldDefs.Add(NewField.FieldName, ftMemo, 0);
 
    NewField := TStringField.Create(Result);
+   NewField.FieldName := 'SALT';
+   NewField.Size := 64;
+   NewField.DataSet := Result;
+   Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
+
+   NewField := TStringField.Create(Result);
+   NewField.FieldName := 'PASSWORD';
+   NewField.Size := 128;
+   NewField.DataSet := Result;
+   Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
+
+   NewField := TStringField.Create(Result);
    NewField.FieldName := 'DS_COUNTRY';
    NewField.Size := 40;
    NewField.DataSet := Result;
@@ -250,6 +262,13 @@ begin
    ADataSet.Append;
    ADataSet.FieldByName('CD_USER').AsString := TEST_USER_CODE;
    ADataSet.FieldByName('EMAIL').AsString := TEST_EMAIL;
+   // Fields required by /sendinvitation according to swagger_docs/users.json
+   if ADataSet.FieldDefs.IndexOf('CD_USER_ROLE') > -1 then
+      ADataSet.FieldByName('CD_USER_ROLE').AsString := 'PLAYER_US';
+   if ADataSet.FieldDefs.IndexOf('CD_METRICS') > -1 then
+      ADataSet.FieldByName('CD_METRICS').AsString := 'M';
+   if ADataSet.FieldDefs.IndexOf('PREFERRED_LANGUAGE') > -1 then
+      ADataSet.FieldByName('PREFERRED_LANGUAGE').AsString := 'EN';
    ADataSet.Post;
 end;
 
