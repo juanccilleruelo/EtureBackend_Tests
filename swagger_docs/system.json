@@ -1,0 +1,344 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/system\/serverconfig.info":
+    {
+      "get":
+      {
+        "tags":
+        [
+          "DMVCFramework System Controller"
+        ]
+,
+        "description":"Server configuration",
+        "operationId":"MVCFramework.SysControllers.TMVCSystemController_ServerConfig",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error",
+            "schema":
+            {
+              "$ref":"#\/definitions\/MVCErrorResponse"
+            }
+          }
+        }
+      }
+    }
+,
+    "\/system\/describeplatform.info":
+    {
+      "get":
+      {
+        "tags":
+        [
+          "DMVCFramework System Controller"
+        ]
+,
+        "description":"Describe the system where server is running",
+        "operationId":"MVCFramework.SysControllers.TMVCSystemController_DescribePlatform",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "OS":
+                {
+                  "type":"string",
+                  "description":"Operating System Information"
+                }
+,
+                "CPU_count":
+                {
+                  "type":"integer",
+                  "description":"Numbers of cores available "
+                }
+,
+                "CPU_architecture":
+                {
+                  "type":"string",
+                  "description":"CPU's Architecture"
+                }
+,
+                "system_time":
+                {
+                  "type":"string",
+                  "description":"Server timestamp"
+                }
+              }
+            }
+          }
+,
+          "500":
+          {
+            "description":"Internal server error",
+            "schema":
+            {
+              "$ref":"#\/definitions\/MVCErrorResponse"
+            }
+          }
+        }
+      }
+    }
+,
+    "\/system\/describeserver.info":
+    {
+      "get":
+      {
+        "tags":
+        [
+          "DMVCFramework System Controller"
+        ]
+,
+        "description":"Describe controllers and actions published by the RESTful server per resources",
+        "operationId":"MVCFramework.SysControllers.TMVCSystemController_DescribeServer",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error",
+            "schema":
+            {
+              "$ref":"#\/definitions\/MVCErrorResponse"
+            }
+          }
+        }
+      }
+    }
+,
+    "\/system\/currentdate":
+    {
+      "get":
+      {
+        "tags":
+        [
+          "System"
+        ]
+,
+        "description":"Get current server date",
+        "operationId":"SystemController.TSystemController_CurrentDate",
+        "produces":
+        [
+          "text\/plain"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Current server date in ISO 8601 format (YYYY-MM-DD)"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+,
+  "definitions":
+  {
+    "MVCErrorResponse":
+    {
+      "type":"object",
+      "properties":
+      {
+        "classname":
+        {
+          "type":"string"
+        }
+,
+        "detailmessage":
+        {
+          "type":"string",
+          "description":"Detailed error message"
+        }
+,
+        "apperrorcode":
+        {
+          "type":"integer",
+          "description":"Application specific error code",
+          "format":"int64"
+        }
+,
+        "items":
+        {
+          "type":"array",
+          "description":"Detailed items error",
+          "items":
+          {
+            "type":"object",
+            "properties":
+            {
+              "message":
+              {
+                "type":"string"
+              }
+            }
+          }
+        }
+,
+        "message":
+        {
+          "type":"string",
+          "description":"Message"
+        }
+,
+        "data":
+        {
+          "type":"object",
+          "description":"Data Object",
+          "properties":
+          {
+                      }
+        }
+      }
+    }
+  }
+}

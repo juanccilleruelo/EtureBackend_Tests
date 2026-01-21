@@ -108,7 +108,7 @@
           "Users"
         ]
 ,
-        "description":"Check if email is registered. Required: EMAIL. Returns JSON with BOOLEAN field (Y\/N)",
+        "description":"Check if email is registered",
         "operationId":"UsersController.TUsersController_EmailExists",
         "consumes":
         [
@@ -120,11 +120,27 @@
           "application\/json"
         ]
 ,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"EMAIL",
+            "description":"Email address to check (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
         "responses":
         {
           "200":
           {
-            "description":"OK"
+            "description":"Email existence check result with BOOLEAN field (Y=exists, N=does not)"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter EMAIL"
           }
 ,
           "500":
@@ -144,7 +160,7 @@
           "Users"
         ]
 ,
-        "description":"Get available user profiles\/roles. Required: Language (EN\/ES)",
+        "description":"Get available user profiles\/roles",
         "operationId":"UsersController.TUsersController_GetFilterByProfilesUsers",
         "consumes":
         [
@@ -156,11 +172,22 @@
           "application\/json"
         ]
 ,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"Language",
+            "description":"Language code EN\/ES (optional, default EN)",
+            "default":"EN",
+            "type":"string"
+          }
+        ]
+,
         "responses":
         {
           "200":
           {
-            "description":"OK"
+            "description":"Array of available user profiles with CD_USER_ROLE and DS_USER_ROLE"
           }
 ,
           "500":
@@ -180,7 +207,7 @@
           "Users"
         ]
 ,
-        "description":"Get available fields for ordering. Required: Language (EN\/ES)",
+        "description":"Get available fields for ordering",
         "operationId":"UsersController.TUsersController_GetOrderByFields",
         "consumes":
         [
@@ -192,11 +219,22 @@
           "application\/json"
         ]
 ,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"Language",
+            "description":"Language code EN\/ES (optional, default EN)",
+            "default":"EN",
+            "type":"string"
+          }
+        ]
+,
         "responses":
         {
           "200":
           {
-            "description":"OK"
+            "description":"Array of available order fields with FIELD and DESCRIPTION"
           }
 ,
           "500":
@@ -216,7 +254,7 @@
           "Users"
         ]
 ,
-        "description":"Send invitation email. Required: EMAIL, CD_USER_ROLE (ADMIN\/STAFF\/AGENT\/PARENT), CD_METRICS, PREFERRED_LANGUAGE",
+        "description":"Send invitation email to new user",
         "operationId":"UsersController.TUsersController_SendInvitation",
         "consumes":
         [
@@ -228,16 +266,59 @@
           "application\/json"
         ]
 ,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_METRICS",
+            "description":"Metrics identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"PREFERRED_LANGUAGE",
+            "description":"Preferred language EN\/ES (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"EMAIL",
+            "description":"Email address to send invitation to (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_USER_ROLE",
+            "description":"User role code ADMIN\/STAFF\/AGENT\/PARENT (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
         "responses":
         {
           "200":
           {
-            "description":"OK"
+            "description":"Invitation sent successfully with MESSAGE field"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error or email sending failed"
           }
         }
       }
@@ -252,7 +333,7 @@
           "Users"
         ]
 ,
-        "description":"Clear invitation for user. Required: CD_USER",
+        "description":"Clear\/revoke invitation for user",
         "operationId":"UsersController.TUsersController_ClearInvitation",
         "consumes":
         [
@@ -264,11 +345,32 @@
           "application\/json"
         ]
 ,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
         "responses":
         {
           "200":
           {
-            "description":"OK"
+            "description":"Invitation cleared successfully with MESSAGE field"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_USER"
+          }
+,
+          "404":
+          {
+            "description":"User not found"
           }
 ,
           "500":
@@ -288,7 +390,7 @@
           "Users"
         ]
 ,
-        "description":"Get basic user info by invitation. Required: GUID",
+        "description":"Get basic user info by invitation GUID",
         "operationId":"UsersController.TUsersController_GetBasicInfo",
         "consumes":
         [
@@ -300,11 +402,32 @@
           "application\/json"
         ]
 ,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"GUID",
+            "description":"Invitation GUID token (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
         "responses":
         {
           "200":
           {
-            "description":"OK"
+            "description":"User basic information with CD_USER and DS_USER"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter GUID"
+          }
+,
+          "404":
+          {
+            "description":"Invitation not found or expired"
           }
 ,
           "500":
@@ -324,7 +447,7 @@
           "Users"
         ]
 ,
-        "description":"Check if invitation is valid. Required: GUID. Returns JSON with BOOLEAN field (Y=valid, N=expired)",
+        "description":"Check if invitation is valid (not expired)",
         "operationId":"UsersController.TUsersController_InvitationActive",
         "consumes":
         [
@@ -336,11 +459,27 @@
           "application\/json"
         ]
 ,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"GUID",
+            "description":"Invitation GUID token (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
         "responses":
         {
           "200":
           {
-            "description":"OK"
+            "description":"Invitation validity check result with BOOLEAN field (Y=valid, N=expired)"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter GUID"
           }
 ,
           "500":
@@ -360,7 +499,7 @@
           "Users"
         ]
 ,
-        "description":"Check if user is referenced in other tables. Required: CD_USER",
+        "description":"Check if user is referenced in other tables",
         "operationId":"UsersController.TUsersController_IsReferenced",
         "consumes":
         [
@@ -372,11 +511,27 @@
           "application\/json"
         ]
 ,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User code identifier to check (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
         "responses":
         {
           "200":
           {
-            "description":"OK"
+            "description":"Reference check result with REFERENCED (Y\/N) field"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_USER"
           }
 ,
           "500":
@@ -396,7 +551,7 @@
           "Users"
         ]
 ,
-        "description":"Get single user by code. Required: CD_USER",
+        "description":"Get single user by code",
         "operationId":"UsersController.TUsersController_GetOne",
         "consumes":
         [
@@ -408,11 +563,32 @@
           "application\/json"
         ]
 ,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
         "responses":
         {
           "200":
           {
-            "description":"OK"
+            "description":"User object with complete user information"
+          }
+,
+          "204":
+          {
+            "description":"User not found"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_USER"
           }
 ,
           "500":
@@ -432,7 +608,7 @@
           "Users"
         ]
 ,
-        "description":"Load paginated users. Required: PageNumber. Optional: SearchText, OrderField, FilterBy, Language (EN\/ES)",
+        "description":"Load paginated users with filtering and sorting",
         "operationId":"UsersController.TUsersController_Load",
         "consumes":
         [
@@ -444,11 +620,60 @@
           "application\/json"
         ]
 ,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"OrderField",
+            "description":"Field to order by (optional, default: USERS.CD_USER)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"FilterBy",
+            "description":"Filter by user role (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"Language",
+            "description":"Language code EN\/ES (optional, default EN)",
+            "default":"EN",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"PageNumber",
+            "description":"Page number (required, must be >= 1)",
+            "required":true,
+            "type":"integer"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"SearchText",
+            "description":"Search text filter (optional)",
+            "type":"string"
+          }
+        ]
+,
         "responses":
         {
           "200":
           {
-            "description":"OK"
+            "description":"Array of users for requested page with pagination info in X-Pages-Quantity header"
+          }
+,
+          "400":
+          {
+            "description":"Invalid PageNumber (must be >= 1)"
           }
 ,
           "500":
@@ -468,7 +693,7 @@
           "Users"
         ]
 ,
-        "description":"Get user code and name by email. Required: EMAIL",
+        "description":"Get user code and name by email",
         "operationId":"UsersController.TUsersController_GetBasicData",
         "consumes":
         [
@@ -480,11 +705,27 @@
           "application\/json"
         ]
 ,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"EMAIL",
+            "description":"User email address (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
         "responses":
         {
           "200":
           {
-            "description":"OK"
+            "description":"Array with user code (CD_USER) and display name (DS_USER)"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter EMAIL"
           }
 ,
           "500":
@@ -504,7 +745,7 @@
           "Users"
         ]
 ,
-        "description":"Delete user. Required: CD_USER",
+        "description":"Delete user",
         "operationId":"UsersController.TUsersController_Delete",
         "consumes":
         [
@@ -516,11 +757,37 @@
           "application\/json"
         ]
 ,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User code identifier to delete (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
         "responses":
         {
           "200":
           {
-            "description":"OK"
+            "description":"User deleted successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_USER"
+          }
+,
+          "404":
+          {
+            "description":"User not found"
+          }
+,
+          "409":
+          {
+            "description":"User is referenced in other tables and cannot be deleted"
           }
 ,
           "500":
@@ -540,7 +807,7 @@
           "Users"
         ]
 ,
-        "description":"Update existing user. Required: OLD_CD_USER. Optional: CD_USER, EMAIL, FIRST_NAME, LAST_NAME",
+        "description":"Update existing user",
         "operationId":"UsersController.TUsersController_Update",
         "consumes":
         [
@@ -552,11 +819,88 @@
           "application\/json"
         ]
 ,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"EMAIL",
+            "description":"User email address (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"FIRST_NAME",
+            "description":"First name (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"LAST_NAME",
+            "description":"Last name (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"TITLE",
+            "description":"User title (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"PHONE_NUMBER",
+            "description":"Phone number (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"PREFERRED_LANGUAGE",
+            "description":"Preferred language EN\/ES (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"OLD_CD_USER",
+            "description":"Current user code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"New user code identifier (optional)",
+            "type":"string"
+          }
+        ]
+,
         "responses":
         {
           "200":
           {
-            "description":"OK"
+            "description":"User updated successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter OLD_CD_USER"
+          }
+,
+          "404":
+          {
+            "description":"User not found"
           }
 ,
           "500":
@@ -580,7 +924,7 @@
           "Users"
         ]
 ,
-        "description":"Insert new user (UNIT TESTS ONLY). Required: CD_USER, EMAIL, CREATED, VERIFIED, RENEW_VERIFY, CD_USER_ROLE. Optional SALT, PASSWORD auto-generated",
+        "description":"Insert new user (UNIT TESTS ONLY)",
         "operationId":"UsersController.TUsersController_Insert",
         "consumes":
         [
@@ -592,11 +936,112 @@
           "application\/json"
         ]
 ,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CREATED",
+            "description":"User creation date (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"VERIFIED",
+            "description":"Verification status Y\/N (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"RENEW_VERIFY",
+            "description":"Renewal verification status Y\/N (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_USER_ROLE",
+            "description":"User role code (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"SALT",
+            "description":"Password salt (optional, auto-generated if not provided)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"PASSWORD",
+            "description":"User password (optional, auto-generated if not provided)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"TITLE",
+            "description":"User title (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"FIRST_NAME",
+            "description":"First name (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"LAST_NAME",
+            "description":"Last name (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"EMAIL",
+            "description":"User email address (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
         "responses":
         {
-          "200":
+          "201":
           {
-            "description":"OK"
+            "description":"User created successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters"
           }
 ,
           "500":

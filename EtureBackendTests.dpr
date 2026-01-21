@@ -13,9 +13,10 @@ uses
   senCille.DataManagement in 'framework\senCille.DataManagement.pas' {$R *.res},
   senCille.TypeConverter in 'framework\senCille.TypeConverter.pas',
   Dummy in 'framework\Dummy.pas' {DummyForm: TWebForm} {*.html},
-  TestAuthentication in 'TestAuthentication.pas' {/TestUsers in 'TestUsers.pas';};
+  TestUsers in 'TestUsers.pas';
 
-//TestUsers in 'TestUsers.pas';
+
+  //TestAuthentication in 'TestAuthentication.pas' {/TestUsers in 'TestUsers.pas';};
 
 //C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
 (*

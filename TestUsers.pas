@@ -22,7 +22,7 @@ type
       const LOCAL_PATH          = '/users';
       const TEST_USER_CODE      = 'UT_USER_0001';
       const TEST_EMAIL          = 'unit.test.user@example.com';
-      const TEST_FIRST_NAME     = 'Unit';
+      const TEST_FIRST_NAME     = 'Unit Test Name';
       const UPDATED_FIRST_NAME  = 'Updated';
       const UPDATED_LAST_NAME   = 'User';
    private
@@ -354,9 +354,11 @@ begin
    try
       try
          Count := await(TDB.Select(LOCAL_PATH,
-                                   [['PageNumber', '1'],
-                                    ['SearchText', 'Unit Test User'],
-                                    ['OrderField', '']],
+                                   [['PageNumber', '1'            ],
+                                    ['SearchText', TEST_FIRST_NAME],
+                                    ['OrderField', ''             ],
+                                    ['FilterBy'  , ''             ],
+                                    ['Language'  , 'EN'           ]],
                                    DataSet));
          ExceptMsg := 'ok';
       except
@@ -364,7 +366,7 @@ begin
       end;
       Assert.IsTrue(ExceptMsg = 'ok', 'Exception in Load -> '+ExceptMsg);
       Assert.IsTrue(Count > 0, 'Count greater than 0');
-      Assert.IsTrue(DataSet.Locate('CD_USER', TEST_USER_CODE, []), 'Test user located in dataset');
+      Assert.IsTrue(DataSet.Locate('FIRST_NAME', TEST_FIRST_NAME, []) = true, 'Test user located in dataset');
    finally
       DataSet.Free;
    end;
@@ -431,11 +433,11 @@ begin
 
       DataSet.Edit;
       DataSet.FieldByName('FIRST_NAME').AsString := UPDATED_FIRST_NAME;
-      DataSet.FieldByName('LAST_NAME').AsString := UPDATED_LAST_NAME;
+      DataSet.FieldByName('LAST_NAME' ).AsString := UPDATED_LAST_NAME;
       DataSet.Post;
 
       try
-         await(TDB.Update(LOCAL_PATH, [['CD_USER', TEST_USER_CODE]], DataSet));
+         await(TDB.Update(LOCAL_PATH, [['OLD_CD_USER', TEST_USER_CODE]], DataSet));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
@@ -448,13 +450,13 @@ begin
                        DataSet));
 
       Assert.IsTrue(DataSet.FieldByName('FIRST_NAME').AsString = UPDATED_FIRST_NAME, 'Updated first name stored');
-      Assert.IsTrue(DataSet.FieldByName('LAST_NAME').AsString = UPDATED_LAST_NAME, 'Updated last name stored');
+      Assert.IsTrue(DataSet.FieldByName('LAST_NAME' ).AsString = UPDATED_LAST_NAME , 'Updated last name stored');
 
       DataSet.Edit;
       DataSet.FieldByName('FIRST_NAME').AsString := TEST_FIRST_NAME;
       DataSet.FieldByName('LAST_NAME').AsString := 'User';
       DataSet.Post;
-      await(TDB.Update(LOCAL_PATH, [['CD_USER', TEST_USER_CODE]], DataSet));
+      await(TDB.Update(LOCAL_PATH, [['OLD_CD_USER', TEST_USER_CODE]], DataSet));
    finally
       DataSet.Free;
    end;
@@ -538,25 +540,24 @@ end;
 [Test] [async] procedure TTestUsers.TestGetBasicData;
 var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
-    Count     :Integer;
 begin
    await(EnsureTestUserExists());
 
    DataSet := CreateUserDataSet;
    try
       try
-         Count := await(TDB.Select(LOCAL_PATH,
-                                   [['Language', 'EN'],
-                                    ['SearchText', 'Unit Test']],
-                                   DataSet,
-                                   '/getbasicdata'));
+         await(TDB.GetRow(LOCAL_PATH,
+                          [['EMAIL', TEST_EMAIL]],
+                          DataSet,
+                          '/getbasicdata'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
       end;
 
       Assert.IsTrue(ExceptMsg = 'ok', 'Exception in GetBasicData -> '+ExceptMsg);
-      Assert.IsTrue(Count >= 0, 'GetBasicData executed');
+      Assert.IsTrue(DataSet.RecordCount = 1, 'Basic data returned for user');
+      Assert.IsTrue(DataSet.FieldByName('CD_USER').AsString = TEST_USER_CODE, 'User code matches');
    finally
       DataSet.Free;
    end;
@@ -624,9 +625,10 @@ begin
    DataSet := CreateUserDataSet;
    try
       try
-         await(TDB.GetRow(LOCAL_PATH+'/getbasicinfo',
+         await(TDB.GetRow(LOCAL_PATH,
                           [['CD_USER', TEST_USER_CODE]],
-                          DataSet));
+                          DataSet,
+                          '/getbasicinfo'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;

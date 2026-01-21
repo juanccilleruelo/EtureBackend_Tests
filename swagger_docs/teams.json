@@ -1,0 +1,856 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/teams\/getoneteamplayer":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Team Players"
+        ]
+,
+        "description":"Get single team player",
+        "operationId":"TeamsController.TTeamsController_GetOneTeamPlayer",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_TEAM",
+            "description":"Team code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User\/Player code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Team player object with CD_TEAM, CD_USER, DS_USER, CD_POSITION, APPOINTMENT_DATE, DS_POSITION"
+          }
+,
+          "204":
+          {
+            "description":"Team player not found"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters CD_TEAM or CD_USER"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/teams\/getallteamplayers":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Team Players"
+        ]
+,
+        "description":"Get all players in a team with pagination",
+        "operationId":"TeamsController.TTeamsController_GetAllTeamPlayers",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_TEAM",
+            "description":"Team code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"Language",
+            "description":"Language code EN\/ES for position descriptions (optional, default EN)",
+            "default":"EN",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of team players with CD_TEAM, CD_USER, DS_USER, CD_POSITION, APPOINTMENT_DATE, DS_POSITION (X-Pages-Quantity header contains total records)"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_TEAM"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/teams\/deleteteamplayer":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Team Players"
+        ]
+,
+        "description":"Remove player from team",
+        "operationId":"TeamsController.TTeamsController_DeleteTeamPlayer",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_TEAM",
+            "description":"Team code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User\/Player code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Player removed from team successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters CD_TEAM or CD_USER"
+          }
+,
+          "404":
+          {
+            "description":"Team player relationship not found"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/teams\/insertteamplayer":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Team Players"
+        ]
+,
+        "description":"Add player to team",
+        "operationId":"TeamsController.TTeamsController_InsertTeamPlayer",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_TEAM",
+            "description":"Team code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User\/Player code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "201":
+          {
+            "description":"Player added to team successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters CD_TEAM or CD_USER"
+          }
+,
+          "409":
+          {
+            "description":"Player is already in this team"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/teams\/isreferenced":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Teams"
+        ]
+,
+        "description":"Check if team is referenced by other entities",
+        "operationId":"TeamsController.TTeamsController_IsReferenced",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_TEAM",
+            "description":"Team code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array with TABLE field containing list of tables that reference this team, or NONE if no references"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_TEAM"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/teams\/getorderbyfields":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Teams"
+        ]
+,
+        "description":"Get available fields for ordering",
+        "operationId":"TeamsController.TTeamsController_GetOrderByFields",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of available fields for ordering with metadata (DEFAULT, TABLE, FIELD, Display name, Description, Type, Visible flag)"
+          }
+,
+          "400":
+          {
+            "description":"Invalid request"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/teams\/getone":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Teams"
+        ]
+,
+        "description":"Get single team by code",
+        "operationId":"TeamsController.TTeamsController_GetOne",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_TEAM",
+            "description":"Team code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Team object with CD_TEAM and DS_TEAM fields"
+          }
+,
+          "204":
+          {
+            "description":"Team not found"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_TEAM"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/teams\/load":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Teams"
+        ]
+,
+        "description":"Load teams with pagination and search",
+        "operationId":"TeamsController.TTeamsController_Load",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"OrderField",
+            "description":"Field to order by (optional, default TEAMS.CD_TEAM)",
+            "default":"TEAMS.CD_TEAM",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"PageNumber",
+            "description":"Page number for pagination (must be >= 1, required)",
+            "required":true,
+            "type":"integer"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"SearchText",
+            "description":"Search text to filter teams by name (optional)",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of teams matching search criteria with pagination (X-Pages-Quantity header contains total pages)"
+          }
+,
+          "400":
+          {
+            "description":"Invalid PageNumber or search parameters"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/teams\/getall":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Teams"
+        ]
+,
+        "description":"Get all teams",
+        "operationId":"TeamsController.TTeamsController_GetAll",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"Language",
+            "description":"Language code EN\/ES (optional, default EN)",
+            "default":"EN",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of teams with CD_TEAM and DS_TEAM fields"
+          }
+,
+          "400":
+          {
+            "description":"Invalid request parameters"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/teams\/delete":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Teams"
+        ]
+,
+        "description":"Delete team",
+        "operationId":"TeamsController.TTeamsController_Delete",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_TEAM",
+            "description":"Team code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Team deleted successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_TEAM"
+          }
+,
+          "404":
+          {
+            "description":"Team not found"
+          }
+,
+          "409":
+          {
+            "description":"Team is referenced by other data and cannot be deleted"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/teams\/update":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Teams"
+        ]
+,
+        "description":"Update existing team",
+        "operationId":"TeamsController.TTeamsController_Update",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"OLD_CD_TEAM",
+            "description":"Original team code to identify record (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_TEAM",
+            "description":"New team code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"DS_TEAM",
+            "description":"Team description (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Team updated successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters or invalid data"
+          }
+,
+          "404":
+          {
+            "description":"Team not found"
+          }
+,
+          "409":
+          {
+            "description":"New team code already exists"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/teams\/insert":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Teams"
+        ]
+,
+        "description":"Create new team",
+        "operationId":"TeamsController.TTeamsController_Insert",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_TEAM",
+            "description":"Team code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"DS_TEAM",
+            "description":"Team description (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "201":
+          {
+            "description":"Team created successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters or invalid data"
+          }
+,
+          "409":
+          {
+            "description":"Team code already exists"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+}

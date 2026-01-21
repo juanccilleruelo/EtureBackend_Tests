@@ -1,0 +1,212 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/files\/download\/{filename}":
+    {
+      "get":
+      {
+        "tags":
+        [
+          "Files"
+        ]
+,
+        "description":"Download file with automatic content-disposition",
+        "operationId":"FileController.TFilesController_DownloadFile",
+        "produces":
+        [
+          "application\/octet-stream"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"path",
+            "name":"filename",
+            "description":"File name to download (required, located in downloads folder, supports PDF and ZIP)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"File content - MIME type determined by file extension (application\/pdf for .pdf, application\/zip for .zip, application\/octet-stream for others)"
+          }
+,
+          "404":
+          {
+            "description":"File not found"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/files\/image\/{filename}":
+    {
+      "get":
+      {
+        "tags":
+        [
+          "Files"
+        ]
+,
+        "description":"Retrieve image file",
+        "operationId":"FileController.TFilesController_GetImageFile",
+        "produces":
+        [
+          "image\/jpeg"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"path",
+            "name":"filename",
+            "description":"Image filename to retrieve (required, located in images folder)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Image file content in JPEG format"
+          }
+,
+          "404":
+          {
+            "description":"Image file not found"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+}
