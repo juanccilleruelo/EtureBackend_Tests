@@ -22,7 +22,7 @@
 ,
   "paths":
   {
-    "\/login;\/api\/swagger":
+    "\/login":
     {
       "post":
       {
@@ -105,11 +105,11 @@
       {
         "tags":
         [
-          "Authentication"
+          "Login"
         ]
 ,
-        "description":"Create new user account with registration data. Required: CD_USER, EMAIL and other user fields. Returns 200 on success, 400 if user\/email exists, 500 on creation failure",
-        "operationId":"LoginController.TLoginController_CreateNewUser",
+        "description":"Create new user account",
+        "operationId":"createNewUser",
         "consumes":
         [
           "application\/json"
@@ -124,12 +124,17 @@
         {
           "200":
           {
-            "description":"OK"
+            "description":"User created successfully"
+          }
+,
+          "400":
+          {
+            "description":"User or email already exists"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"User creation failed"
           }
         }
       }
@@ -141,11 +146,11 @@
       {
         "tags":
         [
-          "Authentication"
+          "Login"
         ]
 ,
-        "description":"Generate unique user ID for new user. Optional: CD_USER or EMAIL filter. Returns JSON with ROW field containing generated ID_USER. Status 200 on success, 400 if invalid input, 500 on generation failure",
-        "operationId":"LoginController.TLoginController_GetIdUser",
+        "description":"Generate unique user ID",
+        "operationId":"getIdUser",
         "consumes":
         [
           "application\/json"
@@ -160,12 +165,17 @@
         {
           "200":
           {
-            "description":"OK"
+            "description":"Returns generated unique ID_USER"
+          }
+,
+          "400":
+          {
+            "description":"Invalid user code"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"ID generation failed"
           }
         }
       }
@@ -177,11 +187,11 @@
       {
         "tags":
         [
-          "Authentication"
+          "Login"
         ]
 ,
-        "description":"Recover user information by email or CD_USER. Required: EMAIL or CD_USER in JSON body. Returns JSON with ROW field containing user data (CD_USER, EMAIL, VERIFIED status). Status 200 on success, 400 if invalid JSON, 404 if user not found, 500 on recovery failure",
-        "operationId":"LoginController.TLoginController_RecoverCD_USER",
+        "description":"Recover user information by email or username",
+        "operationId":"recoverCDUser",
         "consumes":
         [
           "application\/json"
@@ -196,97 +206,22 @@
         {
           "200":
           {
-            "description":"OK"
+            "description":"User information retrieved successfully"
+          }
+,
+          "400":
+          {
+            "description":"Invalid JSON in request body"
+          }
+,
+          "404":
+          {
+            "description":"User not found"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
-          }
-        }
-      }
-    }
-,
-    "\/login\/savenewpassword":
-    {
-      "post":
-      {
-        "tags":
-        [
-          "Authentication"
-        ]
-,
-        "description":"Save new password for user. Required: CD_USER, new password data. Hashes password using SALT. Returns 200 on success, 400 if CD_USER invalid, 500 on update failure",
-        "operationId":"LoginController.TLoginController_SaveNewPassword",
-        "consumes":
-        [
-          "application\/json"
-        ]
-,
-        "produces":
-        [
-          "application\/json"
-        ]
-,
-        "responses":
-        {
-          "200":
-          {
-            "description":"OK"
-          }
-,
-          "500":
-          {
-            "description":"Internal server error"
-          }
-        }
-      }
-    }
-,
-    "\/login\/validate\/{UserName}\/{Password}":
-    {
-      "get":
-      {
-        "tags":
-        [
-          "Authentication"
-        ]
-,
-        "description":"Validate user credentials. Route params: UserName (required), Password (required). Returns HTTP 200 on success with user roles in JWT token, 401 on invalid credentials",
-        "operationId":"LoginController.TLoginController_Validate",
-        "produces":
-        [
-          "application\/json"
-        ]
-,
-        "parameters":
-        [
-                    {
-            "in":"path",
-            "name":"Password",
-            "required":true,
-            "type":"string"
-          }
-,
-          
-          {
-            "in":"path",
-            "name":"UserName",
-            "required":true,
-            "type":"string"
-          }
-        ]
-,
-        "responses":
-        {
-          "200":
-          {
-            "description":"OK"
-          }
-,
-          "500":
-          {
-            "description":"Internal server error"
+            "description":"User recovery failed"
           }
         }
       }
@@ -298,11 +233,11 @@
       {
         "tags":
         [
-          "Authentication"
+          "Login"
         ]
 ,
-        "description":"Send email verification code with validation. Required: CD_USER, EMAIL, NUMBER. Validates that user and email do not exist. Returns 200 on success, 400 if user\/email exists, 500 on email send failure",
-        "operationId":"LoginController.TLoginController_SendVerificationEmail",
+        "description":"Send verification email with validation checks",
+        "operationId":"sendVerificationEmail",
         "consumes":
         [
           "application\/json"
@@ -317,12 +252,17 @@
         {
           "200":
           {
-            "description":"OK"
+            "description":"Email sent successfully"
+          }
+,
+          "400":
+          {
+            "description":"User or email already exists"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Email sending failed"
           }
         }
       }
@@ -334,11 +274,11 @@
       {
         "tags":
         [
-          "Authentication"
+          "Login"
         ]
 ,
-        "description":"Send email verification code WITHOUT validation. Required: CD_USER, EMAIL, NUMBER. No checks on user\/email existence. Returns JSON with MESSAGE field (OK=sent, FAIL=failed). Status 200 on success, 500 on failure",
-        "operationId":"LoginController.TLoginController_SendVerificationEmailWC",
+        "description":"Send verification email without checks",
+        "operationId":"sendVerificationEmailWC",
         "consumes":
         [
           "application\/json"
@@ -353,12 +293,53 @@
         {
           "200":
           {
-            "description":"OK"
+            "description":"Email sent successfully"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Email sending failed"
+          }
+        }
+      }
+    }
+,
+    "\/login\/savenewpassword":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Login"
+        ]
+,
+        "description":"Save new password",
+        "operationId":"saveNewPassword",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Password saved successfully"
+          }
+,
+          "400":
+          {
+            "description":"Invalid user code"
+          }
+,
+          "500":
+          {
+            "description":"Password update failed"
           }
         }
       }
