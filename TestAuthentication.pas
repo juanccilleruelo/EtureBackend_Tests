@@ -1,4 +1,4 @@
-unit TestBackendConnection;
+unit TestAuthentication;
 
 interface
 
@@ -17,7 +17,7 @@ uses
 type
 {$M+}
   [TestFixture]
-  TTestBackendConnection = class(TObject)
+  TTestAuthentication = class(TObject)
   published
     [Test] [async] procedure Login_As_Admin;
     [Test] [async] procedure Login_As_Staff;
@@ -32,9 +32,9 @@ implementation
 uses
   SysUtils, senCille.WebSetup, senCille.DataManagement;
 
-{ TTestBackendConnection }
+{ TTestAuthentication }
 
-procedure TTestBackendConnection.Login_As_Admin;
+procedure TTestAuthentication.Login_As_Admin;
 var Token :string;
     ErrMsg: string;
 begin
@@ -64,7 +64,7 @@ begin
    Assert.IsTrue(TWebSetup.Instance.ContainsTheRole('ADMIN'), Format('Expected role ADMIN not present. UserId=%s; tokenPreview=%s', [TWebSetup.Instance.UserId, Copy(TWebSetup.Instance.AuthToken,1,32)]));
 end;
 
-procedure TTestBackendConnection.Login_As_Staff;
+procedure TTestAuthentication.Login_As_Staff;
 var Token :string;
     ErrMsg: string;
 begin
@@ -90,7 +90,7 @@ begin
    Assert.IsTrue(TWebSetup.Instance.ContainsTheRole('STAFF'), Format('Expected role STAFF not present. UserId=%s', [TWebSetup.Instance.UserId]));
 end;
 
-procedure TTestBackendConnection.Login_As_Agent;
+procedure TTestAuthentication.Login_As_Agent;
 var Token :string;
     ErrMsg: string;
 begin
@@ -116,7 +116,7 @@ begin
    Assert.IsTrue(TWebSetup.Instance.ContainsTheRole('AGENT'), Format('Expected role AGENT not present. UserId=%s', [TWebSetup.Instance.UserId]));
 end;
 
-procedure TTestBackendConnection.Login_As_Player_us;
+procedure TTestAuthentication.Login_As_Player_us;
 var Token :string;
     ErrMsg: string;
 begin
@@ -142,7 +142,7 @@ begin
    Assert.IsTrue(TWebSetup.Instance.ContainsTheRole('PLAYER_US'), Format('Expected role PLAYER_US not present. UserId=%s', [TWebSetup.Instance.UserId]));
 end;
 
-procedure TTestBackendConnection.Login_As_Player_es;
+procedure TTestAuthentication.Login_As_Player_es;
 var Token :string;
     ErrMsg: string;
 begin
@@ -169,5 +169,5 @@ begin
 end;
 
 initialization
-   TTMSWEBUnitTestingRunner.RegisterClass(TTestBackendConnection);
+   TTMSWEBUnitTestingRunner.RegisterClass(TTestAuthentication);
 end.

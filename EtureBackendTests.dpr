@@ -9,11 +9,13 @@ uses
   senCille.MVCRequests in 'framework\senCille.MVCRequests.pas',
   senCille.Miscellaneous in 'framework\senCille.Miscellaneous.pas',
   senCille.CustomWebForm in 'framework\senCille.CustomWebForm.pas' {scCustomWebForm: TWebForm} {*.html},
+  {$R}
   senCille.DataManagement in 'framework\senCille.DataManagement.pas' {$R *.res},
   senCille.TypeConverter in 'framework\senCille.TypeConverter.pas',
   Dummy in 'framework\Dummy.pas' {DummyForm: TWebForm} {*.html},
-  TestBackendConnection in 'TestBackendConnection.pas';
-  //TestUsers in 'TestUsers.pas';
+  TestAuthentication in 'TestAuthentication.pas' {/TestUsers in 'TestUsers.pas';};
+
+//TestUsers in 'TestUsers.pas';
 
 //C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
 (*
