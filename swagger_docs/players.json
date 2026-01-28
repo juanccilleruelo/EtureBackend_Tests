@@ -1,0 +1,1371 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/playersanctions\/getone":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayerSanctionsController.TPlayerSanctionsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/playersanctions\/insert":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayerSanctionsController.TPlayerSanctionsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/playersanctions\/load":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayerSanctionsController.TPlayerSanctionsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/playersanctions\/getall":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayerSanctionsController.TPlayerSanctionsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/playersanctions\/getorderbyfields":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayerSanctionsController.TPlayerSanctionsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/playersanctions\/isreferenced":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayerSanctionsController.TPlayerSanctionsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/playersanctions\/update":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayerSanctionsController.TPlayerSanctionsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/playersanctions\/delete":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayerSanctionsController.TPlayerSanctionsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/deleteEnglishExam":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/loadacademicrecord":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/updateenglishexam":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/getoneenglishexam":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/insertenglishexam":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/updateuseremail":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/deleteacademicrecord":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/updateacademicrecord":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/getoneacademicrecord":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/insertacademicrecord":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/loadenglishexams":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/loadnotintoateam":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/getone":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/update":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/isreferenced":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/applytocampaign":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players":
+    {
+      "get":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/getall":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/load":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/loadnotincampaign":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/getonestep":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/updatestep":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/deletestep":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/updateplayerfield":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/insertwfstep":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/getorderbyfields":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/getfilterbyprofilesplayers":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/applyworkflow":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/players\/loadtasklist":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "PlayersController.TPlayersController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+}

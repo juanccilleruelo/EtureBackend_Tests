@@ -1,0 +1,622 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/event\/insertevent":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Events"
+        ]
+,
+        "description":"Create a new event in a calendar",
+        "operationId":"EventController.TEventController_InsertEvent",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"TITLE",
+            "description":"Event title (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"DESCRIPTION",
+            "description":"Event description (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"LINK_URL",
+            "description":"Event link URL (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"ALL_DAY",
+            "description":"All day event flag: Y or N (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"STARTS_AT_TZ",
+            "description":"Event start datetime with timezone (required, ISO format)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"ENDS_AT_TZ",
+            "description":"Event end datetime with timezone (required, ISO format)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"TZ_NAME",
+            "description":"Timezone name (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"ID_LOCATION",
+            "description":"Location identifier (required)",
+            "required":true,
+            "type":"integer"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"ID_MEETING_POINT",
+            "description":"Meeting point location identifier (required)",
+            "required":true,
+            "type":"integer"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"ID_CALENDAR",
+            "description":"Calendar identifier (required)",
+            "required":true,
+            "type":"integer"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User code identifier - event organizer (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "201":
+          {
+            "description":"Event created successfully, returns NEW_ID with the new event identifier"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter or validation error (dates, location, meeting point)"
+          }
+,
+          "409":
+          {
+            "description":"Start date must be before end date or location\/meeting point not found"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/event\/updateevent":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Events"
+        ]
+,
+        "description":"Update an existing event (organizer only)",
+        "operationId":"EventController.TEventController_UpdateEvent",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"TITLE",
+            "description":"Event title (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"DESCRIPTION",
+            "description":"Event description (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"LINK_URL",
+            "description":"Event link URL (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"ALL_DAY",
+            "description":"All day event flag: Y or N (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"ID_EVENT",
+            "description":"Event identifier (required)",
+            "required":true,
+            "type":"integer"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User code identifier - must be event organizer (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Event updated successfully, returns ID_EVENT"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter ID_EVENT or CD_USER"
+          }
+,
+          "403":
+          {
+            "description":"User is not the event organizer"
+          }
+,
+          "404":
+          {
+            "description":"Event not found or is inactive"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/event\/deleteevent":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Events"
+        ]
+,
+        "description":"Delete\/cancel an event (organizer only, soft delete)",
+        "operationId":"EventController.TEventController_DeleteEvent",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"ID_EVENT",
+            "description":"Event identifier (required)",
+            "required":true,
+            "type":"integer"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User code identifier - must be event organizer (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Event cancelled successfully, returns ID_EVENT"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter ID_EVENT or CD_USER"
+          }
+,
+          "403":
+          {
+            "description":"User is not the event organizer"
+          }
+,
+          "404":
+          {
+            "description":"Event not found or is already inactive"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/event\/geteventsbycalendar":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Events"
+        ]
+,
+        "description":"Get events by calendar with optional date range filter",
+        "operationId":"EventController.TEventController_GetEventsByCalendar",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"END_DATE",
+            "description":"End date for filtering (optional, ISO format)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"ID_CALENDAR",
+            "description":"Calendar identifier (required)",
+            "required":true,
+            "type":"integer"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"START_DATE",
+            "description":"Start date for filtering (optional, ISO format)",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of events with ID_EVENT, TITLE, DESCRIPTION, STARTS_AT_TZ, ENDS_AT_TZ, ALL_DAY, ST, CREATED_AT, UPDATED_AT and other event details"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter ID_CALENDAR or invalid date format"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/event\/geteventsbyuser":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Events"
+        ]
+,
+        "description":"Get events by user as organizer and\/or attendee",
+        "operationId":"EventController.TEventController_GetEventsByUser",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"ROLE",
+            "description":"Filter by role: organizer or any (optional, default any)",
+            "default":"any",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of events where user is organizer or attendee with ID_EVENT, TITLE, DESCRIPTION, STARTS_AT_TZ, ENDS_AT_TZ, ST and other event details"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_USER"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/event\/getoneevent":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Events"
+        ]
+,
+        "description":"Get a single event by identifier",
+        "operationId":"EventController.TEventController_GetOneEvent",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"ID_EVENT",
+            "description":"Event identifier (required)",
+            "required":true,
+            "type":"integer"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Single event object with ID_EVENT, TITLE, DESCRIPTION, STARTS_AT_TZ, ENDS_AT_TZ, ALL_DAY, ST, CREATED_AT, UPDATED_AT and other event details"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter ID_EVENT"
+          }
+,
+          "404":
+          {
+            "description":"Event not found or is inactive"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+}

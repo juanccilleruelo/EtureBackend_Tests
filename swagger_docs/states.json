@@ -1,0 +1,667 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/states\/delete":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "States"
+        ]
+,
+        "description":"Delete state",
+        "operationId":"StatesController.TStatesController_Delete",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_STATE",
+            "description":"State code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"State deleted successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_STATE"
+          }
+,
+          "404":
+          {
+            "description":"State not found"
+          }
+,
+          "409":
+          {
+            "description":"State is referenced by other data and cannot be deleted"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/states\/update":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "States"
+        ]
+,
+        "description":"Update existing state",
+        "operationId":"StatesController.TStatesController_Update",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"DS_STATE",
+            "description":"State description (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_COUNTRY",
+            "description":"Country code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_STATE",
+            "description":"State code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"State updated successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters or invalid data"
+          }
+,
+          "404":
+          {
+            "description":"State not found"
+          }
+,
+          "409":
+          {
+            "description":"State code conflict"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/states\/isreferenced":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "States"
+        ]
+,
+        "description":"Check if state is referenced by other entities",
+        "operationId":"StatesController.TStatesController_IsReferenced",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_STATE",
+            "description":"State code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array with TABLE field containing list of tables that reference this state, or NONE if no references"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_STATE"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/states\/getorderbyfields":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "States"
+        ]
+,
+        "description":"Get available fields for ordering",
+        "operationId":"StatesController.TStatesController_GetOrderByFields",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of available fields for ordering with metadata (DEFAULT, TABLE, FIELD, Display name, Description, Type, Visible flag)"
+          }
+,
+          "400":
+          {
+            "description":"Invalid request"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/states\/insert":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "States"
+        ]
+,
+        "description":"Create new state",
+        "operationId":"StatesController.TStatesController_Insert",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"DS_STATE",
+            "description":"State description (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_COUNTRY",
+            "description":"Country code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_STATE",
+            "description":"State code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "201":
+          {
+            "description":"State created successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters or invalid data"
+          }
+,
+          "409":
+          {
+            "description":"State code already exists"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/states\/getall":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "States"
+        ]
+,
+        "description":"Get all states",
+        "operationId":"StatesController.TStatesController_GetAll",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"Language",
+            "description":"Language code EN\/ES (optional, default EN)",
+            "default":"EN",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of states with CD_COUNTRY, CD_STATE, DS_STATE fields"
+          }
+,
+          "400":
+          {
+            "description":"Invalid request parameters"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/states\/getcountrystates":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "States"
+        ]
+,
+        "description":"Get states for a specific country",
+        "operationId":"StatesController.TStatesController_GetCountryStates",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"Language",
+            "description":"Language code EN\/ES (optional, default EN)",
+            "default":"EN",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_COUNTRY",
+            "description":"Country code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of states for the specified country with CD_STATE, DS_STATE fields"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_COUNTRY"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/states\/load":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "States"
+        ]
+,
+        "description":"Load states with pagination and search",
+        "operationId":"StatesController.TStatesController_Load",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"OrderField",
+            "description":"Field to order by (optional, default STATES.CD_STATE)",
+            "default":"STATES.CD_STATE",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"PageNumber",
+            "description":"Page number for pagination (must be >= 1, required)",
+            "required":true,
+            "type":"integer"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"SearchText",
+            "description":"Search text to filter states (optional)",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of states matching search criteria with pagination (X-Pages-Quantity header contains total pages)"
+          }
+,
+          "400":
+          {
+            "description":"Invalid PageNumber or search parameters"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/states\/getone":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "States"
+        ]
+,
+        "description":"Get single state by code",
+        "operationId":"StatesController.TStatesController_GetOne",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_STATE",
+            "description":"State code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"State object with CD_COUNTRY, CD_STATE, DS_STATE fields"
+          }
+,
+          "204":
+          {
+            "description":"State not found"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_STATE"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+}

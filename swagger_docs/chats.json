@@ -1,0 +1,696 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/chats\/insertmessage":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/updatemessage":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/getonemessage":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/getmessages":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/getusertypingstatus":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/updatetypingstatus":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/markchatmessagesasread":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/deletemessage":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/deletechat":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/getchat":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/getall":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/createnewchat":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/chatexists":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/closechat":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/updatechat":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/gettotalunreadmessages":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/chats\/chathasnewmessages":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ChatsController.TChatsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+}

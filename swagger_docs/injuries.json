@@ -1,0 +1,594 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/injuries\/getonetype":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "InjuriesController.TInjuriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/injuries\/getalltype":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "InjuriesController.TInjuriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/injuries\/getonetimeofonset":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "InjuriesController.TInjuriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/injuries\/getallmechanism":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "InjuriesController.TInjuriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/injuries\/getoneaffectedorgan":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "InjuriesController.TInjuriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/injuries\/getallaffectedOrgan":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "InjuriesController.TInjuriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/injuries\/getonemechanism":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "InjuriesController.TInjuriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/injuries\/getallsurface":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "InjuriesController.TInjuriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/injuries\/getonebodypart":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "InjuriesController.TInjuriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/injuries\/getallbodypart":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "InjuriesController.TInjuriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/injuries\/getonesurface":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "InjuriesController.TInjuriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/injuries\/getalltimeofonset":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "InjuriesController.TInjuriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/injuries\/getonenature":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "InjuriesController.TInjuriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/injuries\/getallnature":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "InjuriesController.TInjuriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+}

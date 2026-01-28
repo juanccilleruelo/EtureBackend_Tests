@@ -1,0 +1,592 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/wfsteptypes\/delete":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "WFStepTypes"
+        ]
+,
+        "description":"Delete workflow step type",
+        "operationId":"WFStepTypesController.TWFStepTypesController_Delete",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_WF_STEP_TYPE",
+            "description":"Workflow step type code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Workflow step type deleted successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_WF_STEP_TYPE"
+          }
+,
+          "404":
+          {
+            "description":"Workflow step type not found"
+          }
+,
+          "409":
+          {
+            "description":"Workflow step type is referenced by other data and cannot be deleted"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/wfsteptypes\/update":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "WFStepTypes"
+        ]
+,
+        "description":"Update existing workflow step type",
+        "operationId":"WFStepTypesController.TWFStepTypesController_Update",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_WF_STEP_TYPE",
+            "description":"Workflow step type code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"DS_WF_STEP_TYPE",
+            "description":"Workflow step type description (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Workflow step type updated successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters or invalid data"
+          }
+,
+          "404":
+          {
+            "description":"Workflow step type not found"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/wfsteptypes\/isreferenced":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "WFStepTypes"
+        ]
+,
+        "description":"Check if workflow step type is referenced by other entities",
+        "operationId":"WFStepTypesController.TWFStepTypesController_IsReferenced",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_WF_STEP_TYPE",
+            "description":"Workflow step type code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array with TABLE field containing list of tables that reference this step type, or NONE if no references"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_WF_STEP_TYPE"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/wfsteptypes\/getorderbyfields":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "WFStepTypes"
+        ]
+,
+        "description":"Get available fields for ordering",
+        "operationId":"WFStepTypesController.TWFStepTypesController_GetOrderByFields",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of available fields for ordering with metadata (DEFAULT, TABLE, FIELD, Display name, Description, Type, Visible flag)"
+          }
+,
+          "400":
+          {
+            "description":"Invalid request"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/wfsteptypes\/getall":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "WFStepTypes"
+        ]
+,
+        "description":"Get all workflow step types",
+        "operationId":"WFStepTypesController.TWFStepTypesController_GetAll",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"Language",
+            "description":"Language code EN\/ES (optional, default EN)",
+            "default":"EN",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of workflow step types with CD_WF_STEP_TYPE and DS_WF_STEP_TYPE fields"
+          }
+,
+          "400":
+          {
+            "description":"Invalid request parameters"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/wfsteptypes\/load":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "WFStepTypes"
+        ]
+,
+        "description":"Load workflow step types with pagination and search",
+        "operationId":"WFStepTypesController.TWFStepTypesController_Load",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"SearchText",
+            "description":"Search text to filter step types (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"OrderField",
+            "description":"Field to order by (optional, default WF_STEP_TYPES.CD_WF_STEP_TYPE)",
+            "default":"WF_STEP_TYPES.CD_WF_STEP_TYPE",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"PageNumber",
+            "description":"Page number for pagination (must be >= 1, required)",
+            "required":true,
+            "type":"integer"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"Language",
+            "description":"Language code EN\/ES (optional, default EN)",
+            "default":"EN",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of workflow step types matching search criteria with pagination (X-Pages-Quantity header contains total pages)"
+          }
+,
+          "400":
+          {
+            "description":"Invalid PageNumber or search parameters"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/wfsteptypes\/getone":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "WFStepTypes"
+        ]
+,
+        "description":"Get single workflow step type by code",
+        "operationId":"WFStepTypesController.TWFStepTypesController_GetOne",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_WF_STEP_TYPE",
+            "description":"Workflow step type code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Workflow step type object with CD_WF_STEP_TYPE and DS_WF_STEP_TYPE fields"
+          }
+,
+          "204":
+          {
+            "description":"Workflow step type not found"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_WF_STEP_TYPE"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/wfsteptypes\/insert":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "WFStepTypes"
+        ]
+,
+        "description":"Create new workflow step type",
+        "operationId":"WFStepTypesController.TWFStepTypesController_Insert",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_WF_STEP_TYPE",
+            "description":"Workflow step type code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"DS_WF_STEP_TYPE",
+            "description":"Workflow step type description (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "201":
+          {
+            "description":"Workflow step type created successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters or invalid data"
+          }
+,
+          "409":
+          {
+            "description":"Workflow step type code already exists"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+}

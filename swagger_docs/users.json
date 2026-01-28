@@ -542,63 +542,6 @@
       }
     }
 ,
-    "\/users\/getone":
-    {
-      "post":
-      {
-        "tags":
-        [
-          "Users"
-        ]
-,
-        "description":"Get single user by code",
-        "operationId":"UsersController.TUsersController_GetOne",
-        "consumes":
-        [
-          "application\/json"
-        ]
-,
-        "produces":
-        [
-          "application\/json"
-        ]
-,
-        "parameters":
-        [
-                    {
-            "in":"body",
-            "name":"CD_USER",
-            "description":"User code identifier (required)",
-            "required":true,
-            "type":"string"
-          }
-        ]
-,
-        "responses":
-        {
-          "200":
-          {
-            "description":"User object with complete user information"
-          }
-,
-          "204":
-          {
-            "description":"User not found"
-          }
-,
-          "400":
-          {
-            "description":"Missing required parameter CD_USER"
-          }
-,
-          "500":
-          {
-            "description":"Internal server error"
-          }
-        }
-      }
-    }
-,
     "\/users\/load":
     {
       "post":
@@ -726,6 +669,110 @@
           "400":
           {
             "description":"Missing required parameter EMAIL"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/getall":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Retrieve all users with complete information",
+        "operationId":"UsersController.TUsersController_GetAll",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"Language",
+            "description":"Language code (EN\/ES, default EN)",
+            "default":"EN",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of users with full user information (CD_USER, EMAIL, CREATED, VERIFIED, etc)"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/users\/getone":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Users"
+        ]
+,
+        "description":"Get single user by code",
+        "operationId":"UsersController.TUsersController_GetOne",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"User object with complete user information"
+          }
+,
+          "204":
+          {
+            "description":"User not found"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_USER"
           }
 ,
           "500":
@@ -910,10 +957,6 @@
         }
       }
     }
-,
-    "\/users\/getall":
-    {
-          }
 ,
     "\/users\/insert":
     {

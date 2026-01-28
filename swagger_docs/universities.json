@@ -1,0 +1,583 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/universities\/delete":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Universities"
+        ]
+,
+        "description":"Delete university",
+        "operationId":"UniversitiesController.TUniversitiesController_Delete",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_UNIVERSITY",
+            "description":"University code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"University deleted successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_UNIVERSITY"
+          }
+,
+          "404":
+          {
+            "description":"University not found"
+          }
+,
+          "409":
+          {
+            "description":"University is referenced by other data and cannot be deleted"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/universities\/update":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Universities"
+        ]
+,
+        "description":"Update existing university",
+        "operationId":"UniversitiesController.TUniversitiesController_Update",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_UNIVERSITY",
+            "description":"University code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"DS_UNIVERSITY",
+            "description":"University description (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"University updated successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters or invalid data"
+          }
+,
+          "404":
+          {
+            "description":"University not found"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/universities\/isreferenced":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Universities"
+        ]
+,
+        "description":"Check if university is referenced by other entities",
+        "operationId":"UniversitiesController.TUniversitiesController_IsReferenced",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_UNIVERSITY",
+            "description":"University code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array with TABLE field containing list of tables that reference this university, or NONE if no references"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_UNIVERSITY"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/universities\/getorderbyfields":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Universities"
+        ]
+,
+        "description":"Get available fields for ordering",
+        "operationId":"UniversitiesController.TUniversitiesController_GetOrderByFields",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of available fields for ordering with metadata (DEFAULT, TABLE, FIELD, Display name, Description, Type, Visible flag)"
+          }
+,
+          "400":
+          {
+            "description":"Invalid request"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/universities\/getall":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Universities"
+        ]
+,
+        "description":"Get all universities",
+        "operationId":"UniversitiesController.TUniversitiesController_GetAll",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"Language",
+            "description":"Language code EN\/ES (optional, default EN)",
+            "default":"EN",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of universities with CD_UNIVERSITY and DS_UNIVERSITY fields"
+          }
+,
+          "400":
+          {
+            "description":"Invalid request parameters"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/universities\/load":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Universities"
+        ]
+,
+        "description":"Load universities with pagination and search",
+        "operationId":"UniversitiesController.TUniversitiesController_Load",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"OrderField",
+            "description":"Field to order by (optional, default UNIVERSITIES.CD_UNIVERSITY)",
+            "default":"UNIVERSITIES.CD_UNIVERSITY",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"PageNumber",
+            "description":"Page number for pagination (must be >= 1, required)",
+            "required":true,
+            "type":"integer"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"SearchText",
+            "description":"Search text to filter universities (optional)",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of universities matching search criteria with pagination (X-Pages-Quantity header contains total pages)"
+          }
+,
+          "400":
+          {
+            "description":"Invalid PageNumber or search parameters"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/universities\/getone":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Universities"
+        ]
+,
+        "description":"Get single university by code",
+        "operationId":"UniversitiesController.TUniversitiesController_GetOne",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_UNIVERSITY",
+            "description":"University code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"University object with CD_UNIVERSITY and DS_UNIVERSITY fields"
+          }
+,
+          "204":
+          {
+            "description":"University not found"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_UNIVERSITY"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/universities\/insert":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Universities"
+        ]
+,
+        "description":"Create new university",
+        "operationId":"UniversitiesController.TUniversitiesController_Insert",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_UNIVERSITY",
+            "description":"University code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"DS_UNIVERSITY",
+            "description":"University description (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "201":
+          {
+            "description":"University created successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters or invalid data"
+          }
+,
+          "409":
+          {
+            "description":"University code already exists"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+}

@@ -1,0 +1,311 @@
+﻿{
+  "swagger":"2.0",
+  "info":
+  {
+    "version":"Ver 1.0",
+    "title":"Eture Server API",
+    "description":"Eture Server RESTful API Documentation",
+    "contact":
+    {
+      "name":"Juan C.Cilleruelo",
+      "email":"juanc.cilleruelo@sencille.es",
+      "url":"https:\/\/github.com\/juanccilleruelo"
+    }
+  }
+,
+  "host":"127.0.0.1:8181",
+  "basePath":"\/api",
+  "schemes":
+  [
+    "http"
+  ]
+,
+  "paths":
+  {
+    "\/login":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "JWT Authentication"
+        ]
+,
+        "description":"Create JSON Web Token",
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"header",
+            "name":"jwtusername",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"header",
+            "name":"jwtpassword",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK",
+            "schema":
+            {
+              "type":"object",
+              "properties":
+              {
+                "token":
+                {
+                  "type":"string",
+                  "description":"JWT Token"
+                }
+              }
+            }
+          }
+,
+          "401":
+          {
+            "description":"Invalid authorization type"
+          }
+,
+          "403":
+          {
+            "description":"Forbidden"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+,
+        "security":
+        [
+                    {
+            "basic":
+            [
+                          ]
+          }
+        ]
+      }
+    }
+,
+    "\/usernetwork\/delete":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "UserNetwork"
+        ]
+,
+        "description":"Remove connection from user network",
+        "operationId":"UserNetworkController.TUserNetworkController_Delete",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"HASH",
+            "description":"Connection hash\/identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Connection removed successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters CD_USER or HASH"
+          }
+,
+          "404":
+          {
+            "description":"Connection not found"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/usernetwork\/insert":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "UserNetwork"
+        ]
+,
+        "description":"Add connection to user network",
+        "operationId":"UserNetworkController.TUserNetworkController_Insert",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"HASH",
+            "description":"Connection hash\/identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "201":
+          {
+            "description":"Connection added successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters CD_USER or HASH"
+          }
+,
+          "409":
+          {
+            "description":"Connection already exists"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/usernetwork\/getall":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "UserNetwork"
+        ]
+,
+        "description":"Get all connections for a user",
+        "operationId":"UserNetworkController.TUserNetworkController_GetAll",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_USER",
+            "description":"User code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"Language",
+            "description":"Language code EN\/ES (optional, default EN)",
+            "default":"EN",
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Array of user network connections"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameter CD_USER"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+  }
+,
+  "securityDefinitions":
+  {
+    "basic":
+    {
+      "type":"basic"
+    }
+,
+    "bearer":
+    {
+      "type":"apiKey",
+      "description":"Method for authentication using JSON Web Token (JWT)",
+      "in":"header",
+      "name":"Authorization"
+    }
+  }
+}

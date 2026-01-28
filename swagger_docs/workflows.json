@@ -99,17 +99,17 @@
       }
     }
 ,
-    "\/vehicles\/getoneticket":
+    "\/workflows\/insertwfstep":
     {
       "post":
       {
         "tags":
         [
-          "Vehicle Tickets"
+          "Workflow Steps"
         ]
 ,
-        "description":"Get single ticket by vehicle and ticket number",
-        "operationId":"VehiclesController.TVehiclesController_GetOneTicket",
+        "description":"Add step to workflow",
+        "operationId":"WorkflowsController.TWorkflowsController_InsertWFStep",
         "consumes":
         [
           "application\/json"
@@ -124,8 +124,16 @@
         [
                     {
             "in":"body",
-            "name":"CD_VEHICLE",
-            "description":"Vehicle code identifier (required)",
+            "name":"CD_WF_STEP_TYPE",
+            "description":"Workflow step type code (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"CD_WORKFLOW",
+            "description":"Workflow code identifier (required)",
             "required":true,
             "type":"string"
           }
@@ -133,8 +141,8 @@
           
           {
             "in":"body",
-            "name":"TICKET_NUMBER",
-            "description":"Ticket number identifier (required)",
+            "name":"STEP_NUMBER",
+            "description":"Step number in workflow sequence (required)",
             "required":true,
             "type":"integer"
           }
@@ -142,19 +150,19 @@
 ,
         "responses":
         {
-          "200":
+          "201":
           {
-            "description":"Ticket object with ticket details"
-          }
-,
-          "204":
-          {
-            "description":"Ticket not found"
+            "description":"Workflow step added successfully"
           }
 ,
           "400":
           {
-            "description":"Missing required parameters CD_VEHICLE or TICKET_NUMBER"
+            "description":"Missing required parameters CD_WORKFLOW or STEP_NUMBER"
+          }
+,
+          "409":
+          {
+            "description":"Step number already exists for this workflow"
           }
 ,
           "500":
@@ -165,17 +173,17 @@
       }
     }
 ,
-    "\/vehicles\/loadtickets":
+    "\/workflows\/loadwfsteps":
     {
       "post":
       {
         "tags":
         [
-          "Vehicle Tickets"
+          "Workflow Steps"
         ]
 ,
-        "description":"Load tickets for a vehicle with pagination",
-        "operationId":"VehiclesController.TVehiclesController_LoadTickets",
+        "description":"Load steps for a workflow with pagination",
+        "operationId":"WorkflowsController.TWorkflowsController_LoadWFSteps",
         "consumes":
         [
           "application\/json"
@@ -190,24 +198,17 @@
         [
                     {
             "in":"body",
-            "name":"SearchText",
-            "description":"Search text to filter tickets (optional)",
+            "name":"Language",
+            "description":"Language code EN\/ES (optional, default EN)",
+            "default":"EN",
             "type":"string"
           }
 ,
           
           {
             "in":"body",
-            "name":"OrderField",
-            "description":"Field to order by (optional)",
-            "type":"string"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"CD_VEHICLE",
-            "description":"Vehicle code identifier (required)",
+            "name":"CD_WORKFLOW",
+            "description":"Workflow code identifier (required)",
             "required":true,
             "type":"string"
           }
@@ -226,7 +227,7 @@
         {
           "200":
           {
-            "description":"Array of tickets for the vehicle with pagination (X-Pages-Quantity header contains total pages)"
+            "description":"Array of workflow steps with STEP_NUMBER, CD_WF_STEP_TYPE, DS_WF_STEP_TYPE (X-Pages-Quantity header contains total pages)"
           }
 ,
           "400":
@@ -242,17 +243,17 @@
       }
     }
 ,
-    "\/vehicles\/insertticket":
+    "\/workflows\/deletewfstep":
     {
       "post":
       {
         "tags":
         [
-          "Vehicle Tickets"
+          "Workflow Steps"
         ]
 ,
-        "description":"Create new ticket for vehicle",
-        "operationId":"VehiclesController.TVehiclesController_InsertTicket",
+        "description":"Remove step from workflow",
+        "operationId":"WorkflowsController.TWorkflowsController_DeleteWFStep",
         "consumes":
         [
           "application\/json"
@@ -267,24 +268,8 @@
         [
                     {
             "in":"body",
-            "name":"AMOUNT",
-            "description":"Ticket amount (optional)",
-            "type":"number"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"DESCRIPTION",
-            "description":"Ticket description (optional)",
-            "type":"string"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"CD_VEHICLE",
-            "description":"Vehicle code identifier (required)",
+            "name":"CD_WORKFLOW",
+            "description":"Workflow code identifier (required)",
             "required":true,
             "type":"string"
           }
@@ -292,68 +277,8 @@
           
           {
             "in":"body",
-            "name":"TICKET_DATE",
-            "description":"Ticket date (optional)",
-            "type":"string"
-          }
-        ]
-,
-        "responses":
-        {
-          "201":
-          {
-            "description":"Ticket created successfully"
-          }
-,
-          "400":
-          {
-            "description":"Missing required parameter CD_VEHICLE or invalid data"
-          }
-,
-          "500":
-          {
-            "description":"Internal server error"
-          }
-        }
-      }
-    }
-,
-    "\/vehicles\/deleteticket":
-    {
-      "post":
-      {
-        "tags":
-        [
-          "Vehicle Tickets"
-        ]
-,
-        "description":"Delete ticket",
-        "operationId":"VehiclesController.TVehiclesController_DeleteTicket",
-        "consumes":
-        [
-          "application\/json"
-        ]
-,
-        "produces":
-        [
-          "application\/json"
-        ]
-,
-        "parameters":
-        [
-                    {
-            "in":"body",
-            "name":"CD_VEHICLE",
-            "description":"Vehicle code identifier (required)",
-            "required":true,
-            "type":"string"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"TICKET_NUMBER",
-            "description":"Ticket number identifier (required)",
+            "name":"STEP_NUMBER",
+            "description":"Step number to delete (required)",
             "required":true,
             "type":"integer"
           }
@@ -363,17 +288,17 @@
         {
           "200":
           {
-            "description":"Ticket deleted successfully"
+            "description":"Workflow step deleted successfully"
           }
 ,
           "400":
           {
-            "description":"Missing required parameters CD_VEHICLE or TICKET_NUMBER"
+            "description":"Missing required parameters CD_WORKFLOW or STEP_NUMBER"
           }
 ,
           "404":
           {
-            "description":"Ticket not found"
+            "description":"Workflow step not found"
           }
 ,
           "500":
@@ -384,17 +309,17 @@
       }
     }
 ,
-    "\/vehicles\/updateticket":
+    "\/workflows\/isreferenced":
     {
       "post":
       {
         "tags":
         [
-          "Vehicle Tickets"
+          "Workflows"
         ]
 ,
-        "description":"Update existing ticket",
-        "operationId":"VehiclesController.TVehiclesController_UpdateTicket",
+        "description":"Check if workflow is referenced by other entities",
+        "operationId":"WorkflowsController.TWorkflowsController_IsReferenced",
         "consumes":
         [
           "application\/json"
@@ -409,43 +334,10 @@
         [
                     {
             "in":"body",
-            "name":"TICKET_DATE",
-            "description":"Ticket date (optional)",
-            "type":"string"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"AMOUNT",
-            "description":"Ticket amount (optional)",
-            "type":"number"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"DESCRIPTION",
-            "description":"Ticket description (optional)",
-            "type":"string"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"CD_VEHICLE",
-            "description":"Vehicle code identifier (required)",
+            "name":"CD_WORKFLOW",
+            "description":"Workflow code identifier (required)",
             "required":true,
             "type":"string"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"TICKET_NUMBER",
-            "description":"Ticket number identifier (required)",
-            "required":true,
-            "type":"integer"
           }
         ]
 ,
@@ -453,17 +345,12 @@
         {
           "200":
           {
-            "description":"Ticket updated successfully"
+            "description":"Array with TABLE field containing list of tables that reference this workflow, or NONE if no references"
           }
 ,
           "400":
           {
-            "description":"Missing required parameters or invalid data"
-          }
-,
-          "404":
-          {
-            "description":"Ticket not found"
+            "description":"Missing required parameter CD_WORKFLOW"
           }
 ,
           "500":
@@ -474,17 +361,17 @@
       }
     }
 ,
-    "\/vehicles\/getorderbyfields":
+    "\/workflows\/getorderbyfields":
     {
       "post":
       {
         "tags":
         [
-          "Vehicles"
+          "Workflows"
         ]
 ,
         "description":"Get available fields for ordering",
-        "operationId":"VehiclesController.TVehiclesController_GetOrderByFields",
+        "operationId":"WorkflowsController.TWorkflowsController_GetOrderByFields",
         "consumes":
         [
           "application\/json"
@@ -515,17 +402,17 @@
       }
     }
 ,
-    "\/vehicles\/isreferenced":
+    "\/workflows\/delete":
     {
       "post":
       {
         "tags":
         [
-          "Vehicles"
+          "Workflows"
         ]
 ,
-        "description":"Check if vehicle is referenced by other entities",
-        "operationId":"VehiclesController.TVehiclesController_IsReferenced",
+        "description":"Delete workflow",
+        "operationId":"WorkflowsController.TWorkflowsController_Delete",
         "consumes":
         [
           "application\/json"
@@ -540,8 +427,8 @@
         [
                     {
             "in":"body",
-            "name":"CD_VEHICLE",
-            "description":"Vehicle code identifier (required)",
+            "name":"CD_WORKFLOW",
+            "description":"Workflow code identifier (required)",
             "required":true,
             "type":"string"
           }
@@ -551,12 +438,22 @@
         {
           "200":
           {
-            "description":"Array with TABLE field containing list of tables that reference this vehicle, or NONE if no references"
+            "description":"Workflow deleted successfully"
           }
 ,
           "400":
           {
-            "description":"Missing required parameter CD_VEHICLE"
+            "description":"Missing required parameter CD_WORKFLOW"
+          }
+,
+          "404":
+          {
+            "description":"Workflow not found"
+          }
+,
+          "409":
+          {
+            "description":"Workflow is referenced by other data and cannot be deleted"
           }
 ,
           "500":
@@ -567,143 +464,17 @@
       }
     }
 ,
-    "\/vehicles\/getone":
+    "\/workflows\/getall":
     {
       "post":
       {
         "tags":
         [
-          "Vehicles"
+          "Workflows"
         ]
 ,
-        "description":"Get single vehicle by code",
-        "operationId":"VehiclesController.TVehiclesController_GetOne",
-        "consumes":
-        [
-          "application\/json"
-        ]
-,
-        "produces":
-        [
-          "application\/json"
-        ]
-,
-        "parameters":
-        [
-                    {
-            "in":"body",
-            "name":"CD_VEHICLE",
-            "description":"Vehicle code identifier (required)",
-            "required":true,
-            "type":"string"
-          }
-        ]
-,
-        "responses":
-        {
-          "200":
-          {
-            "description":"Vehicle object with CD_VEHICLE, DS_VEHICLE, PLATE, MODEL, YEAR and other fields"
-          }
-,
-          "204":
-          {
-            "description":"Vehicle not found"
-          }
-,
-          "400":
-          {
-            "description":"Missing required parameter CD_VEHICLE"
-          }
-,
-          "500":
-          {
-            "description":"Internal server error"
-          }
-        }
-      }
-    }
-,
-    "\/vehicles\/load":
-    {
-      "post":
-      {
-        "tags":
-        [
-          "Vehicles"
-        ]
-,
-        "description":"Load vehicles with pagination and search",
-        "operationId":"VehiclesController.TVehiclesController_Load",
-        "consumes":
-        [
-          "application\/json"
-        ]
-,
-        "produces":
-        [
-          "application\/json"
-        ]
-,
-        "parameters":
-        [
-                    {
-            "in":"body",
-            "name":"OrderField",
-            "description":"Field to order by (optional, default VEHICLES.CD_VEHICLE)",
-            "default":"VEHICLES.CD_VEHICLE",
-            "type":"string"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"PageNumber",
-            "description":"Page number for pagination (must be >= 1, required)",
-            "required":true,
-            "type":"integer"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"SearchText",
-            "description":"Search text to filter vehicles (optional)",
-            "type":"string"
-          }
-        ]
-,
-        "responses":
-        {
-          "200":
-          {
-            "description":"Array of vehicles matching search criteria with pagination (X-Pages-Quantity header contains total pages)"
-          }
-,
-          "400":
-          {
-            "description":"Invalid PageNumber or search parameters"
-          }
-,
-          "500":
-          {
-            "description":"Internal server error"
-          }
-        }
-      }
-    }
-,
-    "\/vehicles\/getall":
-    {
-      "post":
-      {
-        "tags":
-        [
-          "Vehicles"
-        ]
-,
-        "description":"Get all vehicles",
-        "operationId":"VehiclesController.TVehiclesController_GetAll",
+        "description":"Get all workflows",
+        "operationId":"WorkflowsController.TWorkflowsController_GetAll",
         "consumes":
         [
           "application\/json"
@@ -729,7 +500,7 @@
         {
           "200":
           {
-            "description":"Array of vehicles with CD_VEHICLE, DS_VEHICLE, PLATE, MODEL, YEAR fields"
+            "description":"Array of workflows with CD_WORKFLOW and DS_WORKFLOW fields"
           }
 ,
           "400":
@@ -745,17 +516,17 @@
       }
     }
 ,
-    "\/vehicles\/delete":
+    "\/workflows\/load":
     {
       "post":
       {
         "tags":
         [
-          "Vehicles"
+          "Workflows"
         ]
 ,
-        "description":"Delete vehicle",
-        "operationId":"VehiclesController.TVehiclesController_Delete",
+        "description":"Load workflows with pagination and search",
+        "operationId":"WorkflowsController.TWorkflowsController_Load",
         "consumes":
         [
           "application\/json"
@@ -770,9 +541,26 @@
         [
                     {
             "in":"body",
-            "name":"CD_VEHICLE",
-            "description":"Vehicle code identifier (required)",
+            "name":"OrderField",
+            "description":"Field to order by (optional, default WORKFLOWS.CD_WORKFLOW)",
+            "default":"WORKFLOWS.CD_WORKFLOW",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"PageNumber",
+            "description":"Page number for pagination (must be >= 1, required)",
             "required":true,
+            "type":"integer"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"SearchText",
+            "description":"Search text to filter workflows (optional)",
             "type":"string"
           }
         ]
@@ -781,22 +569,12 @@
         {
           "200":
           {
-            "description":"Vehicle deleted successfully"
+            "description":"Array of workflows matching search criteria with pagination (X-Pages-Quantity header contains total pages)"
           }
 ,
           "400":
           {
-            "description":"Missing required parameter CD_VEHICLE"
-          }
-,
-          "404":
-          {
-            "description":"Vehicle not found"
-          }
-,
-          "409":
-          {
-            "description":"Vehicle is referenced by other data and cannot be deleted"
+            "description":"Invalid PageNumber or search parameters"
           }
 ,
           "500":
@@ -807,17 +585,17 @@
       }
     }
 ,
-    "\/vehicles\/update":
+    "\/workflows\/getone":
     {
       "post":
       {
         "tags":
         [
-          "Vehicles"
+          "Workflows"
         ]
 ,
-        "description":"Update existing vehicle",
-        "operationId":"VehiclesController.TVehiclesController_Update",
+        "description":"Get single workflow by code",
+        "operationId":"WorkflowsController.TWorkflowsController_GetOne",
         "consumes":
         [
           "application\/json"
@@ -832,41 +610,9 @@
         [
                     {
             "in":"body",
-            "name":"PLATE",
-            "description":"Vehicle license plate (optional)",
-            "type":"string"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"MODEL",
-            "description":"Vehicle model (optional)",
-            "type":"string"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"YEAR",
-            "description":"Vehicle year (optional)",
-            "type":"integer"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"CD_VEHICLE",
-            "description":"Vehicle code identifier (required)",
+            "name":"CD_WORKFLOW",
+            "description":"Workflow code identifier (required)",
             "required":true,
-            "type":"string"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"DS_VEHICLE",
-            "description":"Vehicle description (optional)",
             "type":"string"
           }
         ]
@@ -875,17 +621,17 @@
         {
           "200":
           {
-            "description":"Vehicle updated successfully"
+            "description":"Workflow object with CD_WORKFLOW and DS_WORKFLOW fields"
+          }
+,
+          "204":
+          {
+            "description":"Workflow not found"
           }
 ,
           "400":
           {
-            "description":"Missing required parameters or invalid data"
-          }
-,
-          "404":
-          {
-            "description":"Vehicle not found"
+            "description":"Missing required parameter CD_WORKFLOW"
           }
 ,
           "500":
@@ -896,17 +642,17 @@
       }
     }
 ,
-    "\/vehicles\/insert":
+    "\/workflows\/insert":
     {
       "post":
       {
         "tags":
         [
-          "Vehicles"
+          "Workflows"
         ]
 ,
-        "description":"Create new vehicle",
-        "operationId":"VehiclesController.TVehiclesController_Insert",
+        "description":"Create new workflow",
+        "operationId":"WorkflowsController.TWorkflowsController_Insert",
         "consumes":
         [
           "application\/json"
@@ -921,32 +667,8 @@
         [
                     {
             "in":"body",
-            "name":"PLATE",
-            "description":"Vehicle license plate (optional)",
-            "type":"string"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"MODEL",
-            "description":"Vehicle model (optional)",
-            "type":"string"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"YEAR",
-            "description":"Vehicle year (optional)",
-            "type":"integer"
-          }
-,
-          
-          {
-            "in":"body",
-            "name":"CD_VEHICLE",
-            "description":"Vehicle code identifier (required)",
+            "name":"CD_WORKFLOW",
+            "description":"Workflow code identifier (required)",
             "required":true,
             "type":"string"
           }
@@ -954,8 +676,9 @@
           
           {
             "in":"body",
-            "name":"DS_VEHICLE",
-            "description":"Vehicle description (optional)",
+            "name":"DS_WORKFLOW",
+            "description":"Workflow description (required)",
+            "required":true,
             "type":"string"
           }
         ]
@@ -964,7 +687,7 @@
         {
           "201":
           {
-            "description":"Vehicle created successfully"
+            "description":"Workflow created successfully"
           }
 ,
           "400":
@@ -974,7 +697,73 @@
 ,
           "409":
           {
-            "description":"Vehicle code already exists"
+            "description":"Workflow code already exists"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
+    "\/workflows\/update":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "Workflows"
+        ]
+,
+        "description":"Update existing workflow",
+        "operationId":"WorkflowsController.TWorkflowsController_Update",
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "parameters":
+        [
+                    {
+            "in":"body",
+            "name":"CD_WORKFLOW",
+            "description":"Workflow code identifier (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"DS_WORKFLOW",
+            "description":"Workflow description (required)",
+            "required":true,
+            "type":"string"
+          }
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"Workflow updated successfully"
+          }
+,
+          "400":
+          {
+            "description":"Missing required parameters or invalid data"
+          }
+,
+          "404":
+          {
+            "description":"Workflow not found"
           }
 ,
           "500":
