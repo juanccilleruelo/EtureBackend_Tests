@@ -28,14 +28,15 @@ type
       const TEST_LINK_URL          = 'https://maps.google.com/maps?q=Calle+Principal+123,+Madrid';
       const TEST_ALL_DAY           = 'N';
       const TEST_TZ_NAME           = 'UTC';
-      const TEST_ID_LOCATION       = 1;
-      const TEST_ID_MEETING_POINT  = 1;
    private
       function CreateEventDataSet:TWebClientDataSet;
       function CreateCalendarDataSet:TWebClientDataSet;
-      procedure FillEventData(ADataSet :TWebClientDataSet; const AID_CALENDAR :Int64; const ATitle :string; const AStartsAt, AEndsAt :TDateTime);
+      function CreateLocationDataSet:TWebClientDataSet;
+      procedure FillEventData(ADataSet :TWebClientDataSet; const AID_CALENDAR :Int64; const ATitle :string; const AStartsAt, AEndsAt :TDateTime; const AID_LOCATION, AID_MEETING_POINT :Int64);
       [async] function GetTestCalendarID:Int64;
       [async] function EnsureTestCalendarExists:Int64;
+      [async] function GetValidLocationID:Int64;
+      [async] function EnsureTestLocationExists:Int64;
       [async] function HasTestEvent(const ATitle :string):Int64;
       [async] function EnsureTestEventExists(const ATitle :string):Int64;
       [async] procedure DeleteTestEventIfExists(const ATitle :string);
@@ -107,6 +108,27 @@ begin
    NewField := TStringField.Create(Result);
    NewField.FieldName := 'COLOR';
    NewField.Size      := 7;
+   NewField.DataSet   := Result;
+   Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
+
+   Result.Active := True;
+end;
+
+function TTestEvents.CreateLocationDataSet: TWebClientDataSet;
+var NewField :TField;
+begin
+   Result := TWebClientDataSet.Create(nil);
+
+   // ID_LOCATION BIGINT
+   NewField := TLargeintField.Create(Result);
+   NewField.FieldName := 'ID_LOCATION';
+   NewField.DataSet   := Result;
+   Result.FieldDefs.Add(NewField.FieldName, ftLargeint, 0);
+
+   // DS_LOCATION VARCHAR(200)
+   NewField := TStringField.Create(Result);
+   NewField.FieldName := 'DS_LOCATION';
+   NewField.Size      := 200;
    NewField.DataSet   := Result;
    Result.FieldDefs.Add(NewField.FieldName, ftString, NewField.Size);
 
@@ -225,7 +247,7 @@ begin
    Result.Active := True;
 end;
 
-procedure TTestEvents.FillEventData(ADataSet :TWebClientDataSet; const AID_CALENDAR :Int64; const ATitle :string; const AStartsAt, AEndsAt :TDateTime);
+procedure TTestEvents.FillEventData(ADataSet :TWebClientDataSet; const AID_CALENDAR :Int64; const ATitle :string; const AStartsAt, AEndsAt :TDateTime; const AID_LOCATION, AID_MEETING_POINT :Int64);
 begin
    ADataSet.Append;
 
@@ -238,8 +260,8 @@ begin
    ADataSet.FieldByName('STARTS_AT_TZ'    ).AsDateTime := AStartsAt;
    ADataSet.FieldByName('ENDS_AT_TZ'      ).AsDateTime := AEndsAt;
    ADataSet.FieldByName('TZ_NAME'         ).AsString   := TEST_TZ_NAME;
-   ADataSet.FieldByName('ID_LOCATION'     ).AsLargeInt := TEST_ID_LOCATION;
-   ADataSet.FieldByName('ID_MEETING_POINT').AsLargeInt := TEST_ID_MEETING_POINT;
+   ADataSet.FieldByName('ID_LOCATION'     ).AsLargeInt := AID_LOCATION;
+   ADataSet.FieldByName('ID_MEETING_POINT').AsLargeInt := AID_MEETING_POINT;
    ADataSet.FieldByName('ST'              ).AsString   := 'A';
 
    ADataSet.Post;
@@ -283,6 +305,97 @@ begin
       { PASO 3: Recuperar el ID del calendario recién creado }
       Result := await(Int64, GetTestCalendarID);
       Assert.IsTrue(Result > 0, 'Failed to retrieve calendar ID after creation');
+   finally
+      DataSet.Free;
+   end;
+end;
+
+[async] function TTestEvents.GetValidLocationID:Int64;
+{ PROPÓSITO:
+  Obtiene el ID de una location válida existente en la base de datos.
+  
+  RETORNO:
+  - ID_LOCATION del primer location activo encontrado
+  - -1 si no hay locations en la base de datos
+  
+  NOTA: 
+  Este método se usa para obtener IDs válidos para los tests.
+  Asume que existe al menos una location en la base de datos.
+}
+var DataSet   :TWebClientDataSet;
+    ExceptMsg :string;
+begin
+   Result := -1;
+   TWebSetup.Instance.Language := 'ES';
+   DataSet := CreateLocationDataSet;
+   try
+      try
+         { Llamar al endpoint POST /location/getalllocations }
+         await(TDB.GetAll('/location', [], DataSet, '/getalllocations'));
+
+         { Si hay locations, tomar el ID del primero }
+         if DataSet.RecordCount > 0 then begin
+            DataSet.First;
+            Result := DataSet.FieldByName('ID_LOCATION').AsLargeInt;
+         end;
+
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do begin
+            { En caso de error, mantener Result = -1 }
+            ExceptMsg := E.Message;
+         end;
+      end;
+   finally
+      DataSet.Free;
+   end;
+end;
+
+[async] function TTestEvents.EnsureTestLocationExists:Int64;
+{ PROPÓSITO:
+  Garantiza que existe al menos una location de prueba en la base de datos.
+  Si ya existe alguna location, devuelve el ID de la primera encontrada.
+  Si no existe ninguna, crea una location de prueba y devuelve su ID.
+  
+  RETORNO:
+  - ID_LOCATION de una location válida (existente o recién creada)
+  
+  NOTA:
+  Este método asegura que siempre haya al menos una location disponible
+  para los tests, creándola automáticamente si es necesario.
+}
+var DataSet   :TWebClientDataSet;
+    ExceptMsg :string;
+begin
+   { PASO 1: Intentar obtener una location existente }
+   Result := await(Int64, GetValidLocationID);
+   if Result > 0 then Exit;  { Ya existe al menos una, retornar su ID }
+
+   { PASO 2: No hay locations, crear una de prueba }
+   TWebSetup.Instance.Language := 'ES';
+   DataSet := CreateLocationDataSet;
+   try
+      DataSet.Append;
+      DataSet.FieldByName('DS_LOCATION').AsString := 'Unit Test Location';
+      DataSet.Post;
+
+      try
+         { Llamar al endpoint POST /location/insertlocation }
+         { TYPE_LOCATION: F (Physical) o V (Virtual) - usamos F }
+         await(TDB.Insert('/location', [['DS_LOCATION'  , 'Unit Test Location'],
+                                        ['TYPE_LOCATION', 'F'],
+                                        ['ADDRESS_TEXT' , 'Test Address 123'],
+                                        ['NOTES'        , 'Created for unit testing']], '/insertlocation'));
+         ExceptMsg := 'ok';
+      except
+         on E:Exception do ExceptMsg := E.Message;
+      end;
+
+      Assert.IsTrue(ExceptMsg = 'ok', 'Failed to create test location -> '+ExceptMsg);
+
+      { PASO 3: Recuperar el ID de la location recién creada }
+      Result := await(Int64, GetValidLocationID);
+      Assert.IsTrue(Result > 0, 'Failed to retrieve location ID after creation');
    finally
       DataSet.Free;
    end;
@@ -397,15 +510,17 @@ end;
   2. Si existe → devuelve su ID inmediatamente (Early Exit)
   3. Si no existe → lo crea:
      - Obtiene el calendario de prueba
+     - Obtiene un location válido
      - Crea un evento que empieza mañana y dura 2 horas
      - Inserta en la base de datos
      - Recupera y devuelve el ID del evento creado
 }
-var DataSet     :TWebClientDataSet;
-    ExceptMsg   :string;
-    ID_CALENDAR :Int64;
-    StartDate   :TDateTime;
-    EndDate     :TDateTime;
+var DataSet        :TWebClientDataSet;
+    ExceptMsg      :string;
+    ID_CALENDAR    :Int64;
+    ID_LOCATION    :Int64;
+    StartDate      :TDateTime;
+    EndDate        :TDateTime;
 begin
    { PASO 1: Verificar si el evento ya existe }
    Result := await(Int64, HasTestEvent(ATitle));
@@ -415,7 +530,11 @@ begin
    ID_CALENDAR := await(Int64, EnsureTestCalendarExists);
    Assert.IsTrue(ID_CALENDAR > 0, 'Test calendar must exist or be created');
 
-   { PASO 3: Preparar el dataset para crear el nuevo evento }
+   { PASO 3: Asegurar que existe al menos una location y obtener su ID }
+   ID_LOCATION := await(Int64, EnsureTestLocationExists);
+   Assert.IsTrue(ID_LOCATION > 0, 'Test location must exist or be created');
+
+   { PASO 4: Preparar el dataset para crear el nuevo evento }
    TWebSetup.Instance.Language := 'ES';
    DataSet := CreateEventDataSet;
    try
@@ -424,9 +543,10 @@ begin
       EndDate   := StartDate + (2/24); { 2 horas después (2/24 días = 2 horas) }
 
       { Llenar el dataset con los datos del evento }
-      FillEventData(DataSet, ID_CALENDAR, ATitle, StartDate, EndDate);
+      { Usar el mismo ID_LOCATION para location y meeting point }
+      FillEventData(DataSet, ID_CALENDAR, ATitle, StartDate, EndDate, ID_LOCATION, ID_LOCATION);
       
-      { PASO 4: Llamar al endpoint POST /event/insertevent }
+      { PASO 5: Llamar al endpoint POST /event/insertevent }
       { El servidor devuelve 201 (Created) con NEW_ID en el body }
       try
          await(TDB.Insert(LOCAL_PATH, DataSet, '/insertevent'));
@@ -438,7 +558,7 @@ begin
       { Verificar que la inserción fue exitosa (status 201 se maneja como éxito) }
       Assert.IsTrue(ExceptMsg = 'ok', 'EnsureTestEventExists -> '+ExceptMsg);
       
-      { PASO 5: Recuperar el ID del evento recién creado mediante búsqueda }
+      { PASO 6: Recuperar el ID del evento recién creado mediante búsqueda }
       Result := await(Int64, HasTestEvent(ATitle));
       
       { Verificar que se obtuvo un ID válido }
@@ -513,7 +633,7 @@ begin
    ID_EVENT := await(Int64, EnsureTestEventExists(TEST_TITLE));
    Assert.IsTrue(ID_EVENT > 0, 'Test event must be created');
    
-(*   try
+   (*try
       { Obtener el ID del calendario de prueba (ya sabemos que existe) }
       ID_CALENDAR := await(Int64, GetTestCalendarID);
       Assert.IsTrue(ID_CALENDAR > 0, 'Test calendar must exist');
@@ -763,6 +883,7 @@ end;
 var DataSet     :TWebClientDataSet;
     ExceptMsg   :string;
     ID_CALENDAR :Int64;
+    ID_LOCATION :Int64;
     ID_EVENT    :Int64;
     StartDate   :TDateTime;
     EndDate     :TDateTime;
@@ -773,13 +894,16 @@ begin
       ID_CALENDAR := await(Int64, GetTestCalendarID);
       Assert.IsTrue(ID_CALENDAR > 0, 'Test calendar must exist');
 
+      ID_LOCATION := await(Int64, EnsureTestLocationExists);
+      Assert.IsTrue(ID_LOCATION > 0, 'Test location must exist or be created');
+
       TWebSetup.Instance.Language := 'ES';
       DataSet := CreateEventDataSet;
       try
          StartDate := Now + 1;
          EndDate   := StartDate + (2/24);
 
-         FillEventData(DataSet, ID_CALENDAR, TEST_TITLE, StartDate, EndDate);
+         FillEventData(DataSet, ID_CALENDAR, TEST_TITLE, StartDate, EndDate, ID_LOCATION, ID_LOCATION);
          try
             await(TDB.Insert(LOCAL_PATH, DataSet, '/insertevent'));
             ExceptMsg := 'ok';
@@ -803,11 +927,15 @@ end;
 var DataSet     :TWebClientDataSet;
     ExceptMsg   :string;
     ID_CALENDAR :Int64;
+    ID_LOCATION :Int64;
     StartDate   :TDateTime;
     EndDate     :TDateTime;
 begin
    ID_CALENDAR := await(Int64, GetTestCalendarID);
    Assert.IsTrue(ID_CALENDAR > 0, 'Test calendar must exist');
+
+   ID_LOCATION := await(Int64, EnsureTestLocationExists);
+   Assert.IsTrue(ID_LOCATION > 0, 'Test location must exist or be created');
 
    TWebSetup.Instance.Language := 'ES';
    DataSet := CreateEventDataSet;
@@ -815,7 +943,7 @@ begin
       StartDate := Now + 1;
       EndDate   := StartDate - (2/24); // Invalid: ends before starts
 
-      FillEventData(DataSet, ID_CALENDAR, TEST_TITLE + ' Invalid', StartDate, EndDate);
+      FillEventData(DataSet, ID_CALENDAR, TEST_TITLE + ' Invalid', StartDate, EndDate, ID_LOCATION, ID_LOCATION);
       try
          await(TDB.Insert(LOCAL_PATH, DataSet, '/insertevent'));
          ExceptMsg := 'ok';
@@ -834,11 +962,15 @@ end;
 var DataSet     :TWebClientDataSet;
     ExceptMsg   :string;
     ID_CALENDAR :Int64;
+    ID_LOCATION :Int64;
     StartDate   :TDateTime;
     EndDate     :TDateTime;
 begin
    ID_CALENDAR := await(Int64, GetTestCalendarID);
    Assert.IsTrue(ID_CALENDAR > 0, 'Test calendar must exist');
+
+   ID_LOCATION := await(Int64, EnsureTestLocationExists);
+   Assert.IsTrue(ID_LOCATION > 0, 'Test location must exist or be created');
 
    TWebSetup.Instance.Language := 'ES';
    DataSet := CreateEventDataSet;
@@ -846,7 +978,7 @@ begin
       StartDate := Now + 1;
       EndDate   := StartDate + (2/24);
 
-      FillEventData(DataSet, ID_CALENDAR, TEST_TITLE + ' Invalid AllDay', StartDate, EndDate);
+      FillEventData(DataSet, ID_CALENDAR, TEST_TITLE + ' Invalid AllDay', StartDate, EndDate, ID_LOCATION, ID_LOCATION);
       DataSet.Edit;
       DataSet.FieldByName('ALL_DAY').AsString := 'X'; // Invalid value
       DataSet.Post;
@@ -869,11 +1001,15 @@ end;
 var DataSet     :TWebClientDataSet;
     ExceptMsg   :string;
     ID_CALENDAR :Int64;
+    ID_LOCATION :Int64;
     StartDate   :TDateTime;
     EndDate     :TDateTime;
 begin
    ID_CALENDAR := await(Int64, GetTestCalendarID);
    Assert.IsTrue(ID_CALENDAR > 0, 'Test calendar must exist');
+
+   ID_LOCATION := await(Int64, EnsureTestLocationExists);
+   Assert.IsTrue(ID_LOCATION > 0, 'Test location must exist or be created');
 
    TWebSetup.Instance.Language := 'ES';
    DataSet := CreateEventDataSet;
@@ -881,10 +1017,8 @@ begin
       StartDate := Now + 1;
       EndDate   := StartDate + (2/24);
 
-      FillEventData(DataSet, ID_CALENDAR, TEST_TITLE + ' Invalid Location', StartDate, EndDate);
-      DataSet.Edit;
-      DataSet.FieldByName('ID_LOCATION').AsLargeInt := 999999999; // Non-existent location
-      DataSet.Post;
+      { Usar meeting point válido pero location inválido }
+      FillEventData(DataSet, ID_CALENDAR, TEST_TITLE + ' Invalid Location', StartDate, EndDate, 999999999, ID_LOCATION);
 
       try
          await(TDB.Insert(LOCAL_PATH, DataSet, '/insertevent'));
@@ -904,11 +1038,15 @@ end;
 var DataSet     :TWebClientDataSet;
     ExceptMsg   :string;
     ID_CALENDAR :Int64;
+    ID_LOCATION :Int64;
     StartDate   :TDateTime;
     EndDate     :TDateTime;
 begin
    ID_CALENDAR := await(Int64, GetTestCalendarID);
    Assert.IsTrue(ID_CALENDAR > 0, 'Test calendar must exist');
+
+   ID_LOCATION := await(Int64, EnsureTestLocationExists);
+   Assert.IsTrue(ID_LOCATION > 0, 'Test location must exist or be created');
 
    TWebSetup.Instance.Language := 'ES';
    DataSet := CreateEventDataSet;
@@ -916,10 +1054,8 @@ begin
       StartDate := Now + 1;
       EndDate   := StartDate + (2/24);
 
-      FillEventData(DataSet, ID_CALENDAR, TEST_TITLE + ' Invalid Meeting Point', StartDate, EndDate);
-      DataSet.Edit;
-      DataSet.FieldByName('ID_MEETING_POINT').AsLargeInt := 999999999; // Non-existent meeting point
-      DataSet.Post;
+      { Usar location válido pero meeting point inválido }
+      FillEventData(DataSet, ID_CALENDAR, TEST_TITLE + ' Invalid Meeting Point', StartDate, EndDate, ID_LOCATION, 999999999);
 
       try
          await(TDB.Insert(LOCAL_PATH, DataSet, '/insertevent'));
@@ -1018,12 +1154,16 @@ begin
 end;
 
 [Test] [async] procedure TTestEvents.TestUpdateEventNotFound;
-var DataSet   :TWebClientDataSet;
-    ExceptMsg :string;
+var DataSet     :TWebClientDataSet;
+    ExceptMsg   :string;
+    ID_LOCATION :Int64;
 begin
+   ID_LOCATION := await(Int64, EnsureTestLocationExists);
+   Assert.IsTrue(ID_LOCATION > 0, 'Test location must exist or be created');
+
    DataSet := CreateEventDataSet;
    try
-      FillEventData(DataSet, 1, 'Non-existent event', Now, Now+1);
+      FillEventData(DataSet, 1, 'Non-existent event', Now, Now+1, ID_LOCATION, ID_LOCATION);
       
       DataSet.Edit;
       DataSet.FieldByName('ID_EVENT').AsLargeInt := 999999999; // Non-existent event
