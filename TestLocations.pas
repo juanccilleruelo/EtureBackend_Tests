@@ -581,10 +581,17 @@ begin
    try
       { Try to create duplicate location }
       FillPhysicalLocationData(DataSet, TEST_DS_LOCATION_PHY);
-      ID_DUPLICATE := await(Int64, TDB.InsertAndGetID(LOCAL_PATH, DataSet, '/insertlocation'));
-      
-      { Should return -1 indicating failure }
-      Assert.IsTrue(ID_DUPLICATE = -1, 'Duplicate location should return -1');
+      try
+         ID_DUPLICATE := await(Int64, TDB.InsertAndGetID(LOCAL_PATH, DataSet, '/insertlocation'));
+         Assert.IsTrue(False, 'Duplicate insertion succeeded with ID: ' + IntToStr(ID_DUPLICATE));
+      except
+         on E:EHTTPException do begin
+            Assert.IsTrue(E.StatusCode = 409, 'Expected HTTP 409 for duplicate, got ' + IntToStr(E.StatusCode));
+         end;
+         on E:Exception do begin
+            Assert.IsTrue(TDB.LastHTTPStatus = 409, 'Expected HTTP 409 for duplicate (fallback), last status: ' + IntToStr(TDB.LastHTTPStatus));
+         end;
+      end;
    finally
       DataSet.Free;
       await(DeleteTestLocationIfExists(TEST_DS_LOCATION_PHY));
@@ -607,10 +614,17 @@ begin
       DataSet.FieldByName('ST'           ).AsString := 'A';
       DataSet.Post;
 
-      ID_RESULT := await(Int64, TDB.InsertAndGetID(LOCAL_PATH, DataSet, '/insertlocation'));
-      
-      { Should return -1 indicating validation failure }
-      Assert.IsTrue(ID_RESULT = -1, 'Invalid type should return -1');
+      try
+         ID_RESULT := await(Int64, TDB.InsertAndGetID(LOCAL_PATH, DataSet, '/insertlocation'));
+         Assert.IsTrue(False, 'Invalid type insertion succeeded with ID: ' + IntToStr(ID_RESULT));
+      except
+         on E:EHTTPException do begin
+            Assert.IsTrue(E.StatusCode = 400, 'Expected HTTP 400 for invalid type, got ' + IntToStr(E.StatusCode));
+         end;
+         on E:Exception do begin
+            Assert.IsTrue(TDB.LastHTTPStatus = 400, 'Expected HTTP 400 for invalid type (fallback), last status: ' + IntToStr(TDB.LastHTTPStatus));
+         end;
+      end;
    finally
       DataSet.Free;
    end;
@@ -723,14 +737,17 @@ begin
          DataSet.Post;
 
          await(TDB.Update(LOCAL_PATH, [['ID_LOCATION', IntToStr(ID_LOCATION)]], DataSet, '/updatelocation'));
-         ExceptMsg := 'ok';
+         // If update returns normally, backend may accept but not apply; we consider this handled
+         Assert.IsTrue((TDB.LastHTTPStatus = 200) or (TDB.LastHTTPStatus = 204), 'Unexpected last HTTP status after updating deleted location: ' + IntToStr(TDB.LastHTTPStatus));
       except
-         on E:Exception do ExceptMsg := E.Message;
+         on E:EHTTPException do begin
+            Assert.IsTrue(E.StatusCode in [400,404], 'Expected 400 or 404 when updating deleted location, got ' + IntToStr(E.StatusCode));
+         end;
+         on E:Exception do begin
+            // Any other exception is acceptable as handling
+            Assert.IsTrue(True, 'Update deleted location raised exception: ' + E.Message);
+         end;
       end;
-
-      { Update might succeed but return success=false, or throw exception }
-      { Either way, the update should not be applied to a deleted record }
-      Assert.IsTrue(True, 'Update deleted location handled');
    finally
       DataSet.Free;
    end;
@@ -750,12 +767,15 @@ begin
    try
       await(TDB.Delete(LOCAL_PATH, [['ID_LOCATION', IntToStr(ID_LOCATION)]], '/deletelocation'));
       ExceptMsg := 'ok';
+      Assert.IsTrue(TDB.LastHTTPStatus = 200, 'Second delete returned unexpected status: ' + IntToStr(TDB.LastHTTPStatus));
    except
-      on E:Exception do ExceptMsg := E.Message;
+      on E:EHTTPException do begin
+         Assert.IsTrue(E.StatusCode in [404,400], 'Expected 404 or 400 when deleting already-deleted location, got ' + IntToStr(E.StatusCode));
+      end;
+      on E:Exception do begin
+         Assert.IsTrue(True, 'Delete already-deleted location raised exception: ' + E.Message);
+      end;
    end;
-
-   { Should either succeed with success=false or handle gracefully }
-   Assert.IsTrue(True, 'Delete already-deleted location handled: ' + ExceptMsg);
 end;
 
 { ============================================================================= }
@@ -780,13 +800,15 @@ begin
          DataSet.Post;
 
          ID_RESULT := await(Int64, TDB.InsertAndGetID(LOCAL_PATH, DataSet, '/insertlocation'));
-         ExceptMsg := 'ok';
+         Assert.IsTrue(False, 'Insert without DS_LOCATION succeeded with ID: ' + IntToStr(ID_RESULT));
       except
-         on E:Exception do ExceptMsg := E.Message;
+         on E:EHTTPException do begin
+            Assert.IsTrue(E.StatusCode in [400,500], 'Expected 400/500 for missing required fields, got ' + IntToStr(E.StatusCode));
+         end;
+         on E:Exception do begin
+            Assert.IsTrue((TDB.LastHTTPStatus = 400) or (TDB.LastHTTPStatus = 500), 'Expected 400/500 for missing required fields, last status: ' + IntToStr(TDB.LastHTTPStatus));
+         end;
       end;
-
-      { Should either return -1 or throw exception due to missing required field }
-      Assert.IsTrue((ExceptMsg <> 'ok') or (ID_RESULT = -1), 'Missing DS_LOCATION should fail');
    finally
       DataSet.Free;
    end;

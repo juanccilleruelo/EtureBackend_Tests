@@ -124,31 +124,82 @@
         [
                     {
             "in":"body",
-            "name":"request",
-            "description":"Location data (DS_LOCATION: required, TYPE_LOCATION: required F\/V, ADDRESS_TEXT: optional, VIRTUAL_URL: optional, NOTES: optional)",
+            "name":"ADDRESS_TEXT",
+            "description":"Physical address for type F locations (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"VIRTUAL_URL",
+            "description":"Meeting URL for type V locations (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"LATITUDE",
+            "description":"Geographic latitude (optional)",
+            "type":"number"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"LONGITUDE",
+            "description":"Geographic longitude (optional)",
+            "type":"number"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"NOTES",
+            "description":"Additional notes (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"DS_LOCATION",
+            "description":"Location name (required)",
             "required":true,
-            "schema":
-            {
-              "$ref":"#\/definitions\/JSONObject"
-            }
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"TYPE_LOCATION",
+            "description":"Location type: F (Physical) or V (Virtual) (required)",
+            "required":true,
+            "type":"string"
           }
         ]
 ,
         "responses":
         {
-          "200":
+          "201":
           {
-            "description":"Location created successfully with NEW_ID"
+            "description":"Location created successfully, returns NEW_ID with the new location identifier"
           }
 ,
           "400":
           {
-            "description":"Validation error or duplicate location name"
+            "description":"Invalid TYPE_LOCATION value - must be F or V. Check X-Error-Message header for details"
+          }
+,
+          "409":
+          {
+            "description":"Location with this name already exists. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error during transaction. Check X-Error-Message header for details"
           }
         }
       }
@@ -179,13 +230,68 @@
         [
                     {
             "in":"body",
-            "name":"request",
-            "description":"Location data (ID_LOCATION: required, DS_LOCATION: required, TYPE_LOCATION: required F\/V, ADDRESS_TEXT: optional, VIRTUAL_URL: optional, NOTES: optional)",
+            "name":"TYPE_LOCATION",
+            "description":"Location type: F (Physical) or V (Virtual) (required)",
             "required":true,
-            "schema":
-            {
-              "$ref":"#\/definitions\/JSONObject"
-            }
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"ADDRESS_TEXT",
+            "description":"Physical address for type F locations (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"VIRTUAL_URL",
+            "description":"Meeting URL for type V locations (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"LATITUDE",
+            "description":"Geographic latitude (optional)",
+            "type":"number"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"LONGITUDE",
+            "description":"Geographic longitude (optional)",
+            "type":"number"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"NOTES",
+            "description":"Additional notes (optional)",
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"ID_LOCATION",
+            "description":"Location identifier (required)",
+            "required":true,
+            "type":"integer"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"DS_LOCATION",
+            "description":"Location name (required)",
+            "required":true,
+            "type":"string"
           }
         ]
 ,
@@ -193,22 +299,22 @@
         {
           "200":
           {
-            "description":"Location updated successfully"
+            "description":"Location updated successfully, returns ID_LOCATION"
           }
 ,
           "400":
           {
-            "description":"Invalid TYPE_LOCATION value or missing required fields"
+            "description":"Invalid TYPE_LOCATION value - must be F or V. Check X-Error-Message header for details"
           }
 ,
           "404":
           {
-            "description":"Location not found or inactive"
+            "description":"Location not found or inactive. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -239,13 +345,10 @@
         [
                     {
             "in":"body",
-            "name":"request",
-            "description":"Location deletion (ID_LOCATION: required)",
+            "name":"ID_LOCATION",
+            "description":"Location identifier (required)",
             "required":true,
-            "schema":
-            {
-              "$ref":"#\/definitions\/JSONObject"
-            }
+            "type":"integer"
           }
         ]
 ,
@@ -253,17 +356,17 @@
         {
           "200":
           {
-            "description":"Location deleted successfully"
+            "description":"Location deleted successfully (soft delete - status changed to cancelled), returns ID_LOCATION"
           }
 ,
           "404":
           {
-            "description":"Location not found or already inactive"
+            "description":"Location not found or already inactive. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -294,12 +397,12 @@
         {
           "200":
           {
-            "description":"List of all active locations"
+            "description":"List of all active locations with ID_LOCATION, DS_LOCATION, TYPE_LOCATION, ADDRESS_TEXT, VIRTUAL_URL, LATITUDE, LONGITUDE, NOTES, ST, CREATED_AT, UPDATED_AT"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -330,13 +433,10 @@
         [
                     {
             "in":"body",
-            "name":"request",
-            "description":"Filter criteria (TYPE_LOCATION: required, F=Physical or V=Virtual)",
+            "name":"TYPE_LOCATION",
+            "description":"Location type: F (Physical) or V (Virtual) (required)",
             "required":true,
-            "schema":
-            {
-              "$ref":"#\/definitions\/JSONObject"
-            }
+            "type":"string"
           }
         ]
 ,
@@ -344,17 +444,17 @@
         {
           "200":
           {
-            "description":"List of locations filtered by type"
+            "description":"List of locations filtered by type with full location details"
           }
 ,
           "400":
           {
-            "description":"Missing or invalid TYPE_LOCATION parameter"
+            "description":"Missing required TYPE_LOCATION parameter. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -385,13 +485,17 @@
         [
                     {
             "in":"body",
-            "name":"request",
-            "description":"Location filter (either ID_LOCATION or DS_LOCATION required)",
-            "required":true,
-            "schema":
-            {
-              "$ref":"#\/definitions\/JSONObject"
-            }
+            "name":"ID_LOCATION",
+            "description":"Location identifier (optional, if provided DS_LOCATION is ignored)",
+            "type":"integer"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"DS_LOCATION",
+            "description":"Location name (required if ID_LOCATION not provided)",
+            "type":"string"
           }
         ]
 ,
@@ -399,22 +503,17 @@
         {
           "200":
           {
-            "description":"Location details"
+            "description":"Location details - returns array with one location object or empty if not found"
           }
 ,
           "400":
           {
-            "description":"Missing required parameters"
-          }
-,
-          "404":
-          {
-            "description":"Location not found"
+            "description":"Missing DS_LOCATION when ID_LOCATION not provided. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -434,36 +533,6 @@
       "description":"Method for authentication using JSON Web Token (JWT)",
       "in":"header",
       "name":"Authorization"
-    }
-  }
-,
-  "definitions":
-  {
-    "JSONObject":
-    {
-      "type":"object",
-      "properties":
-      {
-        "count":
-        {
-          "type":"integer"
-        }
-,
-        "isempty":
-        {
-          "type":"boolean"
-        }
-,
-        "null":
-        {
-          "type":"boolean"
-        }
-,
-        "owned":
-        {
-          "type":"boolean"
-        }
-      }
     }
   }
 }
