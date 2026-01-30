@@ -227,17 +227,17 @@
 ,
           "400":
           {
-            "description":"Missing required parameter or validation error (dates, location, meeting point)"
+            "description":"Missing required parameter or validation error (dates, location, meeting point). Check X-Error-Message header for details"
           }
 ,
           "409":
           {
-            "description":"Start date must be before end date or location\/meeting point not found"
+            "description":"Start date must be before end date or location\/meeting point not found. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -325,22 +325,22 @@
 ,
           "400":
           {
-            "description":"Missing required parameter ID_EVENT or CD_USER"
+            "description":"Missing required parameter ID_EVENT or CD_USER. Check X-Error-Message header for details"
           }
 ,
           "403":
           {
-            "description":"User is not the event organizer"
+            "description":"User is not the event organizer. Check X-Error-Message header for details"
           }
 ,
           "404":
           {
-            "description":"Event not found or is inactive"
+            "description":"Event not found or is inactive. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -396,22 +396,22 @@
 ,
           "400":
           {
-            "description":"Missing required parameter ID_EVENT or CD_USER"
+            "description":"Missing required parameter ID_EVENT or CD_USER. Check X-Error-Message header for details"
           }
 ,
           "403":
           {
-            "description":"User is not the event organizer"
+            "description":"User is not the event organizer. Check X-Error-Message header for details"
           }
 ,
           "404":
           {
-            "description":"Event not found or is already inactive"
+            "description":"Event not found or is already inactive. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -474,12 +474,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter ID_CALENDAR or invalid date format"
+            "description":"Missing required parameter ID_CALENDAR or invalid date format. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -535,12 +535,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_USER"
+            "description":"Missing required parameter CD_USER. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -587,17 +587,17 @@
 ,
           "400":
           {
-            "description":"Missing required parameter ID_EVENT"
+            "description":"Missing required parameter ID_EVENT. Check X-Error-Message header for details"
           }
 ,
           "404":
           {
-            "description":"Event not found or is inactive"
+            "description":"Event not found or is inactive. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }

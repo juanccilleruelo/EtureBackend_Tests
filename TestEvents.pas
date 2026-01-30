@@ -57,7 +57,7 @@ type
 
       { InsertEvent - 5 tests }
       [Test] [async] procedure TestInsertEventValid;
-      //[Test] [async] procedure TestInsertEventStartsAfterEnds;
+      [Test] [async] procedure TestInsertEventStartsAfterEnds;
       //[Test] [async] procedure TestInsertEventInvalidAllDayValue;
       //[Test] [async] procedure TestInsertEventLocationNotExists;
       //[Test] [async] procedure TestInsertEventMeetingPointNotExists;
@@ -923,9 +923,17 @@ begin
    end;
 end;
 
-(*[Test] [async] procedure TTestEvents.TestInsertEventStartsAfterEnds;
+[Test] [async] procedure TTestEvents.TestInsertEventStartsAfterEnds;
+{ OBJETIVO:
+  Verifica que POST /event/insertevent devuelve error 400 (Bad Request)
+  cuando STARTS_AT_TZ >= ENDS_AT_TZ (fecha de inicio posterior o igual a fecha fin).
+  
+  VALIDACIONES:
+  1. El endpoint lanza una excepción EHTTPException
+  2. El código HTTP de la excepción es 400 (Bad Request)
+}
 var DataSet     :TWebClientDataSet;
-    ExceptMsg   :string;
+    StatusCode  :Integer;
     ID_CALENDAR :Int64;
     ID_LOCATION :Int64;
     StartDate   :TDateTime;
@@ -944,19 +952,23 @@ begin
       EndDate   := StartDate - (2/24); // Invalid: ends before starts
 
       FillEventData(DataSet, ID_CALENDAR, TEST_TITLE + ' Invalid', StartDate, EndDate, ID_LOCATION, ID_LOCATION);
+      
+      { Intentar insertar y capturar el código HTTP de la excepción }
+      StatusCode := 0;
       try
          await(TDB.Insert(LOCAL_PATH, DataSet, '/insertevent'));
-         ExceptMsg := 'ok';
+         { Si llega aquí, no hubo excepción - test debe fallar }
       except
-         on E:Exception do ExceptMsg := E.Message;
+         on E:EHTTPException do StatusCode := E.StatusCode;
+         on E:Exception do StatusCode := -1; { Otro tipo de excepción }
       end;
 
-      Assert.IsTrue(ExceptMsg <> 'ok', 'Must fail when STARTS_AT_TZ >= ENDS_AT_TZ');
-      { API returns 409 or 400 for date validation errors }
+      { Verificar que devolvió específicamente código 400 }
+      Assert.IsTrue(StatusCode = 400, Format('Must return HTTP 400 for invalid dates, got %d', [StatusCode]));
    finally
       DataSet.Free;
    end;
-end;*)
+end;
 
 (*[Test] [async] procedure TTestEvents.TestInsertEventInvalidAllDayValue;
 var DataSet     :TWebClientDataSet;
