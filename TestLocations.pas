@@ -585,12 +585,10 @@ begin
          ID_DUPLICATE := await(Int64, TDB.InsertAndGetID(LOCAL_PATH, DataSet, '/insertlocation'));
          Assert.IsTrue(False, 'Duplicate insertion succeeded with ID: ' + IntToStr(ID_DUPLICATE));
       except
-         on E:EHTTPException do begin
+         on E: EHTTPException do
             Assert.IsTrue(E.StatusCode = 409, 'Expected HTTP 409 for duplicate, got ' + IntToStr(E.StatusCode));
-         end;
-         on E:Exception do begin
-            Assert.IsTrue(TDB.LastHTTPStatus = 409, 'Expected HTTP 409 for duplicate (fallback), last status: ' + IntToStr(TDB.LastHTTPStatus));
-         end;
+         on E: Exception do
+            Assert.IsTrue(False, 'Unexpected exception ' + E.ClassName + ': ' + E.Message);
       end;
    finally
       DataSet.Free;
