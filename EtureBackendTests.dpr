@@ -13,7 +13,7 @@ uses
   senCille.DataManagement in 'framework\senCille.DataManagement.pas' {$R *.res},
   senCille.TypeConverter in 'framework\senCille.TypeConverter.pas',
   Dummy in 'framework\Dummy.pas' {DummyForm: TWebForm} {*.html},
-  TestLocations in 'TestLocations.pas';
+  TestSchedule in 'TestSchedule.pas';
 
 
   //TestAuthentication in 'TestAuthentication.pas' {/TestUsers in 'TestUsers.pas';};
@@ -21,13 +21,13 @@ uses
 //C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
 (*
   TestEvents in 'TestEvents.pas';
-
+  TestLocations in 'TestLocations.pas';
 
 
   TestUsers in 'TestUsers.pas';
 
 
-  TestSchedule in 'TestSchedule.pas',
+
 
   TestChats in 'TestChats.pas',
   TestAppIssues in 'TestAppIssues.pas',

@@ -124,7 +124,7 @@
             <Form>DummyForm</Form>
             <DesignClass>TWebForm</DesignClass>
         </DCCReference>
-        <DCCReference Include="TestLocations.pas">
+        <DCCReference Include="TestSchedule.pas">
             <Form>/TestAuthentication in &apos;TestAuthentication.pas&apos; {/TestUsers in &apos;TestUsers.pas&apos;;};</Form>
         </DCCReference>
         <None Include="omnipascal.json"/>
