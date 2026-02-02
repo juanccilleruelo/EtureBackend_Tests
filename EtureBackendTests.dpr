@@ -51,7 +51,6 @@ uses
   TestDominantFoot in 'TestDominantFoot.pas';
   *)
 
-  //TestCalendarEvents in 'TestCalendarEvents.pas',
   //TestUsers in 'TestUsers.pas',
   //TestPlayers in 'TestPlayers.pas';
 
