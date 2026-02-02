@@ -1,4 +1,4 @@
-﻿unit TestSchedule;
+﻿unit TestCalendar;
 
 interface
 
@@ -17,9 +17,9 @@ uses
 type
 {$M+}
    [TestFixture]
-   TTestSchedule = class(TObject)
+   TTestCalendar = class(TObject)
    private
-      const LOCAL_PATH          = '/schedule';
+      const LOCAL_PATH          = '/calendar';
       const TEST_CD_USER        = 'playerus';
       const TEST_DS_CALENDAR    = 'Unit Test Calendar';
       const UPDATED_DS_CALENDAR = 'Unit Test Updated Calendar';
@@ -44,9 +44,9 @@ implementation
 
 uses senCille.WebSetup, senCille.DataManagement;
 
-{ TTestSchedule }
+{ TTestCalendar }
 
-function TTestSchedule.CreateCalendarDataSet: TWebClientDataSet;
+function TTestCalendar.CreateCalendarDataSet: TWebClientDataSet;
 var NewField :TField;
 begin
    inherited;
@@ -101,7 +101,7 @@ begin
    Result.Active := True;
 end;
 
-procedure TTestSchedule.FillCalendarData(ADataSet :TWebClientDataSet; const ADS_CALENDAR :string; const AColor: string = '#FF5733');
+procedure TTestCalendar.FillCalendarData(ADataSet :TWebClientDataSet; const ADS_CALENDAR :string; const AColor: string = '#FF5733');
 begin
    ADataSet.Append;
 
@@ -127,7 +127,7 @@ begin
    ADataSet.Post;
 end;
 
-[async] function TTestSchedule.HasTestCalendar(const ADS_CALENDAR :string):Int64;
+[async] function TTestCalendar.HasTestCalendar(const ADS_CALENDAR :string):Int64;
 var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
 begin
@@ -153,7 +153,7 @@ begin
    end;
 end;
 
-[async] function TTestSchedule.EnsureTestCalendarExists(const ADS_CALENDAR :string):Int64;
+[async] function TTestCalendar.EnsureTestCalendarExists(const ADS_CALENDAR :string):Int64;
 var DataSet   :TWebClientDataSet;
     ExceptMsg :string;
 begin
@@ -179,7 +179,7 @@ begin
    end;
 end;
 
-[async] procedure TTestSchedule.DeleteTestCalendarIfExists(const ADS_CALENDAR :string);
+[async] procedure TTestCalendar.DeleteTestCalendarIfExists(const ADS_CALENDAR :string);
 var ID_CALENDAR :Int64;
 begin
    ID_CALENDAR := await(Int64, HasTestCalendar(ADS_CALENDAR));
@@ -193,7 +193,7 @@ begin
    end;
 end;
 
-[Test] [async] procedure TTestSchedule.TestCalendarExists;
+[Test] [async] procedure TTestCalendar.TestCalendarExists;
 { Verifica si existe un calendario con un nombre específico }
 var ID_CALENDAR :Int64;
     ExceptMsg   :string;
@@ -212,7 +212,7 @@ begin
    Assert.IsTrue(ID_CALENDAR = -1, 'TestCalendarExists must say it does not exist.');
 end;
 
-[Test] [async] procedure TTestSchedule.TestCreateNewCalendar;
+[Test] [async] procedure TTestCalendar.TestCreateNewCalendar;
 { Crea un nuevo calendario y verifica que se devuelva un ID válido }
 var ID_CALENDAR :Int64;
     ExceptMsg   :string;
@@ -244,7 +244,7 @@ begin
    end;
 end;
 
-[Test] [async] procedure TTestSchedule.TestUpdateCalendar;
+[Test] [async] procedure TTestCalendar.TestUpdateCalendar;
 { Actualiza un calendario existente y verifica que los cambios se apliquen correctamente }
 var DataSet     :TWebClientDataSet;
     ExceptMsg   :string;
@@ -292,7 +292,7 @@ begin
    end;
 end;
 
-[Test] [async] procedure TTestSchedule.TestDeleteCalendar;
+[Test] [async] procedure TTestCalendar.TestDeleteCalendar;
 { Elimina un calendario existente y verifica que ya no exista }
 var ID_CALENDAR :Int64;
     ExceptMsg   :string;
@@ -337,7 +337,7 @@ begin
    Assert.IsTrue(ExceptMsg = 'ok', 'Exception verifying calendar state -> '+ExceptMsg);
 end;
 
-[Test] [async] procedure TTestSchedule.TestAllCalendarsCalendar;
+[Test] [async] procedure TTestCalendar.TestAllCalendarsCalendar;
 { Obtiene todos los calendarios de un usuario y verifica que se devuelvan correctamente }
 var DataSet         :TWebClientDataSet;
     ExceptMsg       :string;
@@ -399,7 +399,7 @@ begin
    end;
 end;
 
-[Test] [async] procedure TTestSchedule.TestOneCalendar;
+[Test] [async] procedure TTestCalendar.TestOneCalendar;
 { Obtiene un calendario específico por su ID y verifica que los datos sean correctos }
 var DataSet     :TWebClientDataSet;
     ExceptMsg   :string;
@@ -436,5 +436,5 @@ begin
 end;
 
 initialization
-   TTMSWEBUnitTestingRunner.RegisterClass(TTestSchedule);
+   TTMSWEBUnitTestingRunner.RegisterClass(TTestCalendar);
 end.
