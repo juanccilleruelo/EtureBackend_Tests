@@ -124,11 +124,9 @@
             <Form>DummyForm</Form>
             <DesignClass>TWebForm</DesignClass>
         </DCCReference>
-        <DCCReference Include="TestCalendar.pas">
-            <Form>/TestAuthentication in &apos;TestAuthentication.pas&apos; {/TestUsers in &apos;TestUsers.pas&apos;;</Form>
+        <DCCReference Include="TestEvents.pas">
+            <Form>/TestLocations in &apos;TestLocations.pas&apos;;</Form>
         </DCCReference>
-        <DCCReference Include="TestEvents.pas"/>
-        <DCCReference Include="TestLocations.pas"/>
         <None Include="omnipascal.json"/>
         <None Include=".vscode\settings.json"/>
         <None Include="framework\sync-framework-files.ps1"/>

@@ -58,14 +58,14 @@ type
       { InsertEvent - 5 tests }
       [Test] [async] procedure TestInsertEventValid;
       [Test] [async] procedure TestInsertEventStartsAfterEnds;
-      //[Test] [async] procedure TestInsertEventInvalidAllDayValue;
-      //[Test] [async] procedure TestInsertEventLocationNotExists;
-      //[Test] [async] procedure TestInsertEventMeetingPointNotExists;
+      [Test] [async] procedure TestInsertEventInvalidAllDayValue;
+      [Test] [async] procedure TestInsertEventLocationNotExists;
+      [Test] [async] procedure TestInsertEventMeetingPointNotExists;
 
       { UpdateEvent - 3 tests }
       [Test] [async] procedure TestUpdateEventValid;
       [Test] [async] procedure TestUpdateEventUserNotOrganizer;
-      //[Test] [async] procedure TestUpdateEventNotFound;
+      [Test] [async] procedure TestUpdateEventNotFound;
 
       { DeleteEvent - 2 tests }
       [Test] [async] procedure TestDeleteEventValid;
@@ -293,8 +293,8 @@ begin
       DataSet.Post;
 
       try
-         { Llamar al endpoint POST /schedule/insertcalendar }
-         await(TDB.Insert('/schedule', DataSet, '/insertcalendar'));
+         { Llamar al endpoint POST /calendar/insertcalendar }
+         await(TDB.Insert('/calendar', DataSet, '/insertcalendar'));
          ExceptMsg := 'ok';
       except
          on E:Exception do ExceptMsg := E.Message;
@@ -411,8 +411,8 @@ begin
    DataSet := CreateCalendarDataSet;
    try
       try
-         { Llamar al endpoint POST /schedule/getonecalendar }
-         await(TDB.GetRow('/schedule', [['CD_USER'    , TEST_CD_USER],
+         { Llamar al endpoint POST /calendar/getonecalendar }
+         await(TDB.GetRow('/calendar', [['CD_USER'    , TEST_CD_USER],
                                         ['DS_CALENDAR', 'Unit Test Calendar']],
                                         DataSet, '/getonecalendar'));
 
@@ -970,7 +970,7 @@ begin
    end;
 end;
 
-(*[Test] [async] procedure TTestEvents.TestInsertEventInvalidAllDayValue;
+[Test] [async] procedure TTestEvents.TestInsertEventInvalidAllDayValue;
 var DataSet     :TWebClientDataSet;
     ExceptMsg   :string;
     ID_CALENDAR :Int64;
@@ -1007,9 +1007,9 @@ begin
    finally
       DataSet.Free;
    end;
-end;*)
+end;
 
-(*[Test] [async] procedure TTestEvents.TestInsertEventLocationNotExists;
+[Test] [async] procedure TTestEvents.TestInsertEventLocationNotExists;
 var DataSet     :TWebClientDataSet;
     ExceptMsg   :string;
     ID_CALENDAR :Int64;
@@ -1044,9 +1044,9 @@ begin
    finally
       DataSet.Free;
    end;
-end;*)
+end;
 
-(*[Test] [async] procedure TTestEvents.TestInsertEventMeetingPointNotExists;
+[Test] [async] procedure TTestEvents.TestInsertEventMeetingPointNotExists;
 var DataSet     :TWebClientDataSet;
     ExceptMsg   :string;
     ID_CALENDAR :Int64;
@@ -1081,7 +1081,7 @@ begin
    finally
       DataSet.Free;
    end;
-end;*)
+end;
 
 { UpdateEvent Tests }
 
@@ -1165,7 +1165,7 @@ begin
    end;
 end;
 
-(*[Test] [async] procedure TTestEvents.TestUpdateEventNotFound;
+[Test] [async] procedure TTestEvents.TestUpdateEventNotFound;
 var DataSet     :TWebClientDataSet;
     ExceptMsg   :string;
     ID_LOCATION :Int64;
@@ -1194,7 +1194,7 @@ begin
    finally
       DataSet.Free;
    end;
-end;*)
+end;
 
 { DeleteEvent Tests }
 
