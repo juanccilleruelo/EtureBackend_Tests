@@ -140,12 +140,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter EMAIL"
+            "description":"Missing required parameter EMAIL. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -177,8 +177,8 @@
                     {
             "in":"body",
             "name":"Language",
-            "description":"Language code EN\/ES (optional, default EN)",
-            "default":"EN",
+            "description":"Language code EN\/ES (if empty defaults to EN)",
+            "required":true,
             "type":"string"
           }
         ]
@@ -190,9 +190,14 @@
             "description":"Array of available user profiles with CD_USER_ROLE and DS_USER_ROLE"
           }
 ,
+          "400":
+          {
+            "description":"Missing required parameter or invalid value. Check X-Error-Message header for details"
+          }
+,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -224,8 +229,8 @@
                     {
             "in":"body",
             "name":"Language",
-            "description":"Language code EN\/ES (optional, default EN)",
-            "default":"EN",
+            "description":"Language code EN\/ES (if empty defaults to EN)",
+            "required":true,
             "type":"string"
           }
         ]
@@ -237,9 +242,14 @@
             "description":"Array of available order fields with FIELD and DESCRIPTION"
           }
 ,
+          "400":
+          {
+            "description":"Missing required parameter or invalid value. Check X-Error-Message header for details"
+          }
+,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -313,12 +323,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameters"
+            "description":"Missing required parameter or invalid value. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error or email sending failed"
+            "description":"Internal server error or email sending failed. Check X-Error-Message header for details"
           }
         }
       }
@@ -365,17 +375,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_USER"
-          }
-,
-          "404":
-          {
-            "description":"User not found"
+            "description":"Missing required parameter CD_USER. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -417,22 +422,17 @@
         {
           "200":
           {
-            "description":"User basic information with CD_USER and DS_USER"
+            "description":"User basic information with CD_USER, EMAIL, CREATED, VERIFIED, and related fields"
           }
 ,
           "400":
           {
-            "description":"Missing required parameter GUID"
-          }
-,
-          "404":
-          {
-            "description":"Invitation not found or expired"
+            "description":"Missing required parameter GUID. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -479,12 +479,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter GUID"
+            "description":"Missing required parameter GUID. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -526,17 +526,17 @@
         {
           "200":
           {
-            "description":"Reference check result with REFERENCED (Y\/N) field"
+            "description":"Reference check result with TABLE field (NONE when not referenced)"
           }
 ,
           "400":
           {
-            "description":"Missing required parameter CD_USER"
+            "description":"Missing required parameter CD_USER. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -569,6 +569,7 @@
             "in":"body",
             "name":"OrderField",
             "description":"Field to order by (optional, default: USERS.CD_USER)",
+            "required":true,
             "type":"string"
           }
 ,
@@ -577,6 +578,7 @@
             "in":"body",
             "name":"FilterBy",
             "description":"Filter by user role (optional)",
+            "required":true,
             "type":"string"
           }
 ,
@@ -584,8 +586,8 @@
           {
             "in":"body",
             "name":"Language",
-            "description":"Language code EN\/ES (optional, default EN)",
-            "default":"EN",
+            "description":"Language code EN\/ES (if empty defaults to EN)",
+            "required":true,
             "type":"string"
           }
 ,
@@ -603,6 +605,7 @@
             "in":"body",
             "name":"SearchText",
             "description":"Search text filter (optional)",
+            "required":true,
             "type":"string"
           }
         ]
@@ -611,17 +614,17 @@
         {
           "200":
           {
-            "description":"Array of users for requested page with pagination info in X-Pages-Quantity header"
+            "description":"Array of users for requested page. X-Pages-Quantity header contains total pages"
           }
 ,
           "400":
           {
-            "description":"Invalid PageNumber (must be >= 1)"
+            "description":"Invalid PageNumber (must be >= 1). Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -663,17 +666,17 @@
         {
           "200":
           {
-            "description":"Array with user code (CD_USER) and display name (DS_USER)"
+            "description":"Array with user code (CD_USER) and display name (DS_USER), or MESSAGE when not found"
           }
 ,
           "400":
           {
-            "description":"Missing required parameter EMAIL"
+            "description":"Missing required parameter EMAIL. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -705,8 +708,8 @@
                     {
             "in":"body",
             "name":"Language",
-            "description":"Language code (EN\/ES, default EN)",
-            "default":"EN",
+            "description":"Language code (EN\/ES, if empty defaults to EN)",
+            "required":true,
             "type":"string"
           }
         ]
@@ -718,9 +721,14 @@
             "description":"Array of users with full user information (CD_USER, EMAIL, CREATED, VERIFIED, etc)"
           }
 ,
+          "400":
+          {
+            "description":"Missing required parameter or invalid value. Check X-Error-Message header for details"
+          }
+,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -772,12 +780,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_USER"
+            "description":"Missing required parameter CD_USER. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -824,22 +832,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_USER"
-          }
-,
-          "404":
-          {
-            "description":"User not found"
-          }
-,
-          "409":
-          {
-            "description":"User is referenced in other tables and cannot be deleted"
+            "description":"Missing required parameter CD_USER. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -942,17 +940,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter OLD_CD_USER"
-          }
-,
-          "404":
-          {
-            "description":"User not found"
+            "description":"Missing required parameter OLD_CD_USER. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -1084,12 +1077,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameters"
+            "description":"Missing required parameter or invalid value. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }

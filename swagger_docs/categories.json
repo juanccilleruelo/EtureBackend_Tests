@@ -235,6 +235,40 @@
       }
     }
 ,
+    "\/categories\/getall":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "CategoriesController.TCategoriesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
     "\/categories\/load":
     {
       "post":
@@ -302,10 +336,6 @@
         }
       }
     }
-,
-    "\/categories\/getall":
-    {
-          }
 ,
     "\/categories\/insert":
     {

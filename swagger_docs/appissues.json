@@ -269,6 +269,40 @@
       }
     }
 ,
+    "\/appissues\/getall":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "AppIssuesController.TAppIssuesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
     "\/appissues\/load":
     {
       "post":
@@ -336,10 +370,6 @@
         }
       }
     }
-,
-    "\/appissues\/getall":
-    {
-          }
 ,
     "\/appissues\/insert":
     {

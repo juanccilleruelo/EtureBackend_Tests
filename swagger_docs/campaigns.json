@@ -303,6 +303,40 @@
       }
     }
 ,
+    "\/campaigns\/getall":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "CampaignsController.TCampaignsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
     "\/campaigns\/load":
     {
       "post":
@@ -371,7 +405,7 @@
       }
     }
 ,
-    "\/campaigns\/update":
+    "\/campaigns\/insert":
     {
       "post":
       {
@@ -405,11 +439,7 @@
       }
     }
 ,
-    "\/campaigns\/getall":
-    {
-          }
-,
-    "\/campaigns\/insert":
+    "\/campaigns\/update":
     {
       "post":
       {

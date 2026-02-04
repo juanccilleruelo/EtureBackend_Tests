@@ -140,22 +140,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_STATE"
-          }
-,
-          "404":
-          {
-            "description":"State not found"
-          }
-,
-          "409":
-          {
-            "description":"State is referenced by other data and cannot be deleted"
+            "description":"Missing required parameter CD_STATE. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -186,8 +176,35 @@
         [
                     {
             "in":"body",
-            "name":"DS_STATE",
-            "description":"State description (required)",
+            "name":"DS_STATE_EN",
+            "description":"State description (EN, required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"DS_STATE_ES",
+            "description":"State description (ES, required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"OLD_CD_COUNTRY",
+            "description":"Original country code (required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"OLD_CD_STATE",
+            "description":"Original state code (required)",
             "required":true,
             "type":"string"
           }
@@ -220,22 +237,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameters or invalid data"
-          }
-,
-          "404":
-          {
-            "description":"State not found"
-          }
-,
-          "409":
-          {
-            "description":"State code conflict"
+            "description":"Missing required parameters or invalid data. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -282,12 +289,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_STATE"
+            "description":"Missing required parameter CD_STATE. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -323,12 +330,12 @@
 ,
           "400":
           {
-            "description":"Invalid request"
+            "description":"Invalid request. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -359,8 +366,17 @@
         [
                     {
             "in":"body",
-            "name":"DS_STATE",
-            "description":"State description (required)",
+            "name":"DS_STATE_EN",
+            "description":"State description (EN, required)",
+            "required":true,
+            "type":"string"
+          }
+,
+          
+          {
+            "in":"body",
+            "name":"DS_STATE_ES",
+            "description":"State description (ES, required)",
             "required":true,
             "type":"string"
           }
@@ -393,17 +409,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameters or invalid data"
-          }
-,
-          "409":
-          {
-            "description":"State code already exists"
+            "description":"Missing required parameters or invalid data. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -450,12 +461,12 @@
 ,
           "400":
           {
-            "description":"Invalid request parameters"
+            "description":"Invalid request parameters. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -511,12 +522,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_COUNTRY"
+            "description":"Missing required parameter CD_COUNTRY. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -580,12 +591,12 @@
 ,
           "400":
           {
-            "description":"Invalid PageNumber or search parameters"
+            "description":"Invalid PageNumber or search parameters. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -637,12 +648,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_STATE"
+            "description":"Missing required parameter CD_STATE. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }

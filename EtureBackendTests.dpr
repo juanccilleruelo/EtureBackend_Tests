@@ -3,31 +3,20 @@ program EtureBackendTests;
 uses
   Vcl.Forms,
   WEBLib.Forms,
-  ConfigurationConsts in 'framework\ConfigurationConsts.pas',
-  senCille.WebSetup in 'framework\senCille.WebSetup.pas',
-  senCille.Bootstrap in 'framework\senCille.Bootstrap.pas',
-  senCille.MVCRequests in 'framework\senCille.MVCRequests.pas',
-  senCille.Miscellaneous in 'framework\senCille.Miscellaneous.pas',
-  senCille.CustomWebForm in 'framework\senCille.CustomWebForm.pas' {scCustomWebForm: TWebForm} {*.html},
-  senCille.DataManagement in 'framework\senCille.DataManagement.pas' {$R *.res},
-  senCille.TypeConverter in 'framework\senCille.TypeConverter.pas',
+  ConfigurationConsts in '..\EtureFrontend\framework\ConfigurationConsts.pas',
+  senCille.WebSetup in '..\EtureFrontend\framework\senCille.WebSetup.pas',
+  senCille.Bootstrap in '..\EtureFrontend\framework\senCille.Bootstrap.pas',
+  senCille.MVCRequests in '..\EtureFrontend\framework\senCille.MVCRequests.pas',
+  senCille.Miscellaneous in '..\EtureFrontend\framework\senCille.Miscellaneous.pas',
+  senCille.CustomWebForm in '..\EtureFrontend\framework\senCille.CustomWebForm.pas' {scCustomWebForm: TWebForm} {*.html},
+  senCille.DataManagement in '..\EtureFrontend\framework\senCille.DataManagement.pas',
+  senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
   Dummy in 'framework\Dummy.pas' {DummyForm: TWebForm} {*.html},
-  //TestCalendar in 'TestCalendar.pas',
-  TestEvents in 'TestEvents.pas';
-  //TestLocations in 'TestLocations.pas';
 
-//TestAuthentication in 'TestAuthentication.pas' {/TestUsers in 'TestUsers.pas';};
-
-//C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
-(*
-
-
-
-  TestUsers in 'TestUsers.pas';
-
-
-
-
+  TestUsers in 'TestUsers.pas',
+  TestCalendar in 'TestCalendar.pas',
+  TestEvents in 'TestEvents.pas',
+  TestLocations in 'TestLocations.pas',
   TestChats in 'TestChats.pas',
   TestAppIssues in 'TestAppIssues.pas',
   TestCallUps in 'TestCallUps.pas',
@@ -39,9 +28,22 @@ uses
   TestCategories in 'TestCategories.pas',
   TestConferences in 'TestConferences.pas',
   TestCampaigns in 'TestCampaigns.pas',
-  TestAssays in 'TestAssays.pas',
   TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
-  TestMyVisaExamples in 'TestMyVisaExamples.pas',
+  TestMyVisaExamples in 'TestMyVisaExamples.pas';
+
+
+
+
+//TestAuthentication in 'TestAuthentication.pas' {/TestUsers in 'TestUsers.pas';};
+
+//C:\Views\EtureServer\ScholarshipTypes\ScholarshipTypesController.pas
+(*
+
+
+
+
+
+
   TestSocialMedia in 'TestSocialMedia.pas',
   TestPositions in 'TestPositions.pas',
   TestClubs in 'TestClubs.pas',

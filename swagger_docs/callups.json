@@ -235,6 +235,40 @@
       }
     }
 ,
+    "\/callups\/getall":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "CallUpsController.TCallUpsController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
     "\/callups\/load":
     {
       "post":
@@ -302,10 +336,6 @@
         }
       }
     }
-,
-    "\/callups\/getall":
-    {
-          }
 ,
     "\/callups\/insert":
     {

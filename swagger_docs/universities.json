@@ -140,22 +140,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_UNIVERSITY"
-          }
-,
-          "404":
-          {
-            "description":"University not found"
-          }
-,
-          "409":
-          {
-            "description":"University is referenced by other data and cannot be deleted"
+            "description":"Missing required parameter CD_UNIVERSITY. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -211,17 +201,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameters or invalid data"
-          }
-,
-          "404":
-          {
-            "description":"University not found"
+            "description":"Missing required parameters or invalid data. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -268,12 +253,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_UNIVERSITY"
+            "description":"Missing required parameter CD_UNIVERSITY. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -309,12 +294,12 @@
 ,
           "400":
           {
-            "description":"Invalid request"
+            "description":"Missing or invalid parameter. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -361,12 +346,12 @@
 ,
           "400":
           {
-            "description":"Invalid request parameters"
+            "description":"Missing or invalid parameter. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -430,12 +415,12 @@
 ,
           "400":
           {
-            "description":"Invalid PageNumber or search parameters"
+            "description":"Invalid PageNumber or missing required parameter. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -487,12 +472,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_UNIVERSITY"
+            "description":"Missing required parameter CD_UNIVERSITY. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -548,17 +533,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameters or invalid data"
-          }
-,
-          "409":
-          {
-            "description":"University code already exists"
+            "description":"Missing required parameters or invalid data. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }

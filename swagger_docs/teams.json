@@ -154,12 +154,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameters CD_TEAM or CD_USER"
+            "description":"Missing required parameters CD_TEAM or CD_USER. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -215,12 +215,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_TEAM"
+            "description":"Missing required parameter CD_TEAM. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -276,17 +276,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameters CD_TEAM or CD_USER"
-          }
-,
-          "404":
-          {
-            "description":"Team player relationship not found"
+            "description":"Missing required parameters CD_TEAM or CD_USER. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -342,17 +337,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameters CD_TEAM or CD_USER"
-          }
-,
-          "409":
-          {
-            "description":"Player is already in this team"
+            "description":"Missing required parameters CD_TEAM or CD_USER. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -399,12 +389,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_TEAM"
+            "description":"Missing required parameter CD_TEAM. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -440,12 +430,12 @@
 ,
           "400":
           {
-            "description":"Invalid request"
+            "description":"Invalid request. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -497,12 +487,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_TEAM"
+            "description":"Missing required parameter CD_TEAM. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -561,17 +551,17 @@
         {
           "200":
           {
-            "description":"Array of teams matching search criteria with pagination (X-Pages-Quantity header contains total pages)"
+            "description":"Array of teams matching search criteria (X-Pages-Quantity header contains total pages)"
           }
 ,
           "400":
           {
-            "description":"Invalid PageNumber or search parameters"
+            "description":"Invalid PageNumber or parameters. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -618,12 +608,12 @@
 ,
           "400":
           {
-            "description":"Invalid request parameters"
+            "description":"Missing or invalid parameters. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -670,22 +660,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameter CD_TEAM"
-          }
-,
-          "404":
-          {
-            "description":"Team not found"
-          }
-,
-          "409":
-          {
-            "description":"Team is referenced by other data and cannot be deleted"
+            "description":"Missing required parameter CD_TEAM. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -750,22 +730,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameters or invalid data"
-          }
-,
-          "404":
-          {
-            "description":"Team not found"
-          }
-,
-          "409":
-          {
-            "description":"New team code already exists"
+            "description":"Missing required parameters or invalid data. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }
@@ -821,17 +791,12 @@
 ,
           "400":
           {
-            "description":"Missing required parameters or invalid data"
-          }
-,
-          "409":
-          {
-            "description":"Team code already exists"
+            "description":"Missing required parameters or invalid data. Check X-Error-Message header for details"
           }
 ,
           "500":
           {
-            "description":"Internal server error"
+            "description":"Internal server error. Check X-Error-Message header for details"
           }
         }
       }

@@ -235,6 +235,40 @@
       }
     }
 ,
+    "\/conferences\/getall":
+    {
+      "post":
+      {
+        "tags":
+        [
+          "ConferencesController.TConferencesController"
+        ]
+,
+        "consumes":
+        [
+          "application\/json"
+        ]
+,
+        "produces":
+        [
+          "application\/json"
+        ]
+,
+        "responses":
+        {
+          "200":
+          {
+            "description":"OK"
+          }
+,
+          "500":
+          {
+            "description":"Internal server error"
+          }
+        }
+      }
+    }
+,
     "\/conferences\/load":
     {
       "post":
@@ -302,10 +336,6 @@
         }
       }
     }
-,
-    "\/conferences\/getall":
-    {
-          }
 ,
     "\/conferences\/insert":
     {
