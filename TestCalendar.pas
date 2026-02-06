@@ -31,12 +31,12 @@ type
      [async] function EnsureTestCalendarExists(const ADS_CALENDAR :string):Int64;
      [async] procedure DeleteTestCalendarIfExists(const ADS_CALENDAR :string);
    published
-      [Test] [async] procedure TestCalendarExists;
-      [Test] [async] procedure TestCreateNewCalendar;
-      [Test] [async] procedure TestUpdateCalendar;
-      [Test] [async] procedure TestDeleteCalendar;
-      [Test] [async] procedure TestAllCalendarsCalendar;
-      [Test] [async] procedure TestOneCalendar;
+     [Test] [async] procedure TestCalendarExists;
+     [Test] [async] procedure TestCreateNewCalendar;
+     [Test] [async] procedure TestUpdateCalendar;
+     [Test] [async] procedure TestDeleteCalendar;
+     [Test] [async] procedure TestAllCalendarsCalendar;
+     [Test] [async] procedure TestOneCalendar;
    end;
 {$M-}
 

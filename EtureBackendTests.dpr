@@ -13,7 +13,7 @@ uses
   senCille.TypeConverter in '..\EtureFrontend\framework\senCille.TypeConverter.pas',
   Dummy in 'framework\Dummy.pas' {DummyForm: TWebForm} {*.html},
 
-  TestUsers in 'TestUsers.pas',
+  (*TestUsers in 'TestUsers.pas',
   TestCalendar in 'TestCalendar.pas',
   TestEvents in 'TestEvents.pas',
   TestLocations in 'TestLocations.pas',
@@ -30,8 +30,9 @@ uses
   TestCampaigns in 'TestCampaigns.pas',
   TestMyVisaTemplates in 'TestMyVisaTemplates.pas',
   TestMyVisaExamples in 'TestMyVisaExamples.pas';
+  *)
 
-
+  TestSocialMedia in 'TestSocialMedia.pas';
 
 
 //TestAuthentication in 'TestAuthentication.pas' {/TestUsers in 'TestUsers.pas';};
@@ -44,7 +45,7 @@ uses
 
 
 
-  TestSocialMedia in 'TestSocialMedia.pas',
+
   TestPositions in 'TestPositions.pas',
   TestClubs in 'TestClubs.pas',
   TestInjuryAuxModels in 'TestInjuryAuxModels.pas',

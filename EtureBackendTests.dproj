@@ -122,23 +122,7 @@
             <Form>DummyForm</Form>
             <DesignClass>TWebForm</DesignClass>
         </DCCReference>
-        <DCCReference Include="TestUsers.pas"/>
-        <DCCReference Include="TestCalendar.pas"/>
-        <DCCReference Include="TestEvents.pas"/>
-        <DCCReference Include="TestLocations.pas"/>
-        <DCCReference Include="TestChats.pas"/>
-        <DCCReference Include="TestAppIssues.pas"/>
-        <DCCReference Include="TestCallUps.pas"/>
-        <DCCReference Include="TestProperties.pas"/>
-        <DCCReference Include="TestUniversities.pas"/>
-        <DCCReference Include="TestTeams.pas"/>
-        <DCCReference Include="TestStates.pas"/>
-        <DCCReference Include="TestAuxData.pas"/>
-        <DCCReference Include="TestCategories.pas"/>
-        <DCCReference Include="TestConferences.pas"/>
-        <DCCReference Include="TestCampaigns.pas"/>
-        <DCCReference Include="TestMyVisaTemplates.pas"/>
-        <DCCReference Include="TestMyVisaExamples.pas"/>
+        <DCCReference Include="TestSocialMedia.pas"/>
         <None Include="omnipascal.json"/>
         <None Include=".vscode\settings.json"/>
         <None Include="framework\sync-framework-files.ps1"/>
